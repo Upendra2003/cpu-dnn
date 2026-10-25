@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>RoBA Multiplier Lab</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Approximate RoBA-family multipliers inside an MNIST DNN: bit explorer, error landscapes, accuracy and energy results.">
+<meta name="description" content="Approximate RoBA-family multipliers inside MNIST and Fashion-MNIST DNNs, as a slide deck: bit explorer, error landscapes, accuracy and energy results.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: a datasheet. Narrow figure-label rail on the left, content column on the right;
-   every chart is a numbered figure, the bit explorer opens the page. */
+/* Layout: a datasheet as a slide deck. Fixed top bar (name + dataset switch), a horizontal
+   track of full-width slides with snap and a hidden scrollbar, a bottom navigator with
+   previous / next, one dot per slide and a progress rule. */
 :root {
   --bg: #f3f5f7;
   --surface: #ffffff;
@@ -21,7 +22,7 @@
   --rule: #dde2e8;
   --rule-strong: #c3cad3;
   --accent: #2a78d6;          /* one-pass RoBA, the highlight */
-  --accent-soft: rgba(42, 120, 214, 0.12);
+  --accent-ink: #ffffff;
   --two: #eb6834;             /* two-pass RoBA */
   --base: #9aa3ad;            /* baselines (Mitchell, DRUM6) */
   --model-b: #1baf7a;         /* LeNet-5 */
@@ -29,7 +30,6 @@
   --under: #e34948;           /* error < 0 */
   --mid: #eef0f2;             /* error = 0 */
   --critical: #d03b3b;
-  --good: #0a8a0a;
   --band: rgba(42, 120, 214, 0.08);
   --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -37,35 +37,35 @@
   --step--1: 0.8125rem;
   --step-0: 0.9375rem;
   --step-1: 1.125rem;
-  --step-2: 1.5rem;
-  --step-3: clamp(2rem, 4.6vw, 3.25rem);
+  --step-2: clamp(1.5rem, 2.6vw, 2.125rem);
+  --step-3: clamp(2.25rem, 5.2vw, 4rem);
+  --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0d1115; --surface: #151a20; --ink: #e9edf1; --ink-2: #aab4bf; --muted: #7c8793;
-    --rule: #252d36; --rule-strong: #36404b; --accent: #4a92ea; --accent-soft: rgba(74, 146, 234, 0.16);
+    --rule: #252d36; --rule-strong: #36404b; --accent: #4a92ea; --accent-ink: #ffffff;
     --two: #e0703f; --base: #6f7984; --model-b: #22b583; --over: #4a92ea; --under: #e66767; --mid: #262d35;
-    --critical: #e05a5a; --good: #2fb52f; --band: rgba(74, 146, 234, 0.12);
+    --critical: #e05a5a; --band: rgba(74, 146, 234, 0.12);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0d1115; --surface: #151a20; --ink: #e9edf1; --ink-2: #aab4bf; --muted: #7c8793;
-  --rule: #252d36; --rule-strong: #36404b; --accent: #4a92ea; --accent-soft: rgba(74, 146, 234, 0.16);
+  --rule: #252d36; --rule-strong: #36404b; --accent: #4a92ea; --accent-ink: #ffffff;
   --two: #e0703f; --base: #6f7984; --model-b: #22b583; --over: #4a92ea; --under: #e66767; --mid: #262d35;
-  --critical: #e05a5a; --good: #2fb52f; --band: rgba(74, 146, 234, 0.12);
+  --critical: #e05a5a; --band: rgba(74, 146, 234, 0.12);
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
+html, body { height: 100%; }
 body {
-  background: var(--bg); color: var(--ink);
-  font: 400 var(--step-0)/1.6 var(--font-body);
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 0 64px;
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 var(--step-0)/1.55 var(--font-body);
+  display: grid; grid-template-rows: auto minmax(0, 1fr) auto; overflow: hidden;
 }
-.wrap { max-width: 1120px; margin: 0 auto; }
 h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
 p { margin: 0; }
 a { color: var(--accent); }
@@ -73,34 +73,60 @@ code, .mono { font-family: var(--font-mono); font-size: 0.92em; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .num { font-variant-numeric: tabular-nums; }
 
-/* ---------- masthead ---------- */
-.masthead { padding-block: 48px 28px; display: grid; gap: 18px; border-bottom: 1px solid var(--rule-strong); }
-.eyebrow {
-  font: 600 var(--step--1)/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
-  display: flex; flex-wrap: wrap; gap: 6px 18px;
+/* ---------- top bar ---------- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding-block: 10px; padding-left: var(--gutter-l); padding-right: var(--gutter-r);
+  border-bottom: 1px solid var(--rule); background: var(--surface);
 }
-.masthead h1 {
-  font-size: var(--step-3); font-weight: 750; font-stretch: 78%; line-height: 1.02; letter-spacing: -0.01em; max-width: 20ch;
-}
-.masthead h1 em { font-style: normal; color: var(--accent); }
-.lede { max-width: 68ch; color: var(--ink-2); font-size: var(--step-1); line-height: 1.55; }
-.spec { display: flex; flex-wrap: wrap; gap: 8px; }
-.spec span {
-  font: 500 var(--step--1)/1 var(--font-mono); padding: 7px 10px; border: 1px solid var(--rule-strong);
-  border-radius: 4px; color: var(--ink-2); background: var(--surface);
-}
+.brand { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+.brand b { font: 750 var(--step-1)/1 var(--font-display); font-stretch: 80%; white-space: nowrap; }
+.brand span { font: 500 var(--step--1)/1.2 var(--font-mono); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 560px) { .brand span { display: none; } }
 
-/* ---------- figure sections ---------- */
-.fig { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 28px; padding-block: 44px; border-bottom: 1px solid var(--rule); }
-.fig-label { display: grid; align-content: start; gap: 8px; }
-.fig-no { font: 600 var(--step--1)/1 var(--font-mono); color: var(--accent); letter-spacing: 0.06em; text-transform: uppercase; }
-.fig-label h2 { font-size: var(--step-2); font-weight: 700; font-stretch: 85%; line-height: 1.1; }
-.fig-body { display: grid; gap: 18px; min-width: 0; }
-.fig-body > p.claim { font-size: var(--step-1); line-height: 1.5; max-width: 68ch; }
-.note { color: var(--ink-2); font-size: var(--step--1); max-width: 72ch; }
-@media (max-width: 760px) {
-  .fig { grid-template-columns: minmax(0, 1fr); gap: 16px; padding-block: 32px; }
+/* ---------- deck ---------- */
+.deck {
+  display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory;
+  scrollbar-width: none; -ms-overflow-style: none; overscroll-behavior-x: contain; min-height: 0;
 }
+.deck::-webkit-scrollbar { display: none; }
+.slide {
+  flex: 0 0 100%; width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden;
+  scroll-snap-align: start; scroll-snap-stop: always; scrollbar-width: thin;
+}
+.slide-inner {
+  max-width: 1180px; margin: 0 auto; min-height: 100%;
+  padding-block: 28px 32px; padding-left: var(--gutter-l); padding-right: var(--gutter-r);
+  display: grid; align-content: center; gap: 18px;
+}
+.slide-head { display: grid; gap: 8px; }
+.fig-no { font: 600 var(--step--1)/1 var(--font-mono); color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; }
+.slide-head h2 { font-size: var(--step-2); font-weight: 720; font-stretch: 82%; line-height: 1.05; }
+.claim { font-size: var(--step-1); line-height: 1.5; max-width: 72ch; color: var(--ink); }
+.note { color: var(--ink-2); font-size: var(--step--1); max-width: 78ch; }
+
+/* ---------- navigator ---------- */
+.nav {
+  position: relative; display: flex; align-items: center; gap: 14px;
+  padding-block: 10px; padding-left: var(--gutter-l); padding-right: var(--gutter-r);
+  padding-bottom: max(10px, env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--rule); background: var(--surface);
+}
+.progress { position: absolute; left: 0; top: -1px; height: 2px; background: var(--accent); }
+@media (prefers-reduced-motion: no-preference) { .progress { transition: width 0.3s ease; } }
+.dots { display: flex; gap: 6px; flex: 1 1 auto; justify-content: center; flex-wrap: wrap; min-width: 0; }
+.dots button {
+  width: 9px; height: 9px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: var(--rule-strong);
+}
+.dots button[aria-current="true"] { background: var(--accent); width: 22px; border-radius: 5px; }
+.counter { font: 500 var(--step--1)/1 var(--font-mono); color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.navbtn {
+  font: 600 var(--step--1)/1 var(--font-body); border-radius: 6px; padding: 10px 16px; cursor: pointer;
+  border: 1px solid var(--rule-strong); background: var(--surface); color: var(--ink); white-space: nowrap;
+}
+.navbtn.primary { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.navbtn:disabled { opacity: 0.35; cursor: default; }
+@media (max-width: 560px) { .dots { display: none; } .nav { justify-content: space-between; } }
 
 /* ---------- controls ---------- */
 .controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
@@ -111,6 +137,7 @@ code, .mono { font-family: var(--font-mono); font-size: 0.92em; }
 }
 .seg button:last-child { border-right: 0; }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.seg button:disabled { color: var(--muted); cursor: not-allowed; }
 .seg-label { font: 600 0.72rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .ctl { display: inline-flex; align-items: center; gap: 8px; }
 .btn {
@@ -119,35 +146,60 @@ code, .mono { font-family: var(--font-mono); font-size: 0.92em; }
 }
 .btn:hover { border-color: var(--ink-2); }
 
-/* ---------- panel ---------- */
-.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 18px; min-width: 0; }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 16px; min-width: 0; }
 .chart { width: 100%; min-width: 0; }
 .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
 .chart text { font-family: var(--font-body); }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: var(--step--1); color: var(--ink-2); }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
 .legend i.ring { background: transparent !important; border: 2px solid var(--ink-2); }
+.two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+@media (max-width: 860px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
+.table-scroll { overflow-x: auto; }
+
+/* ---------- title slide ---------- */
+.title-slide .slide-inner { align-content: center; gap: 26px; }
+.eyebrow { font: 600 var(--step--1)/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.title-slide h1 { font-size: var(--step-3); font-weight: 760; font-stretch: 76%; line-height: 0.98; letter-spacing: -0.01em; max-width: 16ch; }
+.title-slide h1 em { font-style: normal; color: var(--accent); }
+.lede { max-width: 64ch; color: var(--ink-2); font-size: var(--step-1); line-height: 1.55; }
+.spec { display: flex; flex-wrap: wrap; gap: 8px; }
+.spec span { font: 500 var(--step--1)/1 var(--font-mono); padding: 7px 10px; border: 1px solid var(--rule-strong); border-radius: 4px; color: var(--ink-2); background: var(--surface); }
+.hint { font: 500 var(--step--1)/1 var(--font-mono); color: var(--muted); display: flex; align-items: center; gap: 10px; }
+.key { display: inline-grid; place-items: center; min-width: 26px; height: 24px; padding: 0 6px; border: 1px solid var(--rule-strong); border-bottom-width: 2px; border-radius: 4px; color: var(--ink); background: var(--surface); }
+.title-bits { display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: 3px; max-width: 620px; }
+.title-bits div { font: 500 0.8rem/1 var(--font-mono); text-align: center; padding: 8px 0; border-radius: 3px; background: var(--surface); color: var(--muted); border: 1px solid var(--rule); }
+.title-bits div.one { color: var(--ink); }
+.title-bits div.lod { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.title-bits div.next { border-color: var(--two); color: var(--ink); }
+
+/* ---------- idea slide ---------- */
+.formula { font: 500 clamp(1rem, 2vw, 1.375rem)/1.5 var(--font-mono); padding: 16px 18px; border-left: 3px solid var(--accent); background: var(--surface); overflow-x: auto; }
+.formula .dim { color: var(--muted); }
+.formula .drop { color: var(--under); text-decoration: line-through; text-decoration-thickness: 2px; }
+table.vt { width: 100%; border-collapse: collapse; font-size: var(--step--1); }
+table.vt th { font: 600 0.7rem/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 0 10px 8px 0; }
+table.vt td { padding: 8px 10px 8px 0; border-top: 1px solid var(--rule); }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.facts div { background: var(--surface); padding: 14px; display: grid; gap: 4px; }
+.facts b { font: 700 1.5rem/1 var(--font-display); font-stretch: 82%; }
+.facts span { font-size: var(--step--1); color: var(--ink-2); }
+@media (max-width: 560px) { .facts { grid-template-columns: minmax(0, 1fr); } }
 
 /* ---------- explorer ---------- */
-.explorer { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 18px; }
+.explorer { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 16px; }
 @media (max-width: 980px) { .explorer { grid-template-columns: minmax(0, 1fr); } }
-.operand { display: grid; gap: 10px; padding-block: 12px; border-bottom: 1px dashed var(--rule); }
+.operand { display: grid; gap: 8px; padding-block: 10px; border-bottom: 1px dashed var(--rule); }
 .operand:last-of-type { border-bottom: 0; }
 .op-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
 .op-head .name { font: 700 var(--step-1)/1 var(--font-display); font-stretch: 85%; }
-.op-head input[type="number"] {
-  width: 7.5ch; font: 500 var(--step-0)/1 var(--font-mono); color: var(--ink); background: var(--bg);
-  border: 1px solid var(--rule-strong); border-radius: 4px; padding: 6px 8px;
-}
+.op-head input[type="number"] { width: 7.5ch; font: 500 var(--step-0)/1 var(--font-mono); color: var(--ink); background: var(--bg); border: 1px solid var(--rule-strong); border-radius: 4px; padding: 6px 8px; }
 .op-head input[type="range"] { flex: 1 1 140px; accent-color: var(--accent); min-width: 0; }
 .bits { display: grid; gap: 3px; }
 .bits-row { display: grid; gap: 2px; }
-.bit {
-  font: 500 0.8rem/1 var(--font-mono); text-align: center; padding: 7px 0; border-radius: 3px;
-  background: var(--bg); color: var(--muted); border: 1px solid transparent; min-width: 0;
-}
+.bit { font: 500 0.8rem/1 var(--font-mono); text-align: center; padding: 7px 0; border-radius: 3px; background: var(--bg); color: var(--muted); border: 1px solid transparent; min-width: 0; }
 .bit.one { color: var(--ink); background: var(--mid); }
-.bit.lod { background: var(--accent); color: #fff; }
+.bit.lod { background: var(--accent); color: var(--accent-ink); }
 .bit.next { border-color: var(--two); color: var(--ink); }
 .bit-idx { font: 400 0.62rem/1 var(--font-mono); color: var(--muted); text-align: center; }
 .round { font-size: var(--step--1); color: var(--ink-2); display: grid; gap: 2px; }
@@ -155,32 +207,22 @@ code, .mono { font-family: var(--font-mono); font-size: 0.92em; }
 .round .mono { color: var(--ink); }
 .shift-form { font: 400 var(--step--1)/1.6 var(--font-mono); color: var(--ink-2); background: var(--bg); border-radius: 6px; padding: 10px 12px; overflow-wrap: anywhere; }
 .shift-form b { color: var(--accent); font-weight: 600; }
-
 table.mults { width: 100%; border-collapse: collapse; font-size: var(--step--1); }
 table.mults th { font: 600 0.7rem/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 0 8px 8px 0; }
-table.mults td { padding: 7px 8px 7px 0; border-top: 1px solid var(--rule); vertical-align: middle; }
+table.mults td { padding: 6px 8px 6px 0; border-top: 1px solid var(--rule); vertical-align: middle; }
 table.mults td.r, table.mults th.r { text-align: right; }
 table.mults tr.exact td { color: var(--ink); font-weight: 600; }
 .chip { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 8px; vertical-align: 1px; }
 .errbar { position: relative; height: 12px; min-width: 90px; }
 .errbar::before { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--rule-strong); }
 .errbar span { position: absolute; top: 2px; height: 8px; border-radius: 2px; }
-.table-scroll { overflow-x: auto; }
-
-/* ---------- findings ---------- */
-.findings { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
-.finding { background: var(--surface); padding: 18px; display: grid; gap: 8px; align-content: start; }
-.finding .big { font: 700 2.25rem/1 var(--font-display); font-stretch: 80%; font-variant-numeric: tabular-nums; }
-.finding .big small { font-size: 0.5em; font-weight: 600; color: var(--muted); margin-left: 2px; }
-.finding p { font-size: var(--step--1); color: var(--ink-2); line-height: 1.5; }
-@media (max-width: 900px) { .findings { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 460px) { .findings { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: no-preference) { .errbar span { transition: left 0.18s ease, width 0.18s ease; } }
 
 /* ---------- heatmap ---------- */
-.land { display: grid; grid-template-columns: minmax(0, 520px) minmax(0, 1fr); gap: 24px; align-items: start; }
-@media (max-width: 980px) { .land { grid-template-columns: minmax(0, 1fr); } }
-.heat { display: grid; grid-template-columns: 34px minmax(0, 1fr); grid-template-rows: auto auto auto; gap: 4px 6px; }
-.heat canvas { width: 100%; max-width: 100%; aspect-ratio: 1; image-rendering: pixelated; border-radius: 3px; cursor: crosshair; display: block; }
+.land { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 900px) { .land { grid-template-columns: minmax(0, 1fr); } }
+.heat { display: grid; grid-template-columns: 34px auto; gap: 4px 6px; justify-content: start; }
+.heat canvas { width: min(440px, 50vh, calc(100vw - 90px)); aspect-ratio: 1; image-rendering: pixelated; border-radius: 3px; cursor: crosshair; display: block; }
 .heat .yax, .heat .xax { position: relative; font: 400 0.68rem/1 var(--font-mono); color: var(--muted); }
 .heat .yax span { position: absolute; right: 0; transform: translateY(50%); }
 .heat .xax { height: 14px; }
@@ -194,64 +236,96 @@ table.mults tr.exact td { color: var(--ink); font-weight: 600; }
 .stat .v { font: 700 1.6rem/1.15 var(--font-display); font-stretch: 85%; font-variant-numeric: tabular-nums; }
 .stat .s { font-size: var(--step--1); color: var(--ink-2); }
 .tabs { display: flex; flex-wrap: wrap; gap: 6px; }
-.tabs button {
-  font: 500 var(--step--1)/1 var(--font-body); color: var(--ink-2); background: var(--surface);
-  border: 1px solid var(--rule-strong); border-radius: 999px; padding: 7px 12px; cursor: pointer;
-}
+.tabs button { font: 500 var(--step--1)/1 var(--font-body); color: var(--ink-2); background: var(--surface); border: 1px solid var(--rule-strong); border-radius: 999px; padding: 7px 12px; cursor: pointer; }
 .tabs button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
 
+/* ---------- findings ---------- */
+.findings { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.finding { background: var(--surface); padding: 20px; display: grid; gap: 10px; align-content: start; }
+.finding .big { font: 700 clamp(2rem, 4vw, 3rem)/1 var(--font-display); font-stretch: 78%; font-variant-numeric: tabular-nums; }
+.finding .big small { font-size: 0.45em; font-weight: 600; color: var(--muted); margin-left: 3px; }
+.finding .tag { font: 600 0.68rem/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.finding p { font-size: var(--step--1); color: var(--ink-2); line-height: 1.5; }
+@media (max-width: 900px) { .findings { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .findings { grid-template-columns: minmax(0, 1fr); } }
+
 /* ---------- method ---------- */
-.steps { display: grid; gap: 0; counter-reset: s; margin: 0; padding: 0; list-style: none; }
-.steps li { counter-increment: s; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; padding-block: 12px; border-top: 1px solid var(--rule); }
+.steps { display: grid; margin: 0; padding: 0; list-style: none; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 10px; padding-block: 9px; border-top: 1px solid var(--rule); font-size: var(--step--1); }
 .steps li::before { content: counter(s, decimal-leading-zero); font: 600 var(--step--1)/1.6 var(--font-mono); color: var(--accent); }
 .steps b { font-weight: 600; }
-pre.code {
-  margin: 0; font: 400 0.8rem/1.6 var(--font-mono); background: var(--surface); border: 1px solid var(--rule);
-  border-radius: 8px; padding: 14px 16px; overflow-x: auto; color: var(--ink);
-}
+pre.code { margin: 0; font: 400 0.78rem/1.55 var(--font-mono); background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; overflow-x: auto; color: var(--ink); }
 pre.code .c { color: var(--muted); }
-.formula { font: 500 var(--step-1)/1.4 var(--font-mono); padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--surface); overflow-x: auto; }
-.formula .dim { color: var(--muted); }
 table.files { width: 100%; border-collapse: collapse; font-size: var(--step--1); }
-table.files td { padding: 8px 12px 8px 0; border-top: 1px solid var(--rule); vertical-align: top; }
+table.files td { padding: 7px 12px 7px 0; border-top: 1px solid var(--rule); vertical-align: top; }
 table.files td:first-child { font-family: var(--font-mono); white-space: nowrap; }
-.two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
-@media (max-width: 860px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
-ul.caveats { margin: 0; padding-left: 18px; display: grid; gap: 6px; color: var(--ink-2); max-width: 75ch; }
+ul.caveats { margin: 0; padding-left: 18px; display: grid; gap: 8px; color: var(--ink-2); max-width: 75ch; }
+ol.next { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 75ch; }
 details summary { cursor: pointer; font-size: var(--step--1); color: var(--ink-2); }
 table.data { border-collapse: collapse; font-size: var(--step--1); margin-top: 10px; }
 table.data th, table.data td { padding: 5px 14px 5px 0; border-top: 1px solid var(--rule); text-align: right; }
 table.data th:first-child, table.data td:first-child { text-align: left; }
-footer { padding-block: 32px; color: var(--muted); font-size: var(--step--1); display: grid; gap: 6px; }
+.empty { display: grid; place-items: center; min-height: 240px; text-align: center; color: var(--ink-2); gap: 8px; padding: 24px; }
+.empty b { font: 700 var(--step-1)/1.2 var(--font-display); color: var(--ink); }
 
 /* ---------- tooltip ---------- */
-#tip {
-  position: fixed; z-index: 20; pointer-events: none; max-width: 280px; white-space: pre-line;
-  background: var(--ink); color: var(--surface); font: 400 0.78rem/1.45 var(--font-body);
-  padding: 8px 10px; border-radius: 6px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
-}
+#tip { position: fixed; z-index: 20; pointer-events: none; max-width: 280px; white-space: pre-line; background: var(--ink); color: var(--surface); font: 400 0.78rem/1.45 var(--font-body); padding: 8px 10px; border-radius: 6px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18); }
 #tip b { font-weight: 600; }
-@media (prefers-reduced-motion: no-preference) {
-  .errbar span { transition: left 0.18s ease, width 0.18s ease; }
-}
 </style>
 </head>
 <body>
 
 
-<div class="wrap">
-  <header class="masthead">
-    <div class="eyebrow"><span>AI Accelerator · final project</span><span>Phase 1 · GPU study</span><span id="meta-date"></span></div>
-    <h1>Approximate multiplication inside a DNN, <em>bit by bit</em></h1>
-    <p class="lede">Every multiplication in an MNIST network goes through the RoBA family of approximate multipliers from Rajiv &amp; Kedia (DATE 2026), the routines a multiplierless Ibex RISC-V core runs with one custom LOD instruction. The network keeps its accuracy. The open question is how much energy that saves on the core.</p>
-    <div class="spec" id="spec"></div>
-  </header>
+<header class="topbar">
+  <div class="brand"><b>CPU Based DNN</b><span id="slide-name"></span></div>
+  <div class="ctl"><span class="seg-label">Dataset</span><span class="seg" role="group" aria-label="Dataset" id="ds-seg"></span></div>
+</header>
 
-  <!-- Fig 1: bit explorer -->
-  <section class="fig" id="explorer">
-    <div class="fig-label"><span class="fig-no">Fig. 1</span><h2>Bit explorer</h2></div>
-    <div class="fig-body">
-      <p class="claim">RoBA rounds each operand to a power of two at its leading one, so the product becomes shifts and adds. Pick two operands and compare every multiplier against the exact product.</p>
+<main class="deck" id="deck" tabindex="-1">
+
+  <section class="slide title-slide" id="title" aria-label="Title">
+    <div class="slide-inner">
+      <div class="eyebrow"><span>AI Accelerator · final project</span><span>Phase 1 · GPU study</span><span id="meta-date"></span></div>
+      <h1>Approximate multiplication inside a DNN, <em>bit by bit</em></h1>
+      <div class="title-bits" id="title-bits" aria-hidden="true"></div>
+      <p class="lede">Every multiplication in MNIST and Fashion-MNIST networks goes through the RoBA family of approximate multipliers from Rajiv &amp; Kedia (DATE 2026). A multiplierless Ibex RISC-V core runs these routines with one custom LOD instruction. The networks keep their accuracy; the open question is how much energy that saves on the core.</p>
+      <div class="spec" id="spec"></div>
+      <div class="hint"><span class="key">←</span><span class="key">→</span> or the buttons below to move between slides</div>
+    </div>
+  </section>
+
+  <section class="slide" id="idea" aria-label="The idea">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Background</span><h2>Round to a power of two, then shift</h2>
+        <p class="claim">RoBA rounds each operand to a power of two (A<sub>r</sub>, B<sub>r</sub>) and drops the small error term, so a multiply becomes shifts and adds. Finding the leading one is the slow part in software, which is what the LOD instruction fixes.</p></div>
+      <div class="formula">A·B = <span class="drop">(A<sub>r</sub> − A)(B<sub>r</sub> − B)</span> + A<sub>r</sub>·B + A·B<sub>r</sub> − A<sub>r</sub>·B<sub>r</sub><br><span class="dim">two-pass variants approximate the dropped term with a second RoBA pass instead of discarding it</span></div>
+      <div class="two-col">
+        <div class="panel table-scroll"><table class="vt">
+          <thead><tr><th>Variant</th><th>Pass 1</th><th>Pass 2 (error term)</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr><td><span class="chip" style="background:var(--accent)"></span>RoBA-Dn1</td><td>down</td><td>none</td><td>RoBA [10]</td></tr>
+            <tr><td><span class="chip" style="background:var(--accent)"></span>RoBA-UpDn</td><td>nearest</td><td>none</td><td>RoBA [10]</td></tr>
+            <tr><td><span class="chip" style="background:var(--two)"></span>RoBA-Dn2</td><td>down</td><td>down</td><td>new in the paper</td></tr>
+            <tr><td><span class="chip" style="background:var(--two)"></span>RoBA-UpDnDn</td><td>nearest</td><td>down</td><td>new in the paper</td></tr>
+            <tr><td><span class="chip" style="background:var(--two)"></span>RoBA-(UpDn)2</td><td>nearest</td><td>nearest, signed</td><td>new in the paper</td></tr>
+            <tr><td><span class="chip" style="background:var(--base)"></span>Mitchell, DRUM6</td><td colspan="2">log-based / 6 leading bits</td><td>baselines</td></tr>
+          </tbody></table></div>
+        <div style="display:grid;gap:14px;align-content:start">
+          <div class="facts">
+            <div><b>189</b><span>cycles for one 32-bit software multiply on RV32I</span></div>
+            <div><b>+0.35%</b><span>core area to add the LOD instruction</span></div>
+            <div><b>−17.1%</b><span>power vs a single-cycle multiplier core</span></div>
+          </div>
+          <p class="note">Figures from the paper. "Nearest" rounds up when the bit after the leading one is 1. Signed operands multiply magnitudes and restore the sign.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="explorer" aria-label="Bit explorer">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 1</span><h2>Bit explorer</h2>
+        <p class="claim">Pick two operands and compare every multiplier against the exact product.</p></div>
       <div class="controls">
         <span class="ctl"><span class="seg-label">Operand width</span>
           <span class="seg" role="group" aria-label="Operand width"><button type="button" id="w8" aria-pressed="true">8-bit</button><button type="button" id="w16" aria-pressed="false">16-bit</button></span></span>
@@ -261,53 +335,39 @@ footer { padding-block: 32px; color: var(--muted); font-size: var(--step--1); di
         <div class="panel">
           <div class="operand">
             <div class="op-head"><span class="name">a</span><input type="number" id="a-num" aria-label="Operand a" min="1"><input type="range" id="a-rng" aria-label="Operand a slider" min="1"></div>
-            <div class="bits" id="a-bits"></div>
-            <div class="round" id="a-round"></div>
+            <div class="bits" id="a-bits"></div><div class="round" id="a-round"></div>
           </div>
           <div class="operand">
             <div class="op-head"><span class="name">b</span><input type="number" id="b-num" aria-label="Operand b" min="1"><input type="range" id="b-rng" aria-label="Operand b slider" min="1"></div>
-            <div class="bits" id="b-bits"></div>
-            <div class="round" id="b-round"></div>
+            <div class="bits" id="b-bits"></div><div class="round" id="b-round"></div>
           </div>
           <div class="legend" style="margin-top:6px"><span><i style="background:var(--accent);border-radius:2px"></i>leading one (LOD)</span><span><i style="border:2px solid var(--two);background:transparent;border-radius:2px"></i>next bit: decides round up</span></div>
         </div>
-        <div class="panel" style="display:grid;gap:14px;align-content:start">
-          <div class="table-scroll">
-            <table class="mults" id="mults">
-              <thead><tr><th>Multiplier</th><th class="r">Product</th><th class="r">Error</th><th id="errscale">Error bar</th><th class="r">Cycles</th></tr></thead>
-              <tbody></tbody>
-            </table>
-          </div>
+        <div class="panel" style="display:grid;gap:12px;align-content:start">
+          <div class="table-scroll"><table class="mults" id="mults">
+            <thead><tr><th>Multiplier</th><th class="r">Product</th><th class="r">Error</th><th id="errscale">Error bar</th><th class="r">Cycles</th></tr></thead>
+            <tbody></tbody></table></div>
           <div class="shift-form" id="shift-form"></div>
-          <p class="note">Cycles per multiply are estimates read off the paper's Fig. 4 (unsigned, MULT kernel) at the chosen operand width.</p>
+          <p class="note">Cycles per multiply are read off the paper's Fig. 4 (unsigned, MULT kernel) at the chosen width.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- findings -->
-  <section class="fig" id="findings-sec">
-    <div class="fig-label"><span class="fig-no">Summary</span><h2>What the runs show</h2></div>
-    <div class="fig-body"><div class="findings" id="findings"></div></div>
-  </section>
-
-  <!-- Fig 2: error landscape -->
-  <section class="fig" id="landscape">
-    <div class="fig-label"><span class="fig-no">Fig. 2</span><h2>Error landscape</h2></div>
-    <div class="fig-body">
-      <p class="claim">Each pixel is one pair of 8-bit operands. The error repeats at every power of two, and a second RoBA pass flattens it almost to zero.</p>
+  <section class="slide" id="landscape" aria-label="Error landscape">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 2</span><h2>Error landscape</h2>
+        <p class="claim">Each pixel is one pair of 8-bit operands. The error repeats at every power of two, and a second RoBA pass flattens it almost to zero.</p></div>
       <div class="tabs" id="heat-tabs" role="group" aria-label="Multiplier"></div>
       <div class="land">
         <div class="heat">
           <div class="axname" style="grid-column:1/3">b ↑</div>
           <div class="yax" id="yax"></div>
           <canvas id="heat" width="255" height="255" aria-label="Relative error for every pair of 8-bit operands"></canvas>
-          <div></div>
-          <div class="xax" id="xax"></div>
-          <div></div>
-          <div class="axname" style="text-align:right">a →</div>
+          <div></div><div class="xax" id="xax"></div>
+          <div></div><div class="axname" style="text-align:right">a →</div>
         </div>
-        <div style="display:grid;gap:20px">
+        <div style="display:grid;gap:18px;align-content:start">
           <div class="scale">
             <div class="controls"><span class="seg-label">Color scale</span>
               <span class="seg" role="group" aria-label="Color scale"><button type="button" id="sc-shared" aria-pressed="true">Shared ±25%</button><button type="button" id="sc-fit" aria-pressed="false">Fit to multiplier</button></span></div>
@@ -316,86 +376,96 @@ footer { padding-block: 32px; color: var(--muted); font-size: var(--step--1); di
             <div class="ticks"><span>underestimate</span><span>exact</span><span>overestimate</span></div>
           </div>
           <div class="stats" id="heat-stats"></div>
-          <p class="note">Hover for values. Click a pixel to load that pair into the bit explorer. Statistics are over 1 million random 8-bit pairs.</p>
+          <p class="note">"Fit to multiplier" stretches the colors to this multiplier's largest error, so small-error variants show their pattern; compare sizes with the shared scale. Hover for values; click a pixel to open that pair in Fig. 1.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Fig 3: pareto -->
-  <section class="fig" id="pareto-sec">
-    <div class="fig-label"><span class="fig-no">Fig. 3</span><h2>Error against cost</h2></div>
-    <div class="fig-body">
-      <p class="claim" id="pareto-claim"></p>
+  <section class="slide" id="cost" aria-label="Error against cost">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 3</span><h2>Error against cost</h2><p class="claim" id="pareto-claim"></p></div>
       <div class="controls"><span class="seg-label">Operand width</span>
-        <span class="seg" role="group" aria-label="Operand width for Fig. 3"><button type="button" id="p8" aria-pressed="true">8-bit</button><button type="button" id="p16" aria-pressed="false">16-bit</button></span></div>
-      <div class="legend"><span><i style="background:var(--accent)"></i>RoBA, one pass</span><span><i style="background:var(--two)"></i>RoBA, two passes (new in the paper)</span><span><i style="background:var(--base)"></i>Baselines</span></div>
+        <span class="seg" role="group" aria-label="Operand width for Fig. 3"><button type="button" id="p8" aria-pressed="true">8-bit</button><button type="button" id="p16" aria-pressed="false">16-bit</button></span>
+        <span class="legend"><span><i style="background:var(--accent)"></i>RoBA, one pass</span><span><i style="background:var(--two)"></i>RoBA, two passes</span><span><i style="background:var(--base)"></i>Baselines</span></span></div>
       <div class="panel"><div class="chart" id="pareto"></div></div>
       <p class="note">Mean absolute relative error over 1 million random pairs, log scale. The dashed line links the multipliers no other multiplier beats on both axes.</p>
     </div>
   </section>
 
-  <!-- Fig 4: floats vs scaling -->
-  <section class="fig" id="scaling">
-    <div class="fig-label"><span class="fig-no">Fig. 4</span><h2>Floats need scaling, not a new multiplier</h2></div>
-    <div class="fig-body">
-      <p class="claim">RoBA applied directly to floats keeps full accuracy. Casting floats to integers without scaling turns most values into 0 and drops both networks to chance.</p>
+  <section class="slide" id="scaling" aria-label="Floats and scaling">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 4 · <span class="ds-name"></span></span><h2>Floats need scaling, not a new multiplier</h2>
+        <p class="claim">RoBA applied directly to floats keeps full accuracy. Casting floats to integers without scaling turns most values into 0 and drops both networks to chance.</p></div>
       <div class="legend"><span><i style="background:var(--accent)"></i>MLP</span><span><i style="background:var(--model-b)"></i>LeNet-5</span></div>
       <div class="panel"><div class="chart" id="domains"></div></div>
     </div>
   </section>
 
-  <!-- Fig 5: accuracy -->
-  <section class="fig" id="accuracy">
-    <div class="fig-label"><span class="fig-no">Fig. 5</span><h2>Accuracy per multiplier</h2></div>
-    <div class="fig-body">
-      <p class="claim">Every multiplier lands inside the noise band around exact multiplication, before and after fine-tuning with the approximation in the loop.</p>
+  <section class="slide" id="accuracy" aria-label="Accuracy per multiplier">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 5 · <span class="ds-name"></span></span><h2>Accuracy per multiplier</h2><p class="claim" id="acc-claim"></p></div>
       <div class="controls">
         <span class="ctl"><span class="seg-label">Model</span><span class="seg" role="group" aria-label="Model"><button type="button" id="m-mlp" aria-pressed="false">MLP</button><button type="button" id="m-lenet5" aria-pressed="true">LeNet-5</button></span></span>
         <span class="ctl"><span class="seg-label">Precision</span><span class="seg" role="group" aria-label="Precision"><button type="button" id="b8" aria-pressed="true">int8</button><button type="button" id="b16" aria-pressed="false">int16</button></span></span>
+        <span class="legend"><span><i class="ring"></i>after training</span><span><i style="background:var(--ink-2)"></i>after approximation-aware fine-tuning</span><span><i style="background:var(--band);border-radius:2px;border:1px solid var(--rule-strong)"></i>±0.1 pts around exact</span></span>
       </div>
-      <div class="legend"><span><i class="ring"></i>after training</span><span><i style="background:var(--ink-2)"></i>after 3 epochs of approximation-aware fine-tuning</span><span><i style="background:var(--band);border-radius:2px;border:1px solid var(--rule-strong)"></i>±0.1 points around exact (10 test images)</span></div>
       <div class="panel"><div class="chart" id="acc"></div></div>
       <details><summary>Show as table</summary><div class="table-scroll" id="acc-table"></div></details>
     </div>
   </section>
 
-  <!-- Fig 6: energy -->
-  <section class="fig" id="energy">
-    <div class="fig-label"><span class="fig-no">Fig. 6</span><h2>Estimated energy</h2></div>
-    <div class="fig-body">
-      <p class="claim" id="energy-claim"></p>
-      <div class="legend"><span><i style="background:var(--base);opacity:.5"></i>int8 operands</span><span><i style="background:var(--base)"></i>int16 operands</span></div>
-      <div class="panel"><div class="chart" id="dumbbell"></div></div>
-      <p class="note">Energy of the multiplications per inference relative to exact shift-and-add at the same width: cycles per multiply (paper Fig. 4) × relative core power (0.793 without a multiplier, 0.829 with LOD). An estimate until measured on Ibex.</p>
+  <section class="slide" id="datasets" aria-label="MNIST against Fashion-MNIST">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 6</span><h2>A harder dataset</h2><p class="claim" id="cmp-claim"></p></div>
+      <div class="controls">
+        <span class="ctl"><span class="seg-label">Model</span><span class="seg" role="group" aria-label="Model for Fig. 6"><button type="button" id="c-mlp" aria-pressed="false">MLP</button><button type="button" id="c-lenet5" aria-pressed="true">LeNet-5</button></span></span>
+        <span class="ctl"><span class="seg-label">Stage</span><span class="seg" role="group" aria-label="Stage"><button type="button" id="c-before" aria-pressed="true">After training</button><button type="button" id="c-after" aria-pressed="false">After fine-tuning</button></span></span>
+        <span class="legend"><span><i style="background:var(--base)"></i>MNIST</span><span><i style="background:var(--accent)"></i>Fashion-MNIST</span></span>
+      </div>
+      <div class="panel"><div class="chart" id="cmp"></div></div>
+      <p class="note">Accuracy change of each approximate multiplier against exact multiplication at int8, in percentage points, same model and stage. The band is ±0.1 points (10 test images).</p>
     </div>
   </section>
 
-  <!-- Fig 7: accumulator -->
-  <section class="fig" id="register">
-    <div class="fig-label"><span class="fig-no">Fig. 7</span><h2>Accumulator width</h2></div>
-    <div class="fig-body">
-      <p class="claim">int8 dot products fit a 32-bit Ibex register with room to spare. int16 sums need up to 38 bits and would overflow without 64-bit accumulation.</p>
+  <section class="slide" id="energy" aria-label="Estimated energy">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 7</span><h2>Estimated energy</h2><p class="claim" id="energy-claim"></p></div>
+      <div class="legend"><span><i style="background:var(--base);opacity:.5"></i>int8 operands</span><span><i style="background:var(--base)"></i>int16 operands</span></div>
+      <div class="panel"><div class="chart" id="dumbbell"></div></div>
+      <p class="note">Multiplication energy per inference relative to exact shift-and-add at the same width: cycles per multiply (paper Fig. 4) × relative core power (0.793 without a multiplier, 0.829 with LOD). An estimate until measured on Ibex.</p>
+    </div>
+  </section>
+
+  <section class="slide" id="register" aria-label="Accumulator width">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 8 · <span class="ds-name"></span></span><h2>Accumulator width</h2><p class="claim" id="reg-claim"></p></div>
       <div class="panel"><div class="chart" id="regs"></div></div>
       <p class="note">Bits needed for the largest dot-product sum seen on the test set, sign bit included, exact multiplier.</p>
     </div>
   </section>
 
-  <!-- method -->
-  <section class="fig" id="method">
-    <div class="fig-label"><span class="fig-no">Method</span><h2>How it was run</h2></div>
-    <div class="fig-body">
-      <p class="claim">One library in three implementations that agree bit for bit (PyTorch, Python, C), checked by 27 tests, and one driver script for the whole study.</p>
-      <ol class="steps">
-        <li><span><b>Characterize the multipliers</b> on 1 million random pairs at 8 and 16 bits.</span></li>
-        <li><span><b>Train float baselines</b>: 15 epochs, Adam 1e-3 with cosine decay, batch 128, seed 0.</span></li>
-        <li><span><b>Evaluate</b> in four domains (float, truncated int, int8, int16) × 8 multipliers on the 10,000 test images.</span></li>
-        <li><span><b>Fine-tune</b> 3 epochs with the approximate forward pass and a straight-through gradient, Adam 1e-4.</span></li>
-        <li><span><b>Estimate energy</b> from multiplications per inference (MLP 234,752; LeNet-5 416,520) and the paper's cycle and power figures.</span></li>
-      </ol>
-      <div class="formula">RoBA(a, b) = A<sub>r</sub>·b + (a − A<sub>r</sub>)·B<sub>r</sub> <span class="dim">→ every variant is a sum of per-operand products, so an approximate matmul is 1–4 exact matmuls.</span></div>
+  <section class="slide" id="findings" aria-label="Summary">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Summary · <span class="ds-name"></span></span><h2>What the runs show</h2></div>
+      <div class="findings" id="findings-grid"></div>
+    </div>
+  </section>
+
+  <section class="slide" id="method" aria-label="Method">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Method</span><h2>How it was run</h2>
+        <p class="claim">One library in three implementations that agree bit for bit (PyTorch, Python, C), checked by 27 tests, and one driver script per dataset.</p></div>
       <div class="two-col">
-        <pre class="code"><span class="c"># roba/multipliers.py</span>
+        <div style="display:grid;gap:14px;align-content:start">
+          <ol class="steps" id="steps"></ol>
+          <table class="files">
+            <tr><td>roba/</td><td>multipliers, approximate matmul and conv, quantized layers, data loaders, cost model</td></tr>
+            <tr><td>csrc/</td><td>C library for Ibex; LOD as a custom instruction or <code>__builtin_clz</code></td></tr>
+            <tr><td>experiments/</td><td><code>run.py --dataset mnist|fashion</code>, <code>build_site.py</code> for this deck</td></tr>
+          </table>
+        </div>
+        <pre class="code"><span class="c"># roba/multipliers.py: every variant as per-operand factors</span>
 ROBA_ITERATIONS = {
     "roba_dn1":    [round_dn],
     "roba_updn":   [round_updn],
@@ -411,52 +481,48 @@ def factors(x, mult, side, integer=True):
         <span class="c"># Ar*b + (a - Ar)*Br</span>
         out += [rr, r - rr] if side == "a" else [r, rr]
         r = r - rr
-    return out</pre>
-        <pre class="code"><span class="c">/* csrc/roba.c: RoBA-Dn1 for Ibex */</span>
-uint32_t roba_dn1_u(uint32_t a, uint32_t b)
-{
-    if (a == 0 || b == 0)
-        return 0;
-    return roba1(a, b, LOD(a), LOD(b));
-}
+    return out
 
-static inline uint32_t roba1(uint32_t a, uint32_t b,
-                             uint32_t pa, uint32_t pb)
-{
-    return (b &lt;&lt; pa) + (a &lt;&lt; pb)
-         - ((1u &lt;&lt; pa) &lt;&lt; pb);
-}</pre>
+<span class="c"># so an approximate matmul is 1-4 exact matmuls</span>
+sum(a @ b.T for a, b in zip(fx, fw))</pre>
       </div>
-      <table class="files">
-        <tr><td>roba/</td><td>multipliers, approximate matmul and conv, quantized layers, MNIST loader, cost model</td></tr>
-        <tr><td>csrc/</td><td>C library for Ibex; LOD as a custom instruction or <code>__builtin_clz</code></td></tr>
-        <tr><td>tests/</td><td>PyTorch = Python reference = C on 12,289 pairs; matmul and conv = element by element</td></tr>
-        <tr><td>experiments/run.py</td><td><code>python3 experiments/run.py --stage all</code>, about 7 minutes on one L40</td></tr>
-        <tr><td>experiments/build_site.py</td><td>rebuilds this page from <code>results/*.csv</code></td></tr>
-      </table>
     </div>
   </section>
 
-  <section class="fig" id="limits">
-    <div class="fig-label"><span class="fig-no">Limits</span><h2>Read with care</h2></div>
-    <div class="fig-body">
-      <ul class="caveats">
-        <li>One seed. Accuracy differences under about 0.1 points are noise.</li>
-        <li>MNIST is too easy to separate the multipliers; Fashion-MNIST or CIFAR-10 is the next test.</li>
-        <li>Energy covers multiplications only and uses cycle counts read off the paper's figures, for unsigned operands.</li>
-        <li>Our Mitchell is the classic algorithm. The paper's Mitchell gives the same products as RoBA-Dn1.</li>
-      </ul>
+  <section class="slide" id="limits" aria-label="Limits and next steps">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Limits · next</span><h2>Read with care, then measure</h2></div>
+      <div class="two-col">
+        <div class="panel" style="display:grid;gap:10px;align-content:start"><b style="font-family:var(--font-display);font-size:var(--step-1)">Limits</b>
+          <ul class="caveats">
+            <li>One seed per dataset. Accuracy differences under about 0.1 points are noise.</li>
+            <li>Energy covers multiplications only and uses cycle counts read off the paper's figures, for unsigned operands.</li>
+            <li>Our Mitchell is the classic algorithm. The paper's Mitchell gives the same products as RoBA-Dn1.</li>
+            <li>int16 sums exceed 32 bits, so int16 on Ibex needs 64-bit accumulation that the estimate leaves out.</li>
+          </ul></div>
+        <div class="panel" style="display:grid;gap:10px;align-content:start"><b style="font-family:var(--font-display);font-size:var(--step-1)">Next</b>
+          <ol class="next">
+            <li>3–5 seeds per dataset, mean ± standard deviation.</li>
+            <li>CIFAR-10 with a small CNN.</li>
+            <li>Per-layer choice of multiplier: cheap where tolerant, accurate where sensitive.</li>
+            <li>Ibex in Verilator with the LOD instruction: measured cycles replace the estimates.</li>
+          </ol></div>
+      </div>
+      <p class="note">Source paper: S. P. Rajiv and R. Kedia, “Software-Based Approximate Multiplication on Multiplierless CPUs Using Custom Instruction,” DATE 2026.</p>
     </div>
   </section>
+</main>
 
-  <footer>
-    <span>Source paper: S. P. Rajiv and R. Kedia, “Software-Based Approximate Multiplication on Multiplierless CPUs Using Custom Instruction,” DATE 2026.</span>
-    <span id="foot-meta"></span>
-  </footer>
-</div>
+<nav class="nav" aria-label="Slides">
+  <div class="progress" id="progress"></div>
+  <button type="button" class="navbtn" id="prev">← Previous</button>
+  <div class="dots" id="dots"></div>
+  <span class="counter" id="counter"></span>
+  <button type="button" class="navbtn primary" id="next">Next →</button>
+</nav>
 <div id="tip" hidden></div>
 
-<script id="data" type="application/json">{"errors":[{"bits":8,"multiplier":"mitchell","mean":3.7867005991838476,"max":11.11111111111111,"bias":-3.7867005991838476,"frac_exact":0.061657},{"bits":8,"multiplier":"drum6","mean":1.3010934130026348,"max":6.34765625,"bias":0.5714860441774053,"frac_exact":0.139511},{"bits":8,"multiplier":"roba_dn1","mean":8.918900343251988,"max":24.80430603613995,"bias":-8.918900343251988,"frac_exact":0.061657},{"bits":8,"multiplier":"roba_updn","mean":2.8628175442803308,"max":11.11111111111111,"bias":-0.008133266010149848,"frac_exact":0.061657},{"bits":8,"multiplier":"roba_dn2","mean":0.8342067978753179,"max":6.103806228373703,"bias":-0.8342067978753179,"frac_exact":0.262434},{"bits":8,"multiplier":"roba_updndn","mean":0.23640633944262934,"max":2.6342479646939503,"bias":-0.001867059641855606,"frac_exact":0.397395},{"bits":8,"multiplier":"roba_updn2","mean":0.0734181248179979,"max":0.8264462809917356,"bias":-0.00018409309138942324,"frac_exact":0.397395},{"bits":16,"multiplier":"mitchell","mean":3.846035540961042,"max":11.110772025616214,"bias":-3.846035540961042,"frac_exact":0.000948},{"bits":16,"multiplier":"drum6","mean":1.4657496029067754,"max":6.256860592755214,"bias":0.05256010971612838,"frac_exact":3.5e-05},{"bits":16,"multiplier":"roba_dn1","mean":9.405884033579301,"max":24.9755788579934,"bias":-9.405884033579301,"frac_exact":0.000948},{"bits":16,"multiplier":"roba_updn","mean":2.8837837967561617,"max":11.102068718868328,"bias":-0.036121291077030035,"frac_exact":0.000948},{"bits":16,"multiplier":"roba_dn2","mean":0.9876137378551626,"max":6.231692533589801,"bias":-0.9876137378551626,"frac_exact":0.007357},{"bits":16,"multiplier":"roba_updndn","mean":0.31706051652662653,"max":2.7721279389845237,"bias":-0.0029784054872210417,"frac_exact":0.012863},{"bits":16,"multiplier":"roba_updn2","mean":0.08011545446795314,"max":0.8237331946458873,"bias":-5.8474857499903315e-05,"frac_exact":0.012863}],"eval":[{"model":"mlp","domain":"float32","multiplier":"native","acc":0.9842000007629395,"loss":0.06410981464385987,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"exact","acc":0.9842000007629395,"loss":0.06410981779098511,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"mitchell","acc":0.9843999743461609,"loss":0.05892280354499817,"agree":0.9994999766349792,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"drum6","acc":0.9843999743461609,"loss":0.0644897787809372,"agree":0.9996999502182007,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_dn1","acc":0.9842000007629395,"loss":0.056110768032073974,"agree":0.9983999729156494,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_updn","acc":0.9839999675750732,"loss":0.06414822587966919,"agree":0.9994999766349792,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_dn2","acc":0.9842000007629395,"loss":0.0631010169506073,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_updndn","acc":0.9842000007629395,"loss":0.06412572360038757,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_updn2","acc":0.9842000007629395,"loss":0.06409554405212402,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"exact","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"mitchell","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"drum6","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_dn1","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_updn","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_dn2","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_updndn","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_updn2","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"8","multiplier":"exact","acc":0.9842999577522278,"loss":0.06391788158416747,"agree":1.0,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"mitchell","acc":0.9845999479293823,"loss":0.059774647760391236,"agree":0.9990999698638916,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"drum6","acc":0.9842999577522278,"loss":0.06441374216079712,"agree":0.9994999766349792,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"roba_dn1","acc":0.9842000007629395,"loss":0.05689280652999878,"agree":0.9977999925613403,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"roba_updn","acc":0.9843999743461609,"loss":0.0636808331489563,"agree":0.9985999464988708,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"roba_dn2","acc":0.9843999743461609,"loss":0.06261117248535156,"agree":0.9994999766349792,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"roba_updndn","acc":0.9842999577522278,"loss":0.06400222997665406,"agree":0.9994999766349792,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"roba_updn2","acc":0.9843999743461609,"loss":0.06404568634033203,"agree":0.9998999834060669,"acc_bits":"21"},{"model":"mlp","domain":"16","multiplier":"exact","acc":0.9842000007629395,"loss":0.06411111078262328,"agree":1.0,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"mitchell","acc":0.9839999675750732,"loss":0.06036423983573914,"agree":0.9994999766349792,"acc_bits":"37"},{"model":"mlp","domain":"16","multiplier":"drum6","acc":0.9842000007629395,"loss":0.06399040369987488,"agree":0.9991999864578247,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"roba_dn1","acc":0.9839999675750732,"loss":0.05623381772041321,"agree":0.9975000023841858,"acc_bits":"37"},{"model":"mlp","domain":"16","multiplier":"roba_updn","acc":0.9840999841690063,"loss":0.06392197041511535,"agree":0.9989999532699585,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"roba_dn2","acc":0.9842000007629395,"loss":0.06276043281555176,"agree":0.9997999668121338,"acc_bits":"37"},{"model":"mlp","domain":"16","multiplier":"roba_updndn","acc":0.9842000007629395,"loss":0.06409111433029174,"agree":0.9998999834060669,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"roba_updn2","acc":0.9842000007629395,"loss":0.06410118498802185,"agree":1.0,"acc_bits":"38"},{"model":"lenet5","domain":"float32","multiplier":"native","acc":0.9919999837875366,"loss":0.025050790762901304,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"exact","acc":0.9919999837875366,"loss":0.025050788617134095,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"mitchell","acc":0.9921000003814697,"loss":0.024188648164272308,"agree":0.9990999698638916,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"drum6","acc":0.9922999739646912,"loss":0.02518117468357086,"agree":0.9993000030517578,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_dn1","acc":0.9924999475479126,"loss":0.02491002595424652,"agree":0.9977999925613403,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_updn","acc":0.9917999505996704,"loss":0.025277113914489745,"agree":0.9980999827384949,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_dn2","acc":0.9918999671936035,"loss":0.024783996725082396,"agree":0.9996999502182007,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_updndn","acc":0.9918999671936035,"loss":0.025011345136165618,"agree":0.9996999502182007,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_updn2","acc":0.9919999837875366,"loss":0.02504702932834625,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"exact","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"mitchell","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"drum6","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_dn1","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_updn","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_dn2","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_updndn","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_updn2","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"8","multiplier":"exact","acc":0.9917999505996704,"loss":0.02504083173274994,"agree":1.0,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"mitchell","acc":0.9911999702453613,"loss":0.0245531010389328,"agree":0.9988999962806702,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"drum6","acc":0.9916999936103821,"loss":0.025128003633022308,"agree":0.9987999796867371,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"roba_dn1","acc":0.9918999671936035,"loss":0.02630603952407837,"agree":0.996999979019165,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"roba_updn","acc":0.9919999837875366,"loss":0.025229294538497926,"agree":0.9989999532699585,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"roba_dn2","acc":0.9919999837875366,"loss":0.02483669135570526,"agree":0.9990999698638916,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"roba_updndn","acc":0.9918999671936035,"loss":0.025103894877433777,"agree":0.9993999600410461,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"roba_updn2","acc":0.9921000003814697,"loss":0.024991314530372618,"agree":0.9994999766349792,"acc_bits":"19"},{"model":"lenet5","domain":"16","multiplier":"exact","acc":0.9919999837875366,"loss":0.025050675535202026,"agree":1.0,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"mitchell","acc":0.9912999868392944,"loss":0.024156280517578125,"agree":0.998699963092804,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"drum6","acc":0.991599977016449,"loss":0.02519090906381607,"agree":0.9991999864578247,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"roba_dn1","acc":0.9917999505996704,"loss":0.026617318058013918,"agree":0.9971999526023865,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"roba_updn","acc":0.9919999837875366,"loss":0.02528577924966812,"agree":0.9993000030517578,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"roba_dn2","acc":0.9917999505996704,"loss":0.024670363974571227,"agree":0.9993999600410461,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"roba_updndn","acc":0.9919999837875366,"loss":0.02505883582830429,"agree":1.0,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"roba_updn2","acc":0.9921000003814697,"loss":0.025055967020988463,"agree":0.9998999834060669,"acc_bits":"35"}],"finetune":[{"model":"mlp","bits":8,"multiplier":"exact","acc_before":0.9842999577522278,"acc_after":0.9842999577522278,"loss_before":0.06391788158416747,"loss_after":0.06673614692687989},{"model":"mlp","bits":8,"multiplier":"mitchell","acc_before":0.9845999479293823,"acc_after":0.9845999479293823,"loss_before":0.059774647760391236,"loss_after":0.06350887145996094},{"model":"mlp","bits":8,"multiplier":"drum6","acc_before":0.9842999577522278,"acc_after":0.9843999743461609,"loss_before":0.06441374216079712,"loss_after":0.06678609104156494},{"model":"mlp","bits":8,"multiplier":"roba_dn1","acc_before":0.9842000007629395,"acc_after":0.9843999743461609,"loss_before":0.05689280652999878,"loss_after":0.05811059713363648},{"model":"mlp","bits":8,"multiplier":"roba_updn","acc_before":0.9843999743461609,"acc_after":0.9842000007629395,"loss_before":0.0636808331489563,"loss_after":0.06680940084457397},{"model":"mlp","bits":8,"multiplier":"roba_dn2","acc_before":0.9843999743461609,"acc_after":0.9850999712944031,"loss_before":0.06261117248535156,"loss_after":0.06534590690135955},{"model":"mlp","bits":8,"multiplier":"roba_updndn","acc_before":0.9842999577522278,"acc_after":0.9843999743461609,"loss_before":0.06400222997665406,"loss_after":0.06701320679187775},{"model":"mlp","bits":8,"multiplier":"roba_updn2","acc_before":0.9843999743461609,"acc_after":0.9846999645233154,"loss_before":0.06404568634033203,"loss_after":0.06667104907035827},{"model":"mlp","bits":16,"multiplier":"exact","acc_before":0.9842000007629395,"acc_after":0.984499990940094,"loss_before":0.06411111078262328,"loss_after":0.06668835082054138},{"model":"mlp","bits":16,"multiplier":"mitchell","acc_before":0.9839999675750732,"acc_after":0.9845999479293823,"loss_before":0.06036423983573914,"loss_after":0.06348822340965271},{"model":"mlp","bits":16,"multiplier":"drum6","acc_before":0.9842000007629395,"acc_after":0.984499990940094,"loss_before":0.06399040369987488,"loss_after":0.066651598072052},{"model":"mlp","bits":16,"multiplier":"roba_dn1","acc_before":0.9839999675750732,"acc_after":0.984499990940094,"loss_before":0.05623381772041321,"loss_after":0.05762439866065979},{"model":"mlp","bits":16,"multiplier":"roba_updn","acc_before":0.9840999841690063,"acc_after":0.9840999841690063,"loss_before":0.06392197041511535,"loss_after":0.06665483660697936},{"model":"mlp","bits":16,"multiplier":"roba_dn2","acc_before":0.9842000007629395,"acc_after":0.9846999645233154,"loss_before":0.06276043281555176,"loss_after":0.06529379920959473},{"model":"mlp","bits":16,"multiplier":"roba_updndn","acc_before":0.9842000007629395,"acc_after":0.984499990940094,"loss_before":0.06409111433029174,"loss_after":0.0666285052061081},{"model":"mlp","bits":16,"multiplier":"roba_updn2","acc_before":0.9842000007629395,"acc_after":0.984499990940094,"loss_before":0.06410118498802185,"loss_after":0.06668844809532165},{"model":"lenet5","bits":8,"multiplier":"exact","acc_before":0.9917999505996704,"acc_after":0.9921000003814697,"loss_before":0.02504083173274994,"loss_after":0.025738647055625917},{"model":"lenet5","bits":8,"multiplier":"mitchell","acc_before":0.9911999702453613,"acc_after":0.9919999837875366,"loss_before":0.0245531010389328,"loss_after":0.024796002519130708},{"model":"lenet5","bits":8,"multiplier":"drum6","acc_before":0.9916999936103821,"acc_after":0.9919999837875366,"loss_before":0.025128003633022308,"loss_after":0.025611189985275267},{"model":"lenet5","bits":8,"multiplier":"roba_dn1","acc_before":0.9918999671936035,"acc_after":0.9917999505996704,"loss_before":0.02630603952407837,"loss_after":0.023823604726791382},{"model":"lenet5","bits":8,"multiplier":"roba_updn","acc_before":0.9919999837875366,"acc_after":0.9921999573707581,"loss_before":0.025229294538497926,"loss_after":0.025406791746616364},{"model":"lenet5","bits":8,"multiplier":"roba_dn2","acc_before":0.9919999837875366,"acc_after":0.9921000003814697,"loss_before":0.02483669135570526,"loss_after":0.025204775035381318},{"model":"lenet5","bits":8,"multiplier":"roba_updndn","acc_before":0.9918999671936035,"acc_after":0.9917999505996704,"loss_before":0.025103894877433777,"loss_after":0.025289533400535583},{"model":"lenet5","bits":8,"multiplier":"roba_updn2","acc_before":0.9921000003814697,"acc_after":0.9918999671936035,"loss_before":0.024991314530372618,"loss_after":0.02571599223613739},{"model":"lenet5","bits":16,"multiplier":"exact","acc_before":0.9919999837875366,"acc_after":0.9921000003814697,"loss_before":0.025050675535202026,"loss_after":0.025621283853054046},{"model":"lenet5","bits":16,"multiplier":"mitchell","acc_before":0.9912999868392944,"acc_after":0.9921000003814697,"loss_before":0.024156280517578125,"loss_after":0.02465270049571991},{"model":"lenet5","bits":16,"multiplier":"drum6","acc_before":0.991599977016449,"acc_after":0.9919999837875366,"loss_before":0.02519090906381607,"loss_after":0.02560912845134735},{"model":"lenet5","bits":16,"multiplier":"roba_dn1","acc_before":0.9917999505996704,"acc_after":0.9914000034332275,"loss_before":0.026617318058013918,"loss_after":0.02375038721561432},{"model":"lenet5","bits":16,"multiplier":"roba_updn","acc_before":0.9919999837875366,"acc_after":0.9918999671936035,"loss_before":0.02528577924966812,"loss_after":0.02541493798494339},{"model":"lenet5","bits":16,"multiplier":"roba_dn2","acc_before":0.9917999505996704,"acc_after":0.9919999837875366,"loss_before":0.024670363974571227,"loss_after":0.02508132518529892},{"model":"lenet5","bits":16,"multiplier":"roba_updndn","acc_before":0.9919999837875366,"acc_after":0.9921000003814697,"loss_before":0.02505883582830429,"loss_after":0.025609538161754607},{"model":"lenet5","bits":16,"multiplier":"roba_updn2","acc_before":0.9921000003814697,"acc_after":0.9921999573707581,"loss_before":0.025055967020988463,"loss_after":0.025617184138298034}],"cycles":{"8":{"exact":44,"mitchell":23,"drum6":50,"roba_dn1":19,"roba_updn":26,"roba_dn2":27,"roba_updn2":43,"roba_updndn":39},"16":{"exact":77,"mitchell":25,"drum6":65,"roba_dn1":20,"roba_updn":29,"roba_dn2":32,"roba_updn2":53,"roba_updndn":46}},"power":{"none":0.7933,"lod":0.829},"macs":{"mlp":234752,"lenet5":416520},"paper_max":{"roba_dn2":6.24,"roba_updndn":2.74,"roba_updn2":0.83},"meta":{"gpu":"NVIDIA L40","seed":0,"epochs":15,"ft_epochs":3,"ft_lr":0.0001,"date":"2026-10-24"}}</script>
+<script id="data" type="application/json">{"errors":[{"bits":8,"multiplier":"mitchell","mean":3.7867005991838476,"max":11.11111111111111,"bias":-3.7867005991838476,"frac_exact":0.061657},{"bits":8,"multiplier":"drum6","mean":1.3010934130026348,"max":6.34765625,"bias":0.5714860441774053,"frac_exact":0.139511},{"bits":8,"multiplier":"roba_dn1","mean":8.918900343251988,"max":24.80430603613995,"bias":-8.918900343251988,"frac_exact":0.061657},{"bits":8,"multiplier":"roba_updn","mean":2.8628175442803308,"max":11.11111111111111,"bias":-0.008133266010149848,"frac_exact":0.061657},{"bits":8,"multiplier":"roba_dn2","mean":0.8342067978753179,"max":6.103806228373703,"bias":-0.8342067978753179,"frac_exact":0.262434},{"bits":8,"multiplier":"roba_updndn","mean":0.23640633944262934,"max":2.6342479646939503,"bias":-0.001867059641855606,"frac_exact":0.397395},{"bits":8,"multiplier":"roba_updn2","mean":0.0734181248179979,"max":0.8264462809917356,"bias":-0.00018409309138942324,"frac_exact":0.397395},{"bits":16,"multiplier":"mitchell","mean":3.846035540961042,"max":11.110772025616214,"bias":-3.846035540961042,"frac_exact":0.000948},{"bits":16,"multiplier":"drum6","mean":1.4657496029067754,"max":6.256860592755214,"bias":0.05256010971612838,"frac_exact":3.5e-05},{"bits":16,"multiplier":"roba_dn1","mean":9.405884033579301,"max":24.9755788579934,"bias":-9.405884033579301,"frac_exact":0.000948},{"bits":16,"multiplier":"roba_updn","mean":2.8837837967561617,"max":11.102068718868328,"bias":-0.036121291077030035,"frac_exact":0.000948},{"bits":16,"multiplier":"roba_dn2","mean":0.9876137378551626,"max":6.231692533589801,"bias":-0.9876137378551626,"frac_exact":0.007357},{"bits":16,"multiplier":"roba_updndn","mean":0.31706051652662653,"max":2.7721279389845237,"bias":-0.0029784054872210417,"frac_exact":0.012863},{"bits":16,"multiplier":"roba_updn2","mean":0.08011545446795314,"max":0.8237331946458873,"bias":-5.8474857499903315e-05,"frac_exact":0.012863}],"datasets":{"mnist":{"eval":[{"model":"mlp","domain":"float32","multiplier":"native","acc":0.9842000007629395,"loss":0.06410981464385987,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"exact","acc":0.9842000007629395,"loss":0.06410981779098511,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"mitchell","acc":0.9843999743461609,"loss":0.05892280354499817,"agree":0.9994999766349792,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"drum6","acc":0.9843999743461609,"loss":0.0644897787809372,"agree":0.9996999502182007,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_dn1","acc":0.9842000007629395,"loss":0.056110768032073974,"agree":0.9983999729156494,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_updn","acc":0.9839999675750732,"loss":0.06414822587966919,"agree":0.9994999766349792,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_dn2","acc":0.9842000007629395,"loss":0.0631010169506073,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_updndn","acc":0.9842000007629395,"loss":0.06412572360038757,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_updn2","acc":0.9842000007629395,"loss":0.06409554405212402,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"exact","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"mitchell","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"drum6","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_dn1","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_updn","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_dn2","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_updndn","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_updn2","acc":0.0973999947309494,"loss":2.304548583984375,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"8","multiplier":"exact","acc":0.9842999577522278,"loss":0.06391788158416747,"agree":1.0,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"mitchell","acc":0.9845999479293823,"loss":0.059774647760391236,"agree":0.9990999698638916,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"drum6","acc":0.9842999577522278,"loss":0.06441374216079712,"agree":0.9994999766349792,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"roba_dn1","acc":0.9842000007629395,"loss":0.05689280652999878,"agree":0.9977999925613403,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"roba_updn","acc":0.9843999743461609,"loss":0.0636808331489563,"agree":0.9985999464988708,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"roba_dn2","acc":0.9843999743461609,"loss":0.06261117248535156,"agree":0.9994999766349792,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"roba_updndn","acc":0.9842999577522278,"loss":0.06400222997665406,"agree":0.9994999766349792,"acc_bits":"21"},{"model":"mlp","domain":"8","multiplier":"roba_updn2","acc":0.9843999743461609,"loss":0.06404568634033203,"agree":0.9998999834060669,"acc_bits":"21"},{"model":"mlp","domain":"16","multiplier":"exact","acc":0.9842000007629395,"loss":0.06411111078262328,"agree":1.0,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"mitchell","acc":0.9839999675750732,"loss":0.06036423983573914,"agree":0.9994999766349792,"acc_bits":"37"},{"model":"mlp","domain":"16","multiplier":"drum6","acc":0.9842000007629395,"loss":0.06399040369987488,"agree":0.9991999864578247,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"roba_dn1","acc":0.9839999675750732,"loss":0.05623381772041321,"agree":0.9975000023841858,"acc_bits":"37"},{"model":"mlp","domain":"16","multiplier":"roba_updn","acc":0.9840999841690063,"loss":0.06392197041511535,"agree":0.9989999532699585,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"roba_dn2","acc":0.9842000007629395,"loss":0.06276043281555176,"agree":0.9997999668121338,"acc_bits":"37"},{"model":"mlp","domain":"16","multiplier":"roba_updndn","acc":0.9842000007629395,"loss":0.06409111433029174,"agree":0.9998999834060669,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"roba_updn2","acc":0.9842000007629395,"loss":0.06410118498802185,"agree":1.0,"acc_bits":"38"},{"model":"lenet5","domain":"float32","multiplier":"native","acc":0.9919999837875366,"loss":0.025050790762901304,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"exact","acc":0.9919999837875366,"loss":0.025050788617134095,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"mitchell","acc":0.9921000003814697,"loss":0.024188648164272308,"agree":0.9990999698638916,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"drum6","acc":0.9922999739646912,"loss":0.02518117468357086,"agree":0.9993000030517578,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_dn1","acc":0.9924999475479126,"loss":0.02491002595424652,"agree":0.9977999925613403,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_updn","acc":0.9917999505996704,"loss":0.025277113914489745,"agree":0.9980999827384949,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_dn2","acc":0.9918999671936035,"loss":0.024783996725082396,"agree":0.9996999502182007,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_updndn","acc":0.9918999671936035,"loss":0.025011345136165618,"agree":0.9996999502182007,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_updn2","acc":0.9919999837875366,"loss":0.02504702932834625,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"exact","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"mitchell","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"drum6","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_dn1","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_updn","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_dn2","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_updndn","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_updn2","acc":0.10089999437332153,"loss":2.30513642578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"8","multiplier":"exact","acc":0.9917999505996704,"loss":0.02504083173274994,"agree":1.0,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"mitchell","acc":0.9911999702453613,"loss":0.0245531010389328,"agree":0.9988999962806702,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"drum6","acc":0.9916999936103821,"loss":0.025128003633022308,"agree":0.9987999796867371,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"roba_dn1","acc":0.9918999671936035,"loss":0.02630603952407837,"agree":0.996999979019165,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"roba_updn","acc":0.9919999837875366,"loss":0.025229294538497926,"agree":0.9989999532699585,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"roba_dn2","acc":0.9919999837875366,"loss":0.02483669135570526,"agree":0.9990999698638916,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"roba_updndn","acc":0.9918999671936035,"loss":0.025103894877433777,"agree":0.9993999600410461,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"roba_updn2","acc":0.9921000003814697,"loss":0.024991314530372618,"agree":0.9994999766349792,"acc_bits":"19"},{"model":"lenet5","domain":"16","multiplier":"exact","acc":0.9919999837875366,"loss":0.025050675535202026,"agree":1.0,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"mitchell","acc":0.9912999868392944,"loss":0.024156280517578125,"agree":0.998699963092804,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"drum6","acc":0.991599977016449,"loss":0.02519090906381607,"agree":0.9991999864578247,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"roba_dn1","acc":0.9917999505996704,"loss":0.026617318058013918,"agree":0.9971999526023865,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"roba_updn","acc":0.9919999837875366,"loss":0.02528577924966812,"agree":0.9993000030517578,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"roba_dn2","acc":0.9917999505996704,"loss":0.024670363974571227,"agree":0.9993999600410461,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"roba_updndn","acc":0.9919999837875366,"loss":0.02505883582830429,"agree":1.0,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"roba_updn2","acc":0.9921000003814697,"loss":0.025055967020988463,"agree":0.9998999834060669,"acc_bits":"35"}],"finetune":[{"model":"mlp","bits":8,"multiplier":"exact","acc_before":0.9842999577522278,"acc_after":0.9842999577522278,"loss_before":0.06391788158416747,"loss_after":0.06673614692687989},{"model":"mlp","bits":8,"multiplier":"mitchell","acc_before":0.9845999479293823,"acc_after":0.9845999479293823,"loss_before":0.059774647760391236,"loss_after":0.06350887145996094},{"model":"mlp","bits":8,"multiplier":"drum6","acc_before":0.9842999577522278,"acc_after":0.9843999743461609,"loss_before":0.06441374216079712,"loss_after":0.06678609104156494},{"model":"mlp","bits":8,"multiplier":"roba_dn1","acc_before":0.9842000007629395,"acc_after":0.9843999743461609,"loss_before":0.05689280652999878,"loss_after":0.05811059713363648},{"model":"mlp","bits":8,"multiplier":"roba_updn","acc_before":0.9843999743461609,"acc_after":0.9842000007629395,"loss_before":0.0636808331489563,"loss_after":0.06680940084457397},{"model":"mlp","bits":8,"multiplier":"roba_dn2","acc_before":0.9843999743461609,"acc_after":0.9850999712944031,"loss_before":0.06261117248535156,"loss_after":0.06534590690135955},{"model":"mlp","bits":8,"multiplier":"roba_updndn","acc_before":0.9842999577522278,"acc_after":0.9843999743461609,"loss_before":0.06400222997665406,"loss_after":0.06701320679187775},{"model":"mlp","bits":8,"multiplier":"roba_updn2","acc_before":0.9843999743461609,"acc_after":0.9846999645233154,"loss_before":0.06404568634033203,"loss_after":0.06667104907035827},{"model":"mlp","bits":16,"multiplier":"exact","acc_before":0.9842000007629395,"acc_after":0.984499990940094,"loss_before":0.06411111078262328,"loss_after":0.06668835082054138},{"model":"mlp","bits":16,"multiplier":"mitchell","acc_before":0.9839999675750732,"acc_after":0.9845999479293823,"loss_before":0.06036423983573914,"loss_after":0.06348822340965271},{"model":"mlp","bits":16,"multiplier":"drum6","acc_before":0.9842000007629395,"acc_after":0.984499990940094,"loss_before":0.06399040369987488,"loss_after":0.066651598072052},{"model":"mlp","bits":16,"multiplier":"roba_dn1","acc_before":0.9839999675750732,"acc_after":0.984499990940094,"loss_before":0.05623381772041321,"loss_after":0.05762439866065979},{"model":"mlp","bits":16,"multiplier":"roba_updn","acc_before":0.9840999841690063,"acc_after":0.9840999841690063,"loss_before":0.06392197041511535,"loss_after":0.06665483660697936},{"model":"mlp","bits":16,"multiplier":"roba_dn2","acc_before":0.9842000007629395,"acc_after":0.9846999645233154,"loss_before":0.06276043281555176,"loss_after":0.06529379920959473},{"model":"mlp","bits":16,"multiplier":"roba_updndn","acc_before":0.9842000007629395,"acc_after":0.984499990940094,"loss_before":0.06409111433029174,"loss_after":0.0666285052061081},{"model":"mlp","bits":16,"multiplier":"roba_updn2","acc_before":0.9842000007629395,"acc_after":0.984499990940094,"loss_before":0.06410118498802185,"loss_after":0.06668844809532165},{"model":"lenet5","bits":8,"multiplier":"exact","acc_before":0.9917999505996704,"acc_after":0.9921000003814697,"loss_before":0.02504083173274994,"loss_after":0.025738647055625917},{"model":"lenet5","bits":8,"multiplier":"mitchell","acc_before":0.9911999702453613,"acc_after":0.9919999837875366,"loss_before":0.0245531010389328,"loss_after":0.024796002519130708},{"model":"lenet5","bits":8,"multiplier":"drum6","acc_before":0.9916999936103821,"acc_after":0.9919999837875366,"loss_before":0.025128003633022308,"loss_after":0.025611189985275267},{"model":"lenet5","bits":8,"multiplier":"roba_dn1","acc_before":0.9918999671936035,"acc_after":0.9917999505996704,"loss_before":0.02630603952407837,"loss_after":0.023823604726791382},{"model":"lenet5","bits":8,"multiplier":"roba_updn","acc_before":0.9919999837875366,"acc_after":0.9921999573707581,"loss_before":0.025229294538497926,"loss_after":0.025406791746616364},{"model":"lenet5","bits":8,"multiplier":"roba_dn2","acc_before":0.9919999837875366,"acc_after":0.9921000003814697,"loss_before":0.02483669135570526,"loss_after":0.025204775035381318},{"model":"lenet5","bits":8,"multiplier":"roba_updndn","acc_before":0.9918999671936035,"acc_after":0.9917999505996704,"loss_before":0.025103894877433777,"loss_after":0.025289533400535583},{"model":"lenet5","bits":8,"multiplier":"roba_updn2","acc_before":0.9921000003814697,"acc_after":0.9918999671936035,"loss_before":0.024991314530372618,"loss_after":0.02571599223613739},{"model":"lenet5","bits":16,"multiplier":"exact","acc_before":0.9919999837875366,"acc_after":0.9921000003814697,"loss_before":0.025050675535202026,"loss_after":0.025621283853054046},{"model":"lenet5","bits":16,"multiplier":"mitchell","acc_before":0.9912999868392944,"acc_after":0.9921000003814697,"loss_before":0.024156280517578125,"loss_after":0.02465270049571991},{"model":"lenet5","bits":16,"multiplier":"drum6","acc_before":0.991599977016449,"acc_after":0.9919999837875366,"loss_before":0.02519090906381607,"loss_after":0.02560912845134735},{"model":"lenet5","bits":16,"multiplier":"roba_dn1","acc_before":0.9917999505996704,"acc_after":0.9914000034332275,"loss_before":0.026617318058013918,"loss_after":0.02375038721561432},{"model":"lenet5","bits":16,"multiplier":"roba_updn","acc_before":0.9919999837875366,"acc_after":0.9918999671936035,"loss_before":0.02528577924966812,"loss_after":0.02541493798494339},{"model":"lenet5","bits":16,"multiplier":"roba_dn2","acc_before":0.9917999505996704,"acc_after":0.9919999837875366,"loss_before":0.024670363974571227,"loss_after":0.02508132518529892},{"model":"lenet5","bits":16,"multiplier":"roba_updndn","acc_before":0.9919999837875366,"acc_after":0.9921000003814697,"loss_before":0.02505883582830429,"loss_after":0.025609538161754607},{"model":"lenet5","bits":16,"multiplier":"roba_updn2","acc_before":0.9921000003814697,"acc_after":0.9921999573707581,"loss_before":0.025055967020988463,"loss_after":0.025617184138298034}],"meta":{"name":"MNIST","seed":0,"epochs":15,"ft_epochs":3,"ft_lr":0.0001,"date":"2026-10-24"}},"fashion":{"eval":[{"model":"mlp","domain":"float32","multiplier":"native","acc":0.8978999853134155,"loss":0.4327417755126953,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"exact","acc":0.8978999853134155,"loss":0.43274178466796875,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"mitchell","acc":0.8984999656677246,"loss":0.39688926696777344,"agree":0.9940999746322632,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"drum6","acc":0.8973000049591064,"loss":0.43261197204589846,"agree":0.9946999549865723,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_dn1","acc":0.8951999545097351,"loss":0.3708811065673828,"agree":0.9850999712944031,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_updn","acc":0.8978999853134155,"loss":0.4341006683349609,"agree":0.9923999905586243,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_dn2","acc":0.8978999853134155,"loss":0.4258153411865234,"agree":0.996999979019165,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_updndn","acc":0.8980000019073486,"loss":0.4329615478515625,"agree":0.9988999962806702,"acc_bits":""},{"model":"mlp","domain":"float","multiplier":"roba_updn2","acc":0.8976999521255493,"loss":0.43271526794433596,"agree":0.9997999668121338,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"exact","acc":0.09999999403953552,"loss":2.306683447265625,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"mitchell","acc":0.09999999403953552,"loss":2.306683447265625,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"drum6","acc":0.09999999403953552,"loss":2.306683447265625,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_dn1","acc":0.09999999403953552,"loss":2.306683447265625,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_updn","acc":0.09999999403953552,"loss":2.306683447265625,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_dn2","acc":0.09999999403953552,"loss":2.306683447265625,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_updndn","acc":0.09999999403953552,"loss":2.306683447265625,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"trunc","multiplier":"roba_updn2","acc":0.09999999403953552,"loss":2.306683447265625,"agree":1.0,"acc_bits":""},{"model":"mlp","domain":"8","multiplier":"exact","acc":0.8981999754905701,"loss":0.43375106201171876,"agree":1.0,"acc_bits":"22"},{"model":"mlp","domain":"8","multiplier":"mitchell","acc":0.8974999785423279,"loss":0.40086522827148435,"agree":0.9899999499320984,"acc_bits":"22"},{"model":"mlp","domain":"8","multiplier":"drum6","acc":0.8968999981880188,"loss":0.4363017730712891,"agree":0.9945999979972839,"acc_bits":"22"},{"model":"mlp","domain":"8","multiplier":"roba_dn1","acc":0.8968999981880188,"loss":0.3757792633056641,"agree":0.9843999743461609,"acc_bits":"22"},{"model":"mlp","domain":"8","multiplier":"roba_updn","acc":0.8988999724388123,"loss":0.43564163513183596,"agree":0.9899999499320984,"acc_bits":"22"},{"model":"mlp","domain":"8","multiplier":"roba_dn2","acc":0.8973999619483948,"loss":0.4297155303955078,"agree":0.9940999746322632,"acc_bits":"22"},{"model":"mlp","domain":"8","multiplier":"roba_updndn","acc":0.8982999920845032,"loss":0.43404593200683594,"agree":0.9961999654769897,"acc_bits":"22"},{"model":"mlp","domain":"8","multiplier":"roba_updn2","acc":0.8976999521255493,"loss":0.43358899841308596,"agree":0.9975999593734741,"acc_bits":"22"},{"model":"mlp","domain":"16","multiplier":"exact","acc":0.8978999853134155,"loss":0.43274146423339843,"agree":1.0,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"mitchell","acc":0.8981999754905701,"loss":0.39902048645019533,"agree":0.9921999573707581,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"drum6","acc":0.8985999822616577,"loss":0.43278533020019533,"agree":0.996399998664856,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"roba_dn1","acc":0.8965999484062195,"loss":0.36959495849609375,"agree":0.9868999719619751,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"roba_updn","acc":0.8987999558448792,"loss":0.43383555603027346,"agree":0.9943999648094177,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"roba_dn2","acc":0.8981999754905701,"loss":0.4259831298828125,"agree":0.9976999759674072,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"roba_updndn","acc":0.8980000019073486,"loss":0.4327357177734375,"agree":0.9994999766349792,"acc_bits":"38"},{"model":"mlp","domain":"16","multiplier":"roba_updn2","acc":0.8978999853134155,"loss":0.4326873077392578,"agree":1.0,"acc_bits":"38"},{"model":"lenet5","domain":"float32","multiplier":"native","acc":0.9098999500274658,"loss":0.2915454116821289,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"exact","acc":0.9098999500274658,"loss":0.2915454254150391,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"mitchell","acc":0.9086999893188477,"loss":0.26923927001953124,"agree":0.9893999695777893,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"drum6","acc":0.9088000059127808,"loss":0.29204261169433593,"agree":0.9923999905586243,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_dn1","acc":0.9027000069618225,"loss":0.27007144012451173,"agree":0.9734999537467957,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_updn","acc":0.9099999666213989,"loss":0.29375460357666017,"agree":0.9866999983787537,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_dn2","acc":0.9089999794960022,"loss":0.286660466003418,"agree":0.996999979019165,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_updndn","acc":0.910099983215332,"loss":0.2916236022949219,"agree":0.9983999729156494,"acc_bits":""},{"model":"lenet5","domain":"float","multiplier":"roba_updn2","acc":0.9096999764442444,"loss":0.2915606887817383,"agree":0.9995999932289124,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"exact","acc":0.09999999403953552,"loss":2.305036767578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"mitchell","acc":0.09999999403953552,"loss":2.305036767578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"drum6","acc":0.09999999403953552,"loss":2.305036767578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_dn1","acc":0.09999999403953552,"loss":2.305036767578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_updn","acc":0.09999999403953552,"loss":2.305036767578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_dn2","acc":0.09999999403953552,"loss":2.305036767578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_updndn","acc":0.09999999403953552,"loss":2.305036767578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"trunc","multiplier":"roba_updn2","acc":0.09999999403953552,"loss":2.305036767578125,"agree":1.0,"acc_bits":""},{"model":"lenet5","domain":"8","multiplier":"exact","acc":0.909500002861023,"loss":0.2929488067626953,"agree":1.0,"acc_bits":"20"},{"model":"lenet5","domain":"8","multiplier":"mitchell","acc":0.9081999659538269,"loss":0.27073009338378906,"agree":0.9847999811172485,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"drum6","acc":0.9091999530792236,"loss":0.2972881439208984,"agree":0.9902999997138977,"acc_bits":"20"},{"model":"lenet5","domain":"8","multiplier":"roba_dn1","acc":0.9019999504089355,"loss":0.2775907745361328,"agree":0.9648000001907349,"acc_bits":"19"},{"model":"lenet5","domain":"8","multiplier":"roba_updn","acc":0.9071999788284302,"loss":0.29433701171875,"agree":0.9856999516487122,"acc_bits":"20"},{"model":"lenet5","domain":"8","multiplier":"roba_dn2","acc":0.9090999960899353,"loss":0.2891793060302734,"agree":0.9904999732971191,"acc_bits":"20"},{"model":"lenet5","domain":"8","multiplier":"roba_updndn","acc":0.9106999635696411,"loss":0.2925340255737305,"agree":0.9946999549865723,"acc_bits":"20"},{"model":"lenet5","domain":"8","multiplier":"roba_updn2","acc":0.9097999930381775,"loss":0.29305884552001954,"agree":0.9942999482154846,"acc_bits":"20"},{"model":"lenet5","domain":"16","multiplier":"exact","acc":0.9099999666213989,"loss":0.29154749755859377,"agree":1.0,"acc_bits":"36"},{"model":"lenet5","domain":"16","multiplier":"mitchell","acc":0.9095999598503113,"loss":0.26956361389160155,"agree":0.9893999695777893,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"drum6","acc":0.9098999500274658,"loss":0.29173658599853514,"agree":0.9940999746322632,"acc_bits":"36"},{"model":"lenet5","domain":"16","multiplier":"roba_dn1","acc":0.9023000001907349,"loss":0.272588981628418,"agree":0.9685999751091003,"acc_bits":"35"},{"model":"lenet5","domain":"16","multiplier":"roba_updn","acc":0.9088999629020691,"loss":0.29276411590576173,"agree":0.9886999726295471,"acc_bits":"36"},{"model":"lenet5","domain":"16","multiplier":"roba_dn2","acc":0.9106000065803528,"loss":0.2861574768066406,"agree":0.9959999918937683,"acc_bits":"36"},{"model":"lenet5","domain":"16","multiplier":"roba_updndn","acc":0.9099999666213989,"loss":0.2910700531005859,"agree":0.9984999895095825,"acc_bits":"36"},{"model":"lenet5","domain":"16","multiplier":"roba_updn2","acc":0.9098999500274658,"loss":0.2915274139404297,"agree":0.9994999766349792,"acc_bits":"36"}],"finetune":[{"model":"mlp","bits":8,"multiplier":"exact","acc_before":0.8981999754905701,"acc_after":0.8976999521255493,"loss_before":0.43375106201171876,"loss_after":0.4465598693847656},{"model":"mlp","bits":8,"multiplier":"mitchell","acc_before":0.8974999785423279,"acc_after":0.8981999754905701,"loss_before":0.40086522827148435,"loss_after":0.41999283447265623},{"model":"mlp","bits":8,"multiplier":"drum6","acc_before":0.8968999981880188,"acc_after":0.8976999521255493,"loss_before":0.4363017730712891,"loss_after":0.4496908386230469},{"model":"mlp","bits":8,"multiplier":"roba_dn1","acc_before":0.8968999981880188,"acc_after":0.8965999484062195,"loss_before":0.3757792633056641,"loss_after":0.3985196350097656},{"model":"mlp","bits":8,"multiplier":"roba_updn","acc_before":0.8988999724388123,"acc_after":0.8973999619483948,"loss_before":0.43564163513183596,"loss_after":0.44585572204589846},{"model":"mlp","bits":8,"multiplier":"roba_dn2","acc_before":0.8973999619483948,"acc_after":0.8970999717712402,"loss_before":0.4297155303955078,"loss_after":0.44263646545410157},{"model":"mlp","bits":8,"multiplier":"roba_updndn","acc_before":0.8982999920845032,"acc_after":0.8974999785423279,"loss_before":0.43404593200683594,"loss_after":0.4465157501220703},{"model":"mlp","bits":8,"multiplier":"roba_updn2","acc_before":0.8976999521255493,"acc_after":0.8973000049591064,"loss_before":0.43358899841308596,"loss_after":0.4466234619140625},{"model":"mlp","bits":16,"multiplier":"exact","acc_before":0.8978999853134155,"acc_after":0.897599995136261,"loss_before":0.43274146423339843,"loss_after":0.44615438842773436},{"model":"mlp","bits":16,"multiplier":"mitchell","acc_before":0.8981999754905701,"acc_after":0.8986999988555908,"loss_before":0.39902048645019533,"loss_after":0.4196353759765625},{"model":"mlp","bits":16,"multiplier":"drum6","acc_before":0.8985999822616577,"acc_after":0.8967999815940857,"loss_before":0.43278533020019533,"loss_after":0.4462679443359375},{"model":"mlp","bits":16,"multiplier":"roba_dn1","acc_before":0.8965999484062195,"acc_after":0.896399974822998,"loss_before":0.36959495849609375,"loss_after":0.39373467712402344},{"model":"mlp","bits":16,"multiplier":"roba_updn","acc_before":0.8987999558448792,"acc_after":0.8982999920845032,"loss_before":0.43383555603027346,"loss_after":0.44501658935546873},{"model":"mlp","bits":16,"multiplier":"roba_dn2","acc_before":0.8981999754905701,"acc_after":0.8974999785423279,"loss_before":0.4259831298828125,"loss_after":0.4402475616455078},{"model":"mlp","bits":16,"multiplier":"roba_updndn","acc_before":0.8980000019073486,"acc_after":0.8980000019073486,"loss_before":0.4327357177734375,"loss_after":0.445830712890625},{"model":"mlp","bits":16,"multiplier":"roba_updn2","acc_before":0.8978999853134155,"acc_after":0.8977999687194824,"loss_before":0.4326873077392578,"loss_after":0.4460878082275391},{"model":"lenet5","bits":8,"multiplier":"exact","acc_before":0.909500002861023,"acc_after":0.9088000059127808,"loss_before":0.2929488067626953,"loss_after":0.29649309692382814},{"model":"lenet5","bits":8,"multiplier":"mitchell","acc_before":0.9081999659538269,"acc_after":0.9114999771118164,"loss_before":0.27073009338378906,"loss_after":0.28190941009521486},{"model":"lenet5","bits":8,"multiplier":"drum6","acc_before":0.9091999530792236,"acc_after":0.9096999764442444,"loss_before":0.2972881439208984,"loss_after":0.2976533737182617},{"model":"lenet5","bits":8,"multiplier":"roba_dn1","acc_before":0.9019999504089355,"acc_after":0.9077000021934509,"loss_before":0.2775907745361328,"loss_after":0.27479093017578127},{"model":"lenet5","bits":8,"multiplier":"roba_updn","acc_before":0.9071999788284302,"acc_after":0.9083999991416931,"loss_before":0.29433701171875,"loss_after":0.2981117736816406},{"model":"lenet5","bits":8,"multiplier":"roba_dn2","acc_before":0.9090999960899353,"acc_after":0.910099983215332,"loss_before":0.2891793060302734,"loss_after":0.2935726593017578},{"model":"lenet5","bits":8,"multiplier":"roba_updndn","acc_before":0.9106999635696411,"acc_after":0.909500002861023,"loss_before":0.2925340255737305,"loss_after":0.29762970886230466},{"model":"lenet5","bits":8,"multiplier":"roba_updn2","acc_before":0.9097999930381775,"acc_after":0.9096999764442444,"loss_before":0.29305884552001954,"loss_after":0.29698422088623044},{"model":"lenet5","bits":16,"multiplier":"exact","acc_before":0.9099999666213989,"acc_after":0.9096999764442444,"loss_before":0.29154749755859377,"loss_after":0.2960841491699219},{"model":"lenet5","bits":16,"multiplier":"mitchell","acc_before":0.9095999598503113,"acc_after":0.9106999635696411,"loss_before":0.26956361389160155,"loss_after":0.2811825653076172},{"model":"lenet5","bits":16,"multiplier":"drum6","acc_before":0.9098999500274658,"acc_after":0.9095999598503113,"loss_before":0.29173658599853514,"loss_after":0.2961728637695312},{"model":"lenet5","bits":16,"multiplier":"roba_dn1","acc_before":0.9023000001907349,"acc_after":0.9090999960899353,"loss_before":0.272588981628418,"loss_after":0.2721888870239258},{"model":"lenet5","bits":16,"multiplier":"roba_updn","acc_before":0.9088999629020691,"acc_after":0.9080999493598938,"loss_before":0.29276411590576173,"loss_after":0.29681134033203127},{"model":"lenet5","bits":16,"multiplier":"roba_dn2","acc_before":0.9106000065803528,"acc_after":0.9103999733924866,"loss_before":0.2861574768066406,"loss_after":0.29255334014892576},{"model":"lenet5","bits":16,"multiplier":"roba_updndn","acc_before":0.9099999666213989,"acc_after":0.909500002861023,"loss_before":0.2910700531005859,"loss_after":0.29598201599121093},{"model":"lenet5","bits":16,"multiplier":"roba_updn2","acc_before":0.9098999500274658,"acc_after":0.9095999598503113,"loss_before":0.2915274139404297,"loss_after":0.29612747802734374}],"meta":{"name":"Fashion-MNIST","seed":0,"epochs":30,"ft_epochs":5,"ft_lr":0.0001,"date":"2026-10-25"}}},"cycles":{"8":{"exact":44,"mitchell":23,"drum6":50,"roba_dn1":19,"roba_updn":26,"roba_dn2":27,"roba_updn2":43,"roba_updndn":39},"16":{"exact":77,"mitchell":25,"drum6":65,"roba_dn1":20,"roba_updn":29,"roba_dn2":32,"roba_updn2":53,"roba_updndn":46}},"power":{"none":0.7933,"lod":0.829},"macs":{"mlp":234752,"lenet5":416520},"paper_max":{"roba_dn2":6.24,"roba_updndn":2.74,"roba_updn2":0.83},"gpu":"NVIDIA L40"}</script>
 <script>
 // ROBA-BEGIN
 const lod = x => 31 - Math.clz32(x);
@@ -491,6 +557,10 @@ const MULT = {
 // ROBA-END
 
 const D = JSON.parse(document.getElementById("data").textContent);
+const DS_KEYS = ["mnist", "fashion"];
+const DS_LABEL = { mnist: "MNIST", fashion: "Fashion-MNIST" };
+const state = { ds: D.datasets.fashion ? "fashion" : "mnist" };
+const cur = () => D.datasets[state.ds];
 const ORDER = ["exact", "mitchell", "drum6", "roba_dn1", "roba_updn", "roba_dn2", "roba_updndn", "roba_updn2"];
 const APPROX = ORDER.slice(1);
 const LABEL = { exact: "Exact", mitchell: "Mitchell", drum6: "DRUM6", roba_dn1: "RoBA-Dn1", roba_updn: "RoBA-UpDn",
@@ -502,9 +572,10 @@ const MODEL = { mlp: "MLP", lenet5: "LeNet-5" };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const fmt = (v, d = 2) => v.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
 const pct = (v, d = 2) => `${fmt(v * 100, d)}%`;
+const signed = (v, d = 2) => `${v > 0 ? "+" : v < 0 ? "−" : "±"}${fmt(Math.abs(v), d)}`;
 const energy = (m, bits) => D.cycles[bits][m] * (m === "exact" ? D.power.none : D.power.lod) / (D.cycles[bits].exact * D.power.none);
-const evalRow = (model, domain, mult) => D.eval.find(r => r.model === model && r.domain === domain && r.multiplier === mult);
-const ftRow = (model, bits, mult) => D.finetune.find(r => r.model === model && r.bits === bits && r.multiplier === mult);
+const evalRow = (model, domain, mult, ds = state.ds) => D.datasets[ds].eval.find(r => r.model === model && r.domain === domain && r.multiplier === mult);
+const ftRow = (model, bits, mult, ds = state.ds) => D.datasets[ds].finetune.find(r => r.model === model && r.bits === bits && r.multiplier === mult);
 const errRow = (bits, mult) => D.errors.find(r => r.bits === bits && r.multiplier === mult);
 const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
@@ -513,7 +584,7 @@ const tip = document.getElementById("tip");
 function showTip(html, x, y) {
   tip.innerHTML = html; tip.hidden = false;
   const w = tip.offsetWidth, h = tip.offsetHeight;
-  tip.style.left = `${Math.min(x + 14, innerWidth - w - 8)}px`;
+  tip.style.left = `${Math.max(8, Math.min(x + 14, innerWidth - w - 8))}px`;
   tip.style.top = `${y + 14 + h > innerHeight ? y - h - 10 : y + 14}px`;
 }
 document.addEventListener("pointermove", e => {
@@ -523,7 +594,6 @@ document.addEventListener("pointermove", e => {
 });
 document.addEventListener("pointerleave", () => { tip.hidden = true; });
 
-/* ---------- segmented controls ---------- */
 function seg(ids, onPick) {
   ids.forEach(id => document.getElementById(id).addEventListener("click", () => {
     ids.forEach(o => document.getElementById(o).setAttribute("aria-pressed", String(o === id)));
@@ -531,28 +601,55 @@ function seg(ids, onPick) {
   }));
 }
 
-/* ---------- header ---------- */
-document.getElementById("meta-date").textContent = `Results ${D.meta.date}`;
-document.getElementById("spec").innerHTML = [
-  "MNIST · 60k train / 10k test", "MLP 784-256-128-10", "LeNet-5", `${D.meta.gpu}`,
-  `seed ${D.meta.seed}`, "8 multipliers × 4 domains",
-].map(s => `<span>${esc(s)}</span>`).join("");
-document.getElementById("foot-meta").textContent =
-  `Float training ${D.meta.epochs} epochs, fine-tuning ${D.meta.ft_epochs} epochs at learning rate ${D.meta.ft_lr}. Page built from results/*.csv.`;
+/* ---------- title slide ---------- */
+(function titleBits() {
+  const x = 23170, p = lod(x);
+  let s = "";
+  for (let i = 15; i >= 0; i--) {
+    const one = Math.floor(x / pow2(i)) & 1;
+    s += `<div class="${[one ? "one" : "", i === p ? "lod" : "", i === p - 1 ? "next" : ""].join(" ")}">${one}</div>`;
+  }
+  document.getElementById("title-bits").innerHTML = s;
+})();
+function renderMeta() {
+  const runs = DS_KEYS.filter(k => D.datasets[k]);
+  document.getElementById("meta-date").textContent = `Results ${runs.map(k => D.datasets[k].meta.date).sort().at(-1)}`;
+  document.getElementById("spec").innerHTML = [
+    ...runs.map(k => `${DS_LABEL[k]} · ${D.datasets[k].meta.epochs} + ${D.datasets[k].meta.ft_epochs} epochs`),
+    "MLP 784-256-128-10", "LeNet-5", D.gpu, "8 multipliers × 4 domains",
+  ].map(s => `<span>${esc(s)}</span>`).join("");
+  document.getElementById("ds-seg").innerHTML = DS_KEYS.map(k =>
+    `<button type="button" data-ds="${k}" aria-pressed="${k === state.ds}" ${D.datasets[k] ? "" : "disabled title=\"not run yet\""}>${DS_LABEL[k]}</button>`).join("");
+  document.querySelectorAll(".ds-name").forEach(el => { el.textContent = DS_LABEL[state.ds]; });
+  const steps = [
+    "<b>Characterize the multipliers</b> on 1 million random pairs at 8 and 16 bits.",
+    ...runs.map(k => `<b>Train ${DS_LABEL[k]} float baselines</b>: ${D.datasets[k].meta.epochs} epochs, Adam 1e-3 with cosine decay, batch 128, seed ${D.datasets[k].meta.seed}.`),
+    "<b>Evaluate</b> in four domains (float, truncated int, int8, int16) × 8 multipliers on 10,000 test images.",
+    `<b>Fine-tune</b> with the approximate forward pass and a straight-through gradient, Adam ${D.datasets[runs[0]].meta.ft_lr}.`,
+    "<b>Estimate energy</b> from multiplications per inference (MLP 234,752; LeNet-5 416,520) and the paper's cycle and power figures.",
+  ];
+  document.getElementById("steps").innerHTML = steps.map(s => `<li><span>${s}</span></li>`).join("");
+}
+document.getElementById("ds-seg").addEventListener("click", e => {
+  const b = e.target.closest("button[data-ds]"); if (!b || b.disabled) return;
+  state.ds = b.dataset.ds;
+  try { localStorage.setItem("roba-ds", state.ds); } catch (err) { /* storage unavailable */ }
+  renderMeta(); renderFindings();
+  ["domains", "acc", "regs"].forEach(redraw);
+});
 
 /* ---------- Fig 1: explorer ---------- */
 const ex = { w: 8, a: 181, b: 107 };
 function bitsHTML(x, w) {
-  const p = lod(x), up = posUpdn(x) > p;
+  const p = lod(x);
   let cells = "", idx = "";
   for (let i = w - 1; i >= 0; i--) {
     const one = Math.floor(x / pow2(i)) & 1;
-    const cls = ["bit", one ? "one" : "", i === p ? "lod" : "", i === p - 1 ? "next" : ""].join(" ");
-    cells += `<div class="${cls}">${one}</div>`;
+    cells += `<div class="${["bit", one ? "one" : "", i === p ? "lod" : "", i === p - 1 ? "next" : ""].join(" ")}">${one}</div>`;
     idx += `<div class="bit-idx">${i}</div>`;
   }
   const cols = `grid-template-columns:repeat(${w},minmax(0,1fr))`;
-  return { html: `<div class="bits-row" style="${cols}">${cells}</div><div class="bits-row" style="${cols}">${idx}</div>`, p, up };
+  return `<div class="bits-row" style="${cols}">${cells}</div><div class="bits-row" style="${cols}">${idx}</div>`;
 }
 function roundHTML(x, name) {
   const p = lod(x), q = posUpdn(x);
@@ -560,11 +657,11 @@ function roundHTML(x, name) {
     `<span>next bit ${q > p ? "<b>1</b> → round up" : "<b>0</b> → stay down"}: <span class="mono">nearest = 2<sup>${q}</sup> = ${pow2(q).toLocaleString("en-US")}</span></span>`;
 }
 function renderExplorer() {
-  const max = pow2(ex.w) - 1;
+  const max = ex.w === 8 ? 255 : 32767;
   for (const k of ["a", "b"]) {
     const num = document.getElementById(`${k}-num`), rng = document.getElementById(`${k}-rng`);
     num.max = rng.max = max; num.value = rng.value = ex[k];
-    document.getElementById(`${k}-bits`).innerHTML = bitsHTML(ex[k], ex.w).html;
+    document.getElementById(`${k}-bits`).innerHTML = bitsHTML(ex[k], ex.w);
     document.getElementById(`${k}-round`).innerHTML = roundHTML(ex[k], k);
   }
   const exact = ex.a * ex.b;
@@ -573,15 +670,12 @@ function renderExplorer() {
   const S = [0.01, 0.02, 0.05, 0.1, 0.25, 0.5].find(s => s >= maxE) || 0.5;
   document.getElementById("errscale").textContent = `Error (±${S * 100}%)`;
   document.querySelector("#mults tbody").innerHTML = rows.map(r => {
-    const frac = Math.min(1, Math.abs(r.e) / S) * 50;
-    const left = r.e < 0 ? 50 - frac : 50;
-    const color = r.e < 0 ? "var(--under)" : "var(--over)";
-    const cyc = D.cycles[ex.w][r.m];
+    const frac = Math.min(1, Math.abs(r.e) / S) * 50, left = r.e < 0 ? 50 - frac : 50;
     return `<tr class="${r.m === "exact" ? "exact" : ""}"><td><span class="chip" style="background:${FAM[r.m]}"></span>${LABEL[r.m]}</td>` +
       `<td class="r mono num">${r.v.toLocaleString("en-US")}</td>` +
       `<td class="r mono num" style="color:${r.e === 0 ? "var(--muted)" : "var(--ink)"}">${r.e === 0 ? "0" : (r.e > 0 ? "+" : "−") + fmt(Math.abs(r.e) * 100, 2) + "%"}</td>` +
-      `<td><div class="errbar"><span style="left:${left}%;width:${frac}%;background:${color}"></span></div></td>` +
-      `<td class="r mono num">${cyc}</td></tr>`;
+      `<td><div class="errbar"><span style="left:${left}%;width:${frac}%;background:${r.e < 0 ? "var(--under)" : "var(--over)"}"></span></div></td>` +
+      `<td class="r mono num">${D.cycles[ex.w][r.m]}</td></tr>`;
   }).join("");
   const pa = lod(ex.a), pb = lod(ex.b);
   document.getElementById("shift-form").innerHTML =
@@ -589,18 +683,15 @@ function renderExplorer() {
     `${(ex.b * pow2(pa)).toLocaleString("en-US")} + ${(ex.a * pow2(pb)).toLocaleString("en-US")} − ${pow2(pa + pb).toLocaleString("en-US")} = ` +
     `<b>${MULT.roba_dn1(ex.a, ex.b).toLocaleString("en-US")}</b>`;
 }
-for (const k of ["a", "b"]) {
-  for (const src of [`${k}-num`, `${k}-rng`]) {
-    document.getElementById(src).addEventListener("input", e => {
-      const v = Math.round(Number(e.target.value));
-      if (v >= 1 && v <= pow2(ex.w) - 1) { ex[k] = v; renderExplorer(); }
-    });
-  }
+for (const k of ["a", "b"]) for (const src of [`${k}-num`, `${k}-rng`]) {
+  document.getElementById(src).addEventListener("input", e => {
+    const v = Math.round(Number(e.target.value)), max = ex.w === 8 ? 255 : 32767;
+    if (v >= 1 && v <= max) { ex[k] = v; renderExplorer(); }
+  });
 }
 seg(["w8", "w16"], id => {
   ex.w = id === "w8" ? 8 : 16;
-  if (ex.w === 16) { ex.a = 23170; ex.b = 13653; }
-  else { ex.a = Math.min(ex.a, 255); ex.b = Math.min(ex.b, 255); }
+  if (ex.w === 16) { ex.a = 23170; ex.b = 13653; } else { ex.a = Math.min(ex.a, 255); ex.b = Math.min(ex.b, 255); }
   renderExplorer();
 });
 document.getElementById("rand").addEventListener("click", () => {
@@ -609,24 +700,9 @@ document.getElementById("rand").addEventListener("click", () => {
   renderExplorer();
 });
 
-/* ---------- findings ---------- */
-function renderFindings() {
-  const spread = Math.max(...["mlp", "lenet5"].flatMap(mo => APPROX.map(m =>
-    Math.abs(evalRow(mo, "8", m).acc - evalRow(mo, "8", "exact").acc)))) * 100;
-  const trunc = ["mlp", "lenet5"].map(mo => evalRow(mo, "trunc", "exact").acc * 100);
-  const u2 = errRow(16, "roba_updn2");
-  const items = [
-    { big: `${fmt(energy("roba_dn1", 8), 2)}<small>×</small>`, text: `Estimated multiplication energy of RoBA-Dn1 at int8, relative to exact shift-and-add (${fmt(energy("roba_dn1", 16), 2)}× at int16).` },
-    { big: `≤${fmt(spread, 2)}<small>pts</small>`, text: "Largest accuracy change from any approximate multiplier at int8, on either model, before fine-tuning." },
-    { big: `${fmt(trunc[0], 1)}<small>%</small>`, text: `MLP accuracy when floats are cast to integers without scaling (LeNet-5: ${fmt(trunc[1], 1)}%). Chance is 10%.` },
-    { big: `${fmt(u2.max, 2)}<small>%</small>`, text: `Maximum error of RoBA-(UpDn)2 in our library; the paper reports ${D.paper_max.roba_updn2}%.` },
-  ];
-  document.getElementById("findings").innerHTML = items.map(i => `<div class="finding"><div class="big">${i.big}</div><p>${esc(i.text)}</p></div>`).join("");
-}
-
 /* ---------- Fig 2: heatmap ---------- */
 const heat = { m: "roba_dn1", fit: false };
-function hexRGB(c) {
+function rgb(c) {
   const ctx = document.createElement("canvas").getContext("2d");
   ctx.fillStyle = c; const h = ctx.fillStyle;
   if (h.startsWith("#")) return [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
@@ -640,111 +716,98 @@ function heatScale() {
   return Math.max(m, 0.001);
 }
 function renderHeat() {
-  const cv = document.getElementById("heat"), ctx = cv.getContext("2d");
-  const img = ctx.createImageData(255, 255);
-  const under = hexRGB(css("--under")), over = hexRGB(css("--over")), mid = hexRGB(css("--mid"));
+  const cv = document.getElementById("heat"), ctx = cv.getContext("2d"), img = ctx.createImageData(255, 255);
+  const under = rgb(css("--under")), over = rgb(css("--over")), mid = rgb(css("--mid"));
   const S = heatScale(), f = MULT[heat.m];
   for (let b = 1; b < 256; b++) for (let a = 1; a < 256; a++) {
-    const e = f(a, b) / (a * b) - 1, t = Math.min(1, Math.sqrt(Math.abs(e) / S));
-    const c = lerp(mid, e < 0 ? under : over, t);
+    const e = f(a, b) / (a * b) - 1, c = lerp(mid, e < 0 ? under : over, Math.min(1, Math.sqrt(Math.abs(e) / S)));
     const i = ((255 - b) * 255 + (a - 1)) * 4;
     img.data[i] = c[0]; img.data[i + 1] = c[1]; img.data[i + 2] = c[2]; img.data[i + 3] = 255;
   }
   ctx.putImageData(img, 0, 0);
-  const u = css("--under"), o = css("--over"), md = css("--mid");
-  document.getElementById("scale-bar").style.background = `linear-gradient(90deg, ${u}, ${md}, ${o})`;
+  document.getElementById("scale-bar").style.background = `linear-gradient(90deg, ${css("--under")}, ${css("--mid")}, ${css("--over")})`;
   const sp = S * 100, d = sp < 1 ? 2 : sp < 10 ? 1 : 0;
   document.getElementById("scale-ticks").innerHTML = `<span>−${fmt(sp, d)}%</span><span>−${fmt(sp / 4, d + 1)}%</span><span>0</span><span>+${fmt(sp / 4, d + 1)}%</span><span>+${fmt(sp, d)}%</span>`;
   const e8 = errRow(8, heat.m);
   document.getElementById("heat-stats").innerHTML = [
-    ["Mean |error|", pct(e8.mean / 100, 2), "over random pairs"],
-    ["Max |error|", pct(e8.max / 100, 2), D.paper_max[heat.m] ? `paper: ${D.paper_max[heat.m]}%` : "8-bit operands"],
-    ["Bias", `${e8.bias < 0 ? "−" : "+"}${fmt(Math.abs(e8.bias), 3)}%`, e8.bias < -0.1 ? "always underestimates" : "errors cancel on average"],
+    ["Mean |error|", pct(e8.mean / 100), "over 1M random pairs"],
+    ["Max |error|", pct(e8.max / 100), D.paper_max[heat.m] ? `paper: ${D.paper_max[heat.m]}%` : "8-bit operands"],
+    ["Bias", `${signed(e8.bias, 3)}%`, e8.bias < -0.1 ? "always underestimates" : "errors cancel on average"],
     ["Exact products", pct(e8.frac_exact, 1), "of random pairs"],
   ].map(([k, v, s]) => `<div class="stat"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${esc(s)}</div></div>`).join("");
 }
 function initHeat() {
-  document.getElementById("heat-tabs").innerHTML = APPROX.map(m =>
-    `<button type="button" data-m="${m}" aria-pressed="${m === heat.m}">${LABEL[m]}</button>`).join("");
-  document.getElementById("heat-tabs").addEventListener("click", e => {
+  const tabs = document.getElementById("heat-tabs");
+  tabs.innerHTML = APPROX.map(m => `<button type="button" data-m="${m}" aria-pressed="${m === heat.m}">${LABEL[m]}</button>`).join("");
+  tabs.addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
     heat.m = b.dataset.m;
-    document.querySelectorAll("#heat-tabs button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    tabs.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
     renderHeat();
   });
   seg(["sc-shared", "sc-fit"], id => { heat.fit = id === "sc-fit"; renderHeat(); });
   const ticks = [1, 64, 128, 192, 255];
   document.getElementById("xax").innerHTML = ticks.map(t => `<span style="left:${(t - 0.5) / 255 * 100}%">${t}</span>`).join("");
-  const yax = document.getElementById("yax");
-  yax.innerHTML = ticks.map(t => `<span style="bottom:${(t - 0.5) / 255 * 100}%">${t}</span>`).join("");
+  document.getElementById("yax").innerHTML = ticks.map(t => `<span style="bottom:${(t - 0.5) / 255 * 100}%">${t}</span>`).join("");
   const cv = document.getElementById("heat");
   const pick = e => {
     const r = cv.getBoundingClientRect();
-    const a = Math.min(255, Math.max(1, 1 + Math.floor((e.clientX - r.left) / r.width * 255)));
-    const b = Math.min(255, Math.max(1, 255 - Math.floor((e.clientY - r.top) / r.height * 255)));
-    return { a, b };
+    return { a: Math.min(255, Math.max(1, 1 + Math.floor((e.clientX - r.left) / r.width * 255))),
+             b: Math.min(255, Math.max(1, 255 - Math.floor((e.clientY - r.top) / r.height * 255))) };
   };
   cv.addEventListener("pointermove", e => {
     const { a, b } = pick(e), v = MULT[heat.m](a, b), er = v / (a * b) - 1;
-    showTip(`<b>a = ${a}, b = ${b}</b>\nexact ${(a * b).toLocaleString("en-US")}\n${LABEL[heat.m]} ${v.toLocaleString("en-US")}\nerror ${er >= 0 ? "+" : "−"}${fmt(Math.abs(er) * 100, 2)}%\nclick to open in Fig. 1`, e.clientX, e.clientY);
+    showTip(`<b>a = ${a}, b = ${b}</b>\nexact ${(a * b).toLocaleString("en-US")}\n${LABEL[heat.m]} ${v.toLocaleString("en-US")}\nerror ${signed(er * 100)}%\nclick to open in Fig. 1`, e.clientX, e.clientY);
   });
   cv.addEventListener("pointerleave", () => { tip.hidden = true; });
   cv.addEventListener("click", e => {
     const { a, b } = pick(e);
     if (ex.w !== 8) document.getElementById("w8").click();
     ex.a = a; ex.b = b; renderExplorer();
-    document.getElementById("explorer").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    go(SLIDES.findIndex(s => s.id === "explorer"));
   });
 }
 
 /* ---------- SVG chart helpers ---------- */
 const charts = [];
 function chart(id, draw) {
-  const el = document.getElementById(id);
-  const c = { el, draw, w: 0 };
+  const el = document.getElementById(id), c = { el, draw, w: 0 };
   charts.push(c);
   new ResizeObserver(() => { const w = Math.round(el.clientWidth); if (w && w !== c.w) { c.w = w; draw(el, w); } }).observe(el);
-  return c;
 }
 const redraw = id => { const c = charts.find(x => x.el.id === id); if (c && c.w) c.draw(c.el, c.w); };
 const T = (x, y, s, o = {}) => `<text x="${x}" y="${y}" font-size="${o.size || 12}" text-anchor="${o.anchor || "start"}" style="fill:${o.fill || "var(--ink-2)"}" ${o.weight ? `font-weight="${o.weight}"` : ""}>${esc(s)}</text>`;
+const svgWrap = (W, H, label, s) => `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(label)}">${s}</svg>`;
 
 /* ---------- Fig 3: pareto ---------- */
 let pBits = 8;
 const LABEL_POS = { roba_dn1: "right", mitchell: "left", roba_updn: "right", roba_dn2: "left", roba_updndn: "left", roba_updn2: "left", drum6: "above" };
 function drawPareto(el, W) {
-  const H = 380, m = { l: 52, r: 20, t: 34, b: 46 };
+  const H = Math.min(360, Math.max(260, innerHeight * 0.42)), m = { l: 52, r: 20, t: 34, b: 46 };
   const pts = APPROX.map(k => ({ k, c: D.cycles[pBits][k], e: errRow(pBits, k).mean }));
-  const exC = D.cycles[pBits].exact;
-  const x0 = 10, x1 = Math.max(exC, ...pts.map(p => p.c)) + 8;
+  const exC = D.cycles[pBits].exact, x0 = 10, x1 = Math.max(exC, ...pts.map(p => p.c)) + 8;
   const X = v => m.l + (v - x0) / (x1 - x0) * (W - m.l - m.r);
-  const lo = Math.log10(0.03), hi = Math.log10(20);
-  const Y = v => m.t + (hi - Math.log10(v)) / (hi - lo) * (H - m.t - m.b);
+  const lo = Math.log10(0.03), hi = Math.log10(20), Y = v => m.t + (hi - Math.log10(v)) / (hi - lo) * (H - m.t - m.b);
   let s = "";
   for (const t of [0.1, 1, 10]) s += `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(t)}" y2="${Y(t)}" style="stroke:var(--rule)"/>` + T(m.l - 8, Y(t) + 4, `${t}%`, { anchor: "end", size: 11, fill: "var(--muted)" });
   for (let t = 10; t <= x1; t += 10) s += T(X(t), H - m.b + 18, t, { anchor: "middle", size: 11, fill: "var(--muted)" });
   s += `<line x1="${m.l}" x2="${W - m.r}" y1="${H - m.b}" y2="${H - m.b}" style="stroke:var(--rule-strong)"/>`;
   s += T((m.l + W - m.r) / 2, H - 6, "cycles per multiply (estimate)", { anchor: "middle", size: 11, fill: "var(--muted)" });
   s += T(m.l, 14, "mean |error|", { size: 11, fill: "var(--muted)" });
-  s += `<line x1="${X(exC)}" x2="${X(exC)}" y1="${m.t - 10}" y2="${H - m.b}" style="stroke:var(--ink-2)" stroke-dasharray="4 4"/>` +
-    T(X(exC) - 6, m.t - 14, `exact: 0% error, ${exC} cycles`, { anchor: "end", size: 11, fill: "var(--ink-2)" });
-  const sorted = [...pts].sort((a, b) => a.c - b.c);
+  s += `<line x1="${X(exC)}" x2="${X(exC)}" y1="${m.t - 10}" y2="${H - m.b}" style="stroke:var(--ink-2)" stroke-dasharray="4 4"/>` + T(X(exC) - 6, m.t - 14, `exact: 0% error, ${exC} cycles`, { anchor: "end", size: 11 });
   let best = Infinity; const front = [];
-  for (const p of sorted) if (p.e < best) { best = p.e; front.push(p); }
+  for (const p of [...pts].sort((a, b) => a.c - b.c)) if (p.e < best) { best = p.e; front.push(p); }
   s += `<polyline points="${front.map(p => `${X(p.c)},${Y(p.e)}`).join(" ")}" style="fill:none;stroke:var(--rule-strong)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
   for (const p of pts) {
     const x = X(p.c), y = Y(p.e), pos = LABEL_POS[p.k];
-    const tipTxt = `<b>${LABEL[p.k]}</b>\n${p.c} cycles per multiply\nmean |error| ${fmt(p.e, 3)}%\nmax |error| ${fmt(errRow(pBits, p.k).max, 2)}%`;
-    s += `<circle cx="${x}" cy="${y}" r="7" style="fill:${FAM[p.k]};stroke:var(--surface)" stroke-width="2" data-tip="${esc(tipTxt)}"/>`;
+    const tt = `<b>${LABEL[p.k]}</b>\n${p.c} cycles per multiply\nmean |error| ${fmt(p.e, 3)}%\nmax |error| ${fmt(errRow(pBits, p.k).max, 2)}%`;
+    s += `<circle cx="${x}" cy="${y}" r="7" style="fill:${FAM[p.k]};stroke:var(--surface)" stroke-width="2" data-tip="${esc(tt)}"/>`;
     s += pos === "above" ? T(x, y - 13, LABEL[p.k], { anchor: "middle", fill: "var(--ink)" })
-      : pos === "left" ? T(x - 12, y + 4, LABEL[p.k], { anchor: "end", fill: "var(--ink)" })
-      : T(x + 12, y + 4, LABEL[p.k], { fill: "var(--ink)" });
+      : pos === "left" ? T(x - 12, y + 4, LABEL[p.k], { anchor: "end", fill: "var(--ink)" }) : T(x + 12, y + 4, LABEL[p.k], { fill: "var(--ink)" });
   }
-  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Mean error against cycles per multiply">${s}</svg>`;
-  const u2 = errRow(pBits, "roba_updn2"), cU2 = D.cycles[pBits].roba_updn2;
+  el.innerHTML = svgWrap(W, H, "Mean error against cycles per multiply", s);
   document.getElementById("pareto-claim").textContent =
-    `At ${pBits}-bit, RoBA-(UpDn)2 gets the error down to ${fmt(u2.mean, 2)}% at ${cU2} cycles, against ${exC} for exact. ` +
-    `RoBA-Dn1 is the cheapest at ${D.cycles[pBits].roba_dn1} cycles but has the largest error.`;
+    `At ${pBits}-bit, RoBA-(UpDn)2 gets the error down to ${fmt(errRow(pBits, "roba_updn2").mean, 2)}% at ${D.cycles[pBits].roba_updn2} cycles, against ${exC} for exact. RoBA-Dn1 is the cheapest at ${D.cycles[pBits].roba_dn1} cycles but has the largest error.`;
 }
 
 /* ---------- Fig 4: domains ---------- */
@@ -757,118 +820,203 @@ const DOMAIN_ROWS = [
   { d: "16", m: "exact", label: "int16 fixed point" },
 ];
 function drawDomains(el, W) {
-  const narrow = W < 560, lab = narrow ? 0 : 190, bh = 13, gap = 3, rowH = narrow ? 2 * bh + gap + 34 : 2 * bh + gap + 18;
-  const m = { l: lab, r: 64, t: 26 }, H = m.t + DOMAIN_ROWS.length * rowH + 10;
-  const X = v => m.l + v * (W - m.l - m.r);
+  const narrow = W < 560, lab = narrow ? 0 : 190, bh = 13, gap = 3, rowH = narrow ? 2 * bh + gap + 32 : 2 * bh + gap + 16;
+  const m = { l: lab, r: 64, t: 26 }, H = m.t + DOMAIN_ROWS.length * rowH + 10, X = v => m.l + v * (W - m.l - m.r);
   let s = "";
   for (const t of [0, 0.25, 0.5, 0.75, 1]) s += `<line x1="${X(t)}" x2="${X(t)}" y1="${m.t - 6}" y2="${H - 6}" style="stroke:var(--rule)"/>` + T(X(t), m.t - 12, `${t * 100}%`, { anchor: "middle", size: 11, fill: "var(--muted)" });
   DOMAIN_ROWS.forEach((r, i) => {
     let y = m.t + i * rowH + 6;
-    if (narrow) { s += T(0, y + 6, r.label, { fill: "var(--ink)", size: 12, weight: 500 }); y += 14; }
+    if (narrow) { s += T(0, y + 6, r.label, { fill: "var(--ink)", weight: 500 }); y += 14; }
     else s += T(lab - 12, y + bh + 4, r.label, { anchor: "end", fill: "var(--ink)", weight: r.d === "trunc" ? 600 : 400 });
     ["mlp", "lenet5"].forEach((mo, j) => {
       const row = evalRow(mo, r.d, r.m), yy = y + j * (bh + gap);
-      const tipTxt = `<b>${r.label}</b>\n${MODEL[mo]}: ${pct(row.acc)} accuracy\nloss ${fmt(row.loss, 4)}`;
-      s += `<rect x="${X(0)}" y="${yy}" width="${Math.max(2, X(row.acc) - X(0))}" height="${bh}" rx="3" style="fill:${mo === "mlp" ? "var(--accent)" : "var(--model-b)"}" data-tip="${esc(tipTxt)}"/>`;
+      const tt = `<b>${r.label}</b>\n${MODEL[mo]}: ${pct(row.acc)} accuracy\nloss ${fmt(row.loss, 4)}`;
+      s += `<rect x="${X(0)}" y="${yy}" width="${Math.max(2, X(row.acc) - X(0))}" height="${bh}" rx="3" style="fill:${mo === "mlp" ? "var(--accent)" : "var(--model-b)"}" data-tip="${esc(tt)}"/>`;
       s += T(X(row.acc) + 6, yy + bh - 2, pct(row.acc, row.acc < 0.5 ? 1 : 2), { size: 11, fill: r.d === "trunc" ? "var(--critical)" : "var(--ink-2)", weight: r.d === "trunc" ? 600 : 400 });
     });
   });
-  s += `<line x1="${X(0.1)}" x2="${X(0.1)}" y1="${m.t - 6}" y2="${H - 6}" style="stroke:var(--critical)" stroke-dasharray="3 3"/>`;
-  s += T(X(0.1) + 4, H - 2, "chance (10%)", { size: 10.5, fill: "var(--critical)" });
-  el.innerHTML = `<svg viewBox="0 0 ${W} ${H + 6}" width="${W}" height="${H + 6}" role="img" aria-label="Test accuracy by number domain">${s}</svg>`;
+  s += `<line x1="${X(0.1)}" x2="${X(0.1)}" y1="${m.t - 6}" y2="${H - 6}" style="stroke:var(--critical)" stroke-dasharray="3 3"/>` + T(X(0.1) + 4, H - 2, "chance (10%)", { size: 10.5, fill: "var(--critical)" });
+  el.innerHTML = svgWrap(W, H + 6, "Test accuracy by number domain", s);
 }
 
 /* ---------- Fig 5: accuracy ---------- */
 const acc = { model: "lenet5", bits: 8 };
 function drawAcc(el, W) {
-  const narrow = W < 520, lab = narrow ? 104 : 150;
-  const rowH = 34, m = { l: lab, r: 24, t: 30, b: 34 }, H = m.t + ORDER.length * rowH + m.b;
+  const narrow = W < 520, lab = narrow ? 104 : 150, rowH = 32, m = { l: lab, r: 24, t: 30, b: 34 }, H = m.t + ORDER.length * rowH + m.b;
   const rows = ORDER.map(k => ({ k, ft: ftRow(acc.model, acc.bits, k), ev: evalRow(acc.model, String(acc.bits), k) }));
   const ref = rows[0].ft.acc_before * 100;
   const vals = rows.flatMap(r => [r.ft.acc_before * 100, r.ft.acc_after * 100]).concat([ref - 0.1, ref + 0.1]);
   const x0 = Math.floor((Math.min(...vals) - 0.03) * 20) / 20, x1 = Math.ceil((Math.max(...vals) + 0.03) * 20) / 20;
   const X = v => m.l + (v - x0) / (x1 - x0) * (W - m.l - m.r);
   let s = `<rect x="${X(ref - 0.1)}" y="${m.t - 8}" width="${X(ref + 0.1) - X(ref - 0.1)}" height="${ORDER.length * rowH + 4}" style="fill:var(--band)"/>`;
-  s += `<line x1="${X(ref)}" x2="${X(ref)}" y1="${m.t - 8}" y2="${m.t + ORDER.length * rowH - 4}" style="stroke:var(--accent)" stroke-dasharray="3 3"/>`;
-  s += T(X(ref), m.t - 14, `exact ${fmt(ref, 2)}%`, { anchor: "middle", size: 11, fill: "var(--accent)", weight: 600 });
-  const step = (x1 - x0) > 0.5 ? 0.1 : 0.05;
+  s += `<line x1="${X(ref)}" x2="${X(ref)}" y1="${m.t - 8}" y2="${m.t + ORDER.length * rowH - 4}" style="stroke:var(--accent)" stroke-dasharray="3 3"/>` + T(X(ref), m.t - 14, `exact ${fmt(ref, 2)}%`, { anchor: "middle", size: 11, fill: "var(--accent)", weight: 600 });
+  const span = x1 - x0, step = span > 2 ? 0.5 : span > 1 ? 0.25 : span > 0.5 ? 0.1 : 0.05;
   for (let t = Math.ceil(x0 / step) * step; t <= x1 + 1e-9; t += step) {
-    s += T(X(t), H - 12, `${fmt(t, 2)}`, { anchor: "middle", size: 11, fill: "var(--muted)" });
-    s += `<line x1="${X(t)}" x2="${X(t)}" y1="${H - m.b + 4}" y2="${H - m.b + 9}" style="stroke:var(--rule-strong)"/>`;
+    s += T(X(t), H - 12, fmt(t, 2), { anchor: "middle", size: 11, fill: "var(--muted)" }) + `<line x1="${X(t)}" x2="${X(t)}" y1="${H - m.b + 4}" y2="${H - m.b + 9}" style="stroke:var(--rule-strong)"/>`;
   }
   s += `<line x1="${m.l}" x2="${W - m.r}" y1="${H - m.b + 4}" y2="${H - m.b + 4}" style="stroke:var(--rule-strong)"/>`;
   rows.forEach((r, i) => {
     const y = m.t + i * rowH + rowH / 2 - 4, b = r.ft.acc_before * 100, a = r.ft.acc_after * 100;
-    s += `<line x1="${m.l}" x2="${W - m.r}" y1="${y}" y2="${y}" style="stroke:var(--rule)" stroke-dasharray="1 4"/>`;
-    s += T(m.l - 12, y + 4, LABEL[r.k], { anchor: "end", fill: "var(--ink)", size: narrow ? 11 : 12.5 });
-    const tipTxt = `<b>${LABEL[r.k]}, ${MODEL[acc.model]} int${acc.bits}</b>\nafter training ${fmt(b, 2)}% (loss ${fmt(r.ft.loss_before, 4)})\nafter fine-tuning ${fmt(a, 2)}% (loss ${fmt(r.ft.loss_after, 4)})\npredictions equal to exact: ${pct(r.ev.agree, 2)}`;
+    s += `<line x1="${m.l}" x2="${W - m.r}" y1="${y}" y2="${y}" style="stroke:var(--rule)" stroke-dasharray="1 4"/>` + T(m.l - 12, y + 4, LABEL[r.k], { anchor: "end", fill: "var(--ink)", size: narrow ? 11 : 12.5 });
+    const tt = `<b>${LABEL[r.k]}, ${MODEL[acc.model]} int${acc.bits}</b>\nafter training ${fmt(b, 2)}% (loss ${fmt(r.ft.loss_before, 4)})\nafter fine-tuning ${fmt(a, 2)}% (loss ${fmt(r.ft.loss_after, 4)})\npredictions equal to exact: ${pct(r.ev.agree, 2)}`;
     s += `<line x1="${X(b)}" x2="${X(a)}" y1="${y}" y2="${y}" style="stroke:${FAM[r.k]}" stroke-width="2" stroke-opacity="0.5"/>`;
-    s += `<circle cx="${X(b)}" cy="${y}" r="6" style="fill:var(--surface);stroke:${FAM[r.k]}" stroke-width="2" data-tip="${esc(tipTxt)}"/>`;
-    s += `<circle cx="${X(a)}" cy="${y}" r="6" style="fill:${FAM[r.k]};stroke:var(--surface)" stroke-width="1.5" data-tip="${esc(tipTxt)}"/>`;
+    s += `<circle cx="${X(b)}" cy="${y}" r="6" style="fill:var(--surface);stroke:${FAM[r.k]}" stroke-width="2" data-tip="${esc(tt)}"/>`;
+    s += `<circle cx="${X(a)}" cy="${y}" r="6" style="fill:${FAM[r.k]};stroke:var(--surface)" stroke-width="1.5" data-tip="${esc(tt)}"/>`;
   });
   s += T(W - m.r, H + 4, "test accuracy, %", { anchor: "end", size: 11, fill: "var(--muted)" });
-  el.innerHTML = `<svg viewBox="0 0 ${W} ${H + 8}" width="${W}" height="${H + 8}" role="img" aria-label="Test accuracy per multiplier before and after fine-tuning">${s}</svg>`;
+  el.innerHTML = svgWrap(W, H + 8, "Test accuracy per multiplier before and after fine-tuning", s);
+  const worst = Math.max(...rows.slice(1).map(r => Math.abs(r.ft.acc_before * 100 - ref)));
+  document.getElementById("acc-claim").textContent = worst <= 0.1
+    ? `On ${DS_LABEL[state.ds]}, every multiplier lands inside the ±0.1-point noise band around exact (largest change ${fmt(worst, 2)} points), before and after fine-tuning.`
+    : `On ${DS_LABEL[state.ds]}, the largest change from exact is ${fmt(worst, 2)} points after training; fine-tuning with the approximation in the loop moves each multiplier back toward exact.`;
   document.getElementById("acc-table").innerHTML = `<table class="data"><tr><th>Multiplier</th><th>After training</th><th>After fine-tuning</th><th>Loss before</th><th>Loss after</th><th>Agrees with exact</th></tr>` +
     rows.map(r => `<tr><td>${LABEL[r.k]}</td><td class="num">${pct(r.ft.acc_before)}</td><td class="num">${pct(r.ft.acc_after)}</td><td class="num">${fmt(r.ft.loss_before, 4)}</td><td class="num">${fmt(r.ft.loss_after, 4)}</td><td class="num">${pct(r.ev.agree)}</td></tr>`).join("") + `</table>`;
 }
 
-/* ---------- Fig 6: energy dumbbell ---------- */
-function drawDumbbell(el, W) {
-  const narrow = W < 520, lab = narrow ? 104 : 150;
-  const rowH = 38, m = { l: lab, r: 56, t: 34, b: 30 };
-  const order = APPROX.slice().sort((p, q) => energy(p, 16) - energy(q, 16));
-  const H = m.t + order.length * rowH + m.b;
-  const xmax = 1.3, X = v => m.l + v / xmax * (W - m.l - m.r);
-  let s = `<line x1="${X(0)}" x2="${X(0)}" y1="${m.t - 12}" y2="${H - m.b}" style="stroke:var(--rule-strong)"/>`;
-  s += `<line x1="${X(1)}" x2="${X(1)}" y1="${m.t - 12}" y2="${H - m.b}" style="stroke:var(--ink-2)" stroke-dasharray="4 4"/>`;
-  s += T(X(1), m.t - 18, "exact = 1.0×", { anchor: "middle", size: 11, fill: "var(--ink-2)" });
-  for (const t of [0, 0.25, 0.5, 0.75, 1, 1.25]) s += T(X(t), H - 8, `${t}`, { anchor: "middle", size: 11, fill: "var(--muted)" });
-  order.forEach((k, i) => {
-    const y = m.t + i * rowH + 10, a = energy(k, 8), b = energy(k, 16), hl = k === "roba_dn1";
-    const col = hl ? "var(--accent)" : "var(--base)";
-    s += T(m.l - 12, y + 4, LABEL[k], { anchor: "end", fill: hl ? "var(--ink)" : "var(--ink-2)", weight: hl ? 600 : 400, size: narrow ? 11 : 12.5 });
-    s += `<line x1="${X(a)}" x2="${X(b)}" y1="${y}" y2="${y}" style="stroke:${col}" stroke-width="2" stroke-opacity="0.5"/>`;
-    const t8 = `<b>${LABEL[k]}, int8</b>\n${fmt(a, 2)}× exact\n${D.cycles[8][k]} vs ${D.cycles[8].exact} cycles per multiply`;
-    const t16 = `<b>${LABEL[k]}, int16</b>\n${fmt(b, 2)}× exact\n${D.cycles[16][k]} vs ${D.cycles[16].exact} cycles per multiply`;
-    s += `<circle cx="${X(a)}" cy="${y}" r="7" style="fill:${col}" fill-opacity="0.45" data-tip="${esc(t8)}"/>`;
-    s += `<circle cx="${X(b)}" cy="${y}" r="7" style="fill:${col}" data-tip="${esc(t16)}"/>`;
-    const near = a < 1 && X(a) + 46 > X(1);
-    s += near ? T(X(a), y - 12, `${fmt(a, 2)}×`, { anchor: "middle", size: 11.5, fill: hl ? "var(--ink)" : "var(--ink-2)" })
-      : T(X(a) + 12, y + 4, `${fmt(a, 2)}×`, { size: 11.5, fill: hl ? "var(--ink)" : "var(--ink-2)" });
-    s += T(X(b) - 12, y + 4, `${fmt(b, 2)}×`, { anchor: "end", size: 11.5, fill: hl ? "var(--ink)" : "var(--ink-2)", weight: hl ? 600 : 400 });
+/* ---------- Fig 6: dataset comparison ---------- */
+const cmp = { model: "lenet5", stage: "before" };
+function drawCmp(el, W) {
+  const have = DS_KEYS.filter(k => D.datasets[k]);
+  if (have.length < 2) {
+    el.innerHTML = `<div class="empty"><b>Fashion-MNIST has not been run yet</b><span>Run <code>python3 experiments/run.py --dataset fashion --stage all</code>, then <code>python3 experiments/build_site.py</code>.</span></div>`;
+    document.getElementById("cmp-claim").textContent = "This slide compares how much each multiplier costs in accuracy on MNIST and on Fashion-MNIST.";
+    return;
+  }
+  const key = cmp.stage === "before" ? "acc_before" : "acc_after";
+  const delta = (k, ds) => (ftRow(cmp.model, 8, k, ds)[key] - ftRow(cmp.model, 8, "exact", ds)[key]) * 100;
+  const narrow = W < 520, lab = narrow ? 104 : 150, rowH = 34, m = { l: lab, r: 60, t: 30, b: 34 }, H = m.t + APPROX.length * rowH + m.b;
+  const vals = APPROX.flatMap(k => have.map(ds => delta(k, ds)));
+  const lim = Math.max(0.25, Math.ceil((Math.max(...vals.map(Math.abs)) + 0.05) * 10) / 10);
+  const X = v => m.l + (v + lim) / (2 * lim) * (W - m.l - m.r);
+  let s = `<rect x="${X(-0.1)}" y="${m.t - 8}" width="${X(0.1) - X(-0.1)}" height="${APPROX.length * rowH + 4}" style="fill:var(--band)"/>`;
+  s += `<line x1="${X(0)}" x2="${X(0)}" y1="${m.t - 8}" y2="${m.t + APPROX.length * rowH - 4}" style="stroke:var(--ink-2)"/>` + T(X(0), m.t - 14, "same as exact", { anchor: "middle", size: 11 });
+  const step = lim > 1.5 ? 0.5 : lim > 0.6 ? 0.25 : 0.1;
+  for (let t = -Math.floor(lim / step) * step; t <= lim + 1e-9; t += step) s += T(X(t), H - 12, signed(t, step < 0.25 ? 1 : 2), { anchor: "middle", size: 11, fill: "var(--muted)" });
+  s += T(W - m.r + 56, H + 4, "accuracy change, pts", { anchor: "end", size: 11, fill: "var(--muted)" });
+  APPROX.forEach((k, i) => {
+    const y = m.t + i * rowH + rowH / 2 - 4, dm = delta(k, "mnist"), df = delta(k, "fashion");
+    s += `<line x1="${m.l}" x2="${W - m.r}" y1="${y}" y2="${y}" style="stroke:var(--rule)" stroke-dasharray="1 4"/>` + T(m.l - 12, y + 4, LABEL[k], { anchor: "end", fill: "var(--ink)", size: narrow ? 11 : 12.5 });
+    const tm = `<b>${LABEL[k]}, ${MODEL[cmp.model]} int8</b>\nMNIST: ${signed(dm)} pts vs exact`, tf = `<b>${LABEL[k]}, ${MODEL[cmp.model]} int8</b>\nFashion-MNIST: ${signed(df)} pts vs exact`;
+    s += `<circle cx="${X(dm)}" cy="${y}" r="6" style="fill:var(--base)" data-tip="${esc(tm)}"/>`;
+    s += `<circle cx="${X(df)}" cy="${y}" r="7" style="fill:var(--accent);stroke:var(--surface)" stroke-width="2" data-tip="${esc(tf)}"/>`;
+    const leftSide = df < dm;   // label on the blue dot's outer side, away from the grey one
+    s += T(leftSide ? X(df) - 12 : X(df) + 12, y + 4, `${signed(df)}`, { anchor: leftSide ? "end" : "start", size: 11.5, fill: "var(--ink)", weight: Math.abs(df) > 0.1 ? 600 : 400 });
   });
-  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Estimated multiplication energy relative to exact">${s}</svg>`;
-  document.getElementById("energy-claim").textContent =
-    `RoBA-Dn1 needs about ${fmt(energy("roba_dn1", 8), 2)}× the multiplication energy of exact at int8 and ${fmt(energy("roba_dn1", 16), 2)}× at int16. ` +
-    `At int8 the most accurate variant, RoBA-(UpDn)2, saves nothing (${fmt(energy("roba_updn2", 8), 2)}×); at int16 it costs ${fmt(energy("roba_updn2", 16), 2)}×.`;
+  el.innerHTML = svgWrap(W, H + 8, "Accuracy change against exact on MNIST and Fashion-MNIST", s);
+  const fw = APPROX.map(k => ({ k, d: delta(k, "fashion") })).sort((a, b) => a.d - b.d)[0];
+  const base = (ftRow(cmp.model, 8, "exact", "fashion")[key] * 100);
+  document.getElementById("cmp-claim").textContent = Math.abs(fw.d) > 0.1
+    ? `Fashion-MNIST (exact int8 ${MODEL[cmp.model]}: ${fmt(base, 2)}%) separates the multipliers more than MNIST: ${LABEL[fw.k]} costs ${fmt(Math.abs(fw.d), 2)} points ${cmp.stage === "before" ? "after training" : "even after fine-tuning"}.`
+    : `Even on Fashion-MNIST (exact int8 ${MODEL[cmp.model]}: ${fmt(base, 2)}%), every multiplier stays within 0.1 points of exact ${cmp.stage === "before" ? "after training" : "after fine-tuning"}.`;
 }
 
-/* ---------- Fig 7: accumulator register ---------- */
+/* ---------- Fig 7: energy ---------- */
+function drawDumbbell(el, W) {
+  const narrow = W < 520, lab = narrow ? 104 : 150, rowH = 36, m = { l: lab, r: 56, t: 34, b: 30 };
+  const order = APPROX.slice().sort((p, q) => energy(p, 16) - energy(q, 16)), H = m.t + order.length * rowH + m.b;
+  const X = v => m.l + v / 1.3 * (W - m.l - m.r);
+  let s = `<line x1="${X(0)}" x2="${X(0)}" y1="${m.t - 12}" y2="${H - m.b}" style="stroke:var(--rule-strong)"/>`;
+  s += `<line x1="${X(1)}" x2="${X(1)}" y1="${m.t - 12}" y2="${H - m.b}" style="stroke:var(--ink-2)" stroke-dasharray="4 4"/>` + T(X(1), m.t - 18, "exact = 1.0×", { anchor: "middle", size: 11 });
+  for (const t of [0, 0.25, 0.5, 0.75, 1, 1.25]) s += T(X(t), H - 8, `${t}`, { anchor: "middle", size: 11, fill: "var(--muted)" });
+  order.forEach((k, i) => {
+    const y = m.t + i * rowH + 10, a = energy(k, 8), b = energy(k, 16), hl = k === "roba_dn1", col = hl ? "var(--accent)" : "var(--base)";
+    s += T(m.l - 12, y + 4, LABEL[k], { anchor: "end", fill: hl ? "var(--ink)" : "var(--ink-2)", weight: hl ? 600 : 400, size: narrow ? 11 : 12.5 });
+    s += `<line x1="${X(a)}" x2="${X(b)}" y1="${y}" y2="${y}" style="stroke:${col}" stroke-width="2" stroke-opacity="0.5"/>`;
+    s += `<circle cx="${X(a)}" cy="${y}" r="7" style="fill:${col}" fill-opacity="0.45" data-tip="${esc(`<b>${LABEL[k]}, int8</b>\n${fmt(a, 2)}× exact\n${D.cycles[8][k]} vs ${D.cycles[8].exact} cycles per multiply`)}"/>`;
+    s += `<circle cx="${X(b)}" cy="${y}" r="7" style="fill:${col}" data-tip="${esc(`<b>${LABEL[k]}, int16</b>\n${fmt(b, 2)}× exact\n${D.cycles[16][k]} vs ${D.cycles[16].exact} cycles per multiply`)}"/>`;
+    const near = a < 1 && X(a) + 46 > X(1), f = hl ? "var(--ink)" : "var(--ink-2)";
+    s += near ? T(X(a), y - 12, `${fmt(a, 2)}×`, { anchor: "middle", size: 11.5, fill: f }) : T(X(a) + 12, y + 4, `${fmt(a, 2)}×`, { size: 11.5, fill: f });
+    s += T(X(b) - 12, y + 4, `${fmt(b, 2)}×`, { anchor: "end", size: 11.5, fill: f, weight: hl ? 600 : 400 });
+  });
+  el.innerHTML = svgWrap(W, H, "Estimated multiplication energy relative to exact", s);
+  document.getElementById("energy-claim").textContent =
+    `RoBA-Dn1 needs about ${fmt(energy("roba_dn1", 8), 2)}× the multiplication energy of exact at int8 and ${fmt(energy("roba_dn1", 16), 2)}× at int16. At int8 the most accurate variant, RoBA-(UpDn)2, saves nothing (${fmt(energy("roba_updn2", 8), 2)}×); at int16 it costs ${fmt(energy("roba_updn2", 16), 2)}×.`;
+}
+
+/* ---------- Fig 8: accumulator register ---------- */
 function drawRegs(el, W) {
   const rows = [["mlp", "8"], ["lenet5", "8"], ["mlp", "16"], ["lenet5", "16"]].map(([mo, d]) => ({ mo, d, bits: Number(evalRow(mo, d, "exact").acc_bits) }));
   const narrow = W < 520, lab = narrow ? 92 : 130, N = 40, m = { l: lab, r: 46, t: 34 };
-  const cw = (W - m.l - m.r) / N, ch = 22, rowH = 40, H = m.t + rows.length * rowH + 8;
-  const cx = i => m.l + (N - 1 - i) * cw;   // bit i, MSB on the left
+  const cw = (W - m.l - m.r) / N, ch = 22, rowH = 40, H = m.t + rows.length * rowH + 8, cx = i => m.l + (N - 1 - i) * cw;
   let s = `<line x1="${cx(31)}" x2="${cx(31)}" y1="${m.t - 16}" y2="${H - 4}" style="stroke:var(--ink)" stroke-width="2"/>`;
-  s += T(cx(31) + 6, m.t - 18, "32-bit register →", { size: 11, fill: "var(--ink)", weight: 600 });
-  s += T(cx(31) - 6, m.t - 18, "← overflow", { size: 11, anchor: "end", fill: "var(--critical)" });
+  s += T(cx(31) + 6, m.t - 18, "32-bit register →", { size: 11, fill: "var(--ink)", weight: 600 }) + T(cx(31) - 6, m.t - 18, "← overflow", { size: 11, anchor: "end", fill: "var(--critical)" });
   for (const t of [0, 8, 16, 24, 32, 39]) s += T(cx(t) + cw / 2, H + 8, t, { anchor: "middle", size: 10, fill: "var(--muted)" });
   rows.forEach((r, j) => {
     const y = m.t + j * rowH;
     s += T(m.l - 12, y + ch / 2 + 4, `${MODEL[r.mo]} · int${r.d}`, { anchor: "end", fill: "var(--ink)", size: narrow ? 11 : 12.5 });
     for (let i = 0; i < N; i++) {
-      const used = i < r.bits, over = used && i >= 32;
-      const fill = over ? "var(--critical)" : used ? "var(--accent)" : "var(--mid)";
+      const used = i < r.bits, fill = used && i >= 32 ? "var(--critical)" : used ? "var(--accent)" : "var(--mid)";
       s += `<rect x="${cx(i) + 1}" y="${y}" width="${Math.max(1, cw - 2)}" height="${ch}" rx="2" style="fill:${fill}" ${used ? 'fill-opacity="0.85"' : ""}/>`;
     }
-    const tipTxt = `<b>${MODEL[r.mo]}, int${r.d}</b>\nlargest sum needs ${r.bits} bits\n${r.bits > 32 ? `${r.bits - 32} bits past a 32-bit register` : `${32 - r.bits} bits of headroom`}`;
-    s += `<rect x="${m.l}" y="${y}" width="${W - m.l - m.r}" height="${ch}" style="fill:transparent" data-tip="${esc(tipTxt)}"/>`;
+    const tt = `<b>${MODEL[r.mo]}, int${r.d}</b>\nlargest sum needs ${r.bits} bits\n${r.bits > 32 ? `${r.bits - 32} bits past a 32-bit register` : `${32 - r.bits} bits of headroom`}`;
+    s += `<rect x="${m.l}" y="${y}" width="${W - m.l - m.r}" height="${ch}" style="fill:transparent" data-tip="${esc(tt)}"/>`;
     s += T(W - m.r + 8, y + ch / 2 + 4, `${r.bits} b`, { size: 11.5, fill: r.bits > 32 ? "var(--critical)" : "var(--ink-2)", weight: 600 });
   });
-  el.innerHTML = `<svg viewBox="0 0 ${W} ${H + 12}" width="${W}" height="${H + 12}" role="img" aria-label="Accumulator bits needed per model and precision">${s}</svg>`;
+  el.innerHTML = svgWrap(W, H + 12, "Accumulator bits needed per model and precision", s);
+  const i8 = Math.max(rows[0].bits, rows[1].bits), i16 = Math.max(rows[2].bits, rows[3].bits);
+  document.getElementById("reg-claim").textContent =
+    `On ${DS_LABEL[state.ds]}, int8 dot products need at most ${i8} bits and fit a 32-bit Ibex register. int16 sums need up to ${i16} bits and would overflow without 64-bit accumulation.`;
 }
 
+/* ---------- summary ---------- */
+function renderFindings() {
+  const ds = DS_LABEL[state.ds];
+  const spread = Math.max(...["mlp", "lenet5"].flatMap(mo => APPROX.map(m => Math.abs(evalRow(mo, "8", m).acc - evalRow(mo, "8", "exact").acc)))) * 100;
+  const trunc = ["mlp", "lenet5"].map(mo => evalRow(mo, "trunc", "exact").acc * 100);
+  const base = ["mlp", "lenet5"].map(mo => evalRow(mo, "float32", "native").acc * 100);
+  const items = [
+    { tag: "all datasets", big: `${fmt(energy("roba_dn1", 8), 2)}<small>×</small>`, text: `Estimated multiplication energy of RoBA-Dn1 at int8, relative to exact shift-and-add (${fmt(energy("roba_dn1", 16), 2)}× at int16).` },
+    { tag: ds, big: `${fmt(spread, 2)}<small>pts</small>`, text: `Largest accuracy change from any approximate multiplier at int8, either model, before fine-tuning. Float baselines: MLP ${fmt(base[0], 2)}%, LeNet-5 ${fmt(base[1], 2)}%.` },
+    { tag: ds, big: `${fmt(trunc[0], 1)}<small>%</small>`, text: `MLP accuracy when floats are cast to integers without scaling (LeNet-5: ${fmt(trunc[1], 1)}%). Chance is 10%.` },
+    { tag: "multiplier library", big: `${fmt(errRow(16, "roba_updn2").max, 2)}<small>%</small>`, text: `Maximum error of RoBA-(UpDn)2 in our library; the paper reports ${D.paper_max.roba_updn2}%.` },
+  ];
+  document.getElementById("findings-grid").innerHTML = items.map(i => `<div class="finding"><span class="tag">${esc(i.tag)}</span><div class="big">${i.big}</div><p>${esc(i.text)}</p></div>`).join("");
+}
+
+/* ---------- deck navigation ---------- */
+const deck = document.getElementById("deck");
+const SLIDES = [...deck.querySelectorAll(".slide")];
+let idx = 0;
+const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+document.getElementById("dots").innerHTML = SLIDES.map((s, i) => `<button type="button" aria-label="Slide ${i + 1}: ${esc(s.getAttribute("aria-label"))}" title="${esc(s.getAttribute("aria-label"))}"></button>`).join("");
+const dots = [...document.querySelectorAll("#dots button")];
+function go(i, smooth = true) {
+  idx = Math.max(0, Math.min(SLIDES.length - 1, i));
+  deck.scrollTo({ left: idx * deck.clientWidth, behavior: smooth && !reduced.matches ? "smooth" : "auto" });
+  sync();
+}
+function sync() {
+  dots.forEach((d, i) => d.setAttribute("aria-current", String(i === idx)));
+  document.getElementById("counter").textContent = `${String(idx + 1).padStart(2, "0")} / ${String(SLIDES.length).padStart(2, "0")}`;
+  document.getElementById("progress").style.width = `${(idx + 1) / SLIDES.length * 100}%`;
+  document.getElementById("prev").disabled = idx === 0;
+  document.getElementById("next").disabled = idx === SLIDES.length - 1;
+  document.getElementById("slide-name").textContent = SLIDES[idx].getAttribute("aria-label");
+  try { history.replaceState(null, "", `#${SLIDES[idx].id}`); } catch (err) { /* sandboxed */ }
+}
+let scrollTick = 0;
+deck.addEventListener("scroll", () => {
+  cancelAnimationFrame(scrollTick);
+  scrollTick = requestAnimationFrame(() => {
+    const i = Math.round(deck.scrollLeft / deck.clientWidth);
+    if (i !== idx) { idx = i; sync(); }
+  });
+});
+document.getElementById("prev").addEventListener("click", () => go(idx - 1));
+document.getElementById("next").addEventListener("click", () => go(idx + 1));
+dots.forEach((d, i) => d.addEventListener("click", () => go(i)));
+document.addEventListener("keydown", e => {
+  if (e.target.closest("input, textarea, select") || e.altKey || e.ctrlKey || e.metaKey) return;
+  const k = { ArrowRight: 1, PageDown: 1, ArrowLeft: -1, PageUp: -1 }[e.key];
+  if (k) { e.preventDefault(); go(idx + k); }
+  else if (e.key === "Home") { e.preventDefault(); go(0); }
+  else if (e.key === "End") { e.preventDefault(); go(SLIDES.length - 1); }
+});
+new ResizeObserver(() => { deck.scrollLeft = idx * deck.clientWidth; }).observe(deck);
+
 /* ---------- boot ---------- */
+try { const saved = localStorage.getItem("roba-ds"); if (saved && D.datasets[saved]) state.ds = saved; } catch (err) { /* storage unavailable */ }
+renderMeta();
 renderExplorer();
 renderFindings();
 initHeat();
@@ -876,14 +1024,18 @@ renderHeat();
 chart("pareto", drawPareto);
 chart("domains", drawDomains);
 chart("acc", drawAcc);
+chart("cmp", drawCmp);
 chart("dumbbell", drawDumbbell);
 chart("regs", drawRegs);
 seg(["p8", "p16"], id => { pBits = id === "p8" ? 8 : 16; redraw("pareto"); });
 seg(["m-mlp", "m-lenet5"], id => { acc.model = id === "m-mlp" ? "mlp" : "lenet5"; redraw("acc"); });
 seg(["b8", "b16"], id => { acc.bits = id === "b8" ? 8 : 16; redraw("acc"); });
-const reheat = () => renderHeat();
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", reheat);
-new MutationObserver(reheat).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+seg(["c-mlp", "c-lenet5"], id => { cmp.model = id === "c-mlp" ? "mlp" : "lenet5"; redraw("cmp"); });
+seg(["c-before", "c-after"], id => { cmp.stage = id === "c-before" ? "before" : "after"; redraw("cmp"); });
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderHeat);
+new MutationObserver(renderHeat).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+const start = SLIDES.findIndex(s => `#${s.id}` === location.hash);
+requestAnimationFrame(() => go(start > 0 ? start : 0, false));
 </script>
 
 </body>

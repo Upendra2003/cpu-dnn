@@ -1,4 +1,4 @@
-"""MNIST DNN with RoBA-family approximate multipliers.
+"""MNIST / Fashion-MNIST DNN with RoBA-family approximate multipliers.
 
 Stages (run in order with --stage all):
   errors    error statistics of each multiplier on 1M random operand pairs
@@ -21,10 +21,11 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from roba import cost  # noqa: E402
-from roba.data import load_mnist  # noqa: E402
+from roba.data import DATASETS, load_dataset  # noqa: E402
 from roba.multipliers import APPROX_MULTIPLIERS, MULTIPLIERS, approx_mul  # noqa: E402
 from roba.nn import MODELS, approx_layers, calibrate, configure, count_macs  # noqa: E402
 
+# Set per dataset in main(): results/<dataset>/, checkpoints/<dataset>/
 RESULTS = ROOT / "results"
 CKPT = ROOT / "checkpoints"
 
@@ -114,7 +115,7 @@ def load_float(name, device):
 
 def stage_train(args, device, data):
     (xtr, ytr), (xte, yte) = data
-    CKPT.mkdir(exist_ok=True)
+    CKPT.mkdir(parents=True, exist_ok=True)
     for name in args.models:
         torch.manual_seed(args.seed)
         model = MODELS[name]().to(device)
@@ -211,18 +212,22 @@ def main():
     p.add_argument("--ft-epochs", type=int, default=3)
     p.add_argument("--ft-lr", type=float, default=1e-4)
     p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--dataset", default="mnist", choices=list(DATASETS))
     args = p.parse_args()
     args.domains = [int(d) if d.isdigit() else d for d in args.domains]
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.backends.cudnn.allow_tf32 = False
-    RESULTS.mkdir(exist_ok=True)
+    global RESULTS, CKPT
+    RESULTS = ROOT / "results" / args.dataset
+    CKPT = ROOT / "checkpoints" / args.dataset
+    RESULTS.mkdir(parents=True, exist_ok=True)
     (RESULTS / "config.json").write_text(json.dumps(vars(args), indent=2))
     log("device", device, torch.cuda.get_device_name() if device == "cuda" else "")
 
     stages = ["errors", "train", "eval", "finetune"] if args.stage == "all" else [args.stage]
-    data = load_mnist(device) if set(stages) - {"errors"} else None
+    data = load_dataset(args.dataset, device) if set(stages) - {"errors"} else None
     for s in stages:
         t0 = time.time()
         if s == "errors":

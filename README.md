@@ -1,6 +1,6 @@
 # RoBA approximate multiplication for a DNN on a multiplierless CPU
 
-Phase 1 (GPU): train an MNIST DNN and evaluate it with the approximate multipliers from
+Phase 1 (GPU): train MNIST and Fashion-MNIST DNNs and evaluate them with the approximate multipliers from
 Rajiv & Kedia, DATE'26, before porting to Ibex RV32I + LOD.
 
 ```
@@ -15,13 +15,18 @@ experiments/run.py    stages: errors, train, eval, finetune
 ```
 
 ```
-# MNIST (not tracked in git)
-mkdir -p data/mnist && for f in train-images-idx3-ubyte train-labels-idx1-ubyte t10k-images-idx3-ubyte t10k-labels-idx1-ubyte; do
-  curl -sfL -o data/mnist/$f.gz https://ossci-datasets.s3.amazonaws.com/mnist/$f.gz; done
+# Datasets (not tracked in git)
+F="train-images-idx3-ubyte train-labels-idx1-ubyte t10k-images-idx3-ubyte t10k-labels-idx1-ubyte"
+mkdir -p data/mnist data/fashion
+for f in $F; do curl -sfL -o data/mnist/$f.gz https://ossci-datasets.s3.amazonaws.com/mnist/$f.gz; done
+for f in $F; do curl -sfL -o data/fashion/$f.gz http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/$f.gz; done
 
 python3 -m pytest -q tests
-python3 experiments/run.py --stage all     # results/*.csv, log in results/run.log
-python3 experiments/build_site.py          # index.html (interactive results page) from results/
+python3 experiments/run.py --dataset mnist --stage all                              # ~7 min
+python3 experiments/run.py --dataset fashion --stage all --epochs 30 --ft-epochs 5  # ~10 min
+# outputs: results/<dataset>/*.csv + run.log, checkpoints/<dataset>/
+python3 experiments/build_site.py   # index.html slide deck from results/<dataset>/
+python3 -m http.server 5055 --bind 127.0.0.1   # then open http://localhost:5055/ (forward port 5055)
 ```
 
 Notes
