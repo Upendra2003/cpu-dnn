@@ -1,0 +1,21 @@
+{
+  "stage": "all",
+  "models": [
+    "mlp",
+    "lenet5"
+  ],
+  "domains": [
+    "float",
+    "trunc",
+    8,
+    16
+  ],
+  "epochs": 15,
+  "ft_bits": [
+    8,
+    16
+  ],
+  "ft_epochs": 3,
+  "ft_lr": 0.0001,
+  "seed": 0
+}

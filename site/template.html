@@ -1,0 +1,879 @@
+<title>RoBA Multiplier Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Approximate RoBA-family multipliers inside an MNIST DNN: bit explorer, error landscapes, accuracy and energy results.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a datasheet. Narrow figure-label rail on the left, content column on the right;
+   every chart is a numbered figure, the bit explorer opens the page. */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #0e1318;
+  --ink-2: #4a5562;
+  --muted: #7d8794;
+  --rule: #dde2e8;
+  --rule-strong: #c3cad3;
+  --accent: #2a78d6;          /* one-pass RoBA, the highlight */
+  --accent-soft: rgba(42, 120, 214, 0.12);
+  --two: #eb6834;             /* two-pass RoBA */
+  --base: #9aa3ad;            /* baselines (Mitchell, DRUM6) */
+  --model-b: #1baf7a;         /* LeNet-5 */
+  --over: #2a78d6;            /* error > 0 */
+  --under: #e34948;           /* error < 0 */
+  --mid: #eef0f2;             /* error = 0 */
+  --critical: #d03b3b;
+  --good: #0a8a0a;
+  --band: rgba(42, 120, 214, 0.08);
+  --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step--1: 0.8125rem;
+  --step-0: 0.9375rem;
+  --step-1: 1.125rem;
+  --step-2: 1.5rem;
+  --step-3: clamp(2rem, 4.6vw, 3.25rem);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1115; --surface: #151a20; --ink: #e9edf1; --ink-2: #aab4bf; --muted: #7c8793;
+    --rule: #252d36; --rule-strong: #36404b; --accent: #4a92ea; --accent-soft: rgba(74, 146, 234, 0.16);
+    --two: #e0703f; --base: #6f7984; --model-b: #22b583; --over: #4a92ea; --under: #e66767; --mid: #262d35;
+    --critical: #e05a5a; --good: #2fb52f; --band: rgba(74, 146, 234, 0.12);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1115; --surface: #151a20; --ink: #e9edf1; --ink-2: #aab4bf; --muted: #7c8793;
+  --rule: #252d36; --rule-strong: #36404b; --accent: #4a92ea; --accent-soft: rgba(74, 146, 234, 0.16);
+  --two: #e0703f; --base: #6f7984; --model-b: #22b583; --over: #4a92ea; --under: #e66767; --mid: #262d35;
+  --critical: #e05a5a; --good: #2fb52f; --band: rgba(74, 146, 234, 0.12);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 400 var(--step-0)/1.6 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 64px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: var(--accent); }
+code, .mono { font-family: var(--font-mono); font-size: 0.92em; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- masthead ---------- */
+.masthead { padding-block: 48px 28px; display: grid; gap: 18px; border-bottom: 1px solid var(--rule-strong); }
+.eyebrow {
+  font: 600 var(--step--1)/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+  display: flex; flex-wrap: wrap; gap: 6px 18px;
+}
+.masthead h1 {
+  font-size: var(--step-3); font-weight: 750; font-stretch: 78%; line-height: 1.02; letter-spacing: -0.01em; max-width: 20ch;
+}
+.masthead h1 em { font-style: normal; color: var(--accent); }
+.lede { max-width: 68ch; color: var(--ink-2); font-size: var(--step-1); line-height: 1.55; }
+.spec { display: flex; flex-wrap: wrap; gap: 8px; }
+.spec span {
+  font: 500 var(--step--1)/1 var(--font-mono); padding: 7px 10px; border: 1px solid var(--rule-strong);
+  border-radius: 4px; color: var(--ink-2); background: var(--surface);
+}
+
+/* ---------- figure sections ---------- */
+.fig { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 28px; padding-block: 44px; border-bottom: 1px solid var(--rule); }
+.fig-label { display: grid; align-content: start; gap: 8px; }
+.fig-no { font: 600 var(--step--1)/1 var(--font-mono); color: var(--accent); letter-spacing: 0.06em; text-transform: uppercase; }
+.fig-label h2 { font-size: var(--step-2); font-weight: 700; font-stretch: 85%; line-height: 1.1; }
+.fig-body { display: grid; gap: 18px; min-width: 0; }
+.fig-body > p.claim { font-size: var(--step-1); line-height: 1.5; max-width: 68ch; }
+.note { color: var(--ink-2); font-size: var(--step--1); max-width: 72ch; }
+@media (max-width: 760px) {
+  .fig { grid-template-columns: minmax(0, 1fr); gap: 16px; padding-block: 32px; }
+}
+
+/* ---------- controls ---------- */
+.controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule-strong); border-radius: 6px; overflow: hidden; background: var(--surface); }
+.seg button {
+  font: 500 var(--step--1)/1 var(--font-body); color: var(--ink-2); background: transparent; border: 0;
+  padding: 8px 12px; cursor: pointer; border-right: 1px solid var(--rule);
+}
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.seg-label { font: 600 0.72rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.ctl { display: inline-flex; align-items: center; gap: 8px; }
+.btn {
+  font: 500 var(--step--1)/1 var(--font-body); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--rule-strong); border-radius: 6px; padding: 8px 12px; cursor: pointer;
+}
+.btn:hover { border-color: var(--ink-2); }
+
+/* ---------- panel ---------- */
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 18px; min-width: 0; }
+.chart { width: 100%; min-width: 0; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--font-body); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: var(--step--1); color: var(--ink-2); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.legend i.ring { background: transparent !important; border: 2px solid var(--ink-2); }
+
+/* ---------- explorer ---------- */
+.explorer { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 18px; }
+@media (max-width: 980px) { .explorer { grid-template-columns: minmax(0, 1fr); } }
+.operand { display: grid; gap: 10px; padding-block: 12px; border-bottom: 1px dashed var(--rule); }
+.operand:last-of-type { border-bottom: 0; }
+.op-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.op-head .name { font: 700 var(--step-1)/1 var(--font-display); font-stretch: 85%; }
+.op-head input[type="number"] {
+  width: 7.5ch; font: 500 var(--step-0)/1 var(--font-mono); color: var(--ink); background: var(--bg);
+  border: 1px solid var(--rule-strong); border-radius: 4px; padding: 6px 8px;
+}
+.op-head input[type="range"] { flex: 1 1 140px; accent-color: var(--accent); min-width: 0; }
+.bits { display: grid; gap: 3px; }
+.bits-row { display: grid; gap: 2px; }
+.bit {
+  font: 500 0.8rem/1 var(--font-mono); text-align: center; padding: 7px 0; border-radius: 3px;
+  background: var(--bg); color: var(--muted); border: 1px solid transparent; min-width: 0;
+}
+.bit.one { color: var(--ink); background: var(--mid); }
+.bit.lod { background: var(--accent); color: #fff; }
+.bit.next { border-color: var(--two); color: var(--ink); }
+.bit-idx { font: 400 0.62rem/1 var(--font-mono); color: var(--muted); text-align: center; }
+.round { font-size: var(--step--1); color: var(--ink-2); display: grid; gap: 2px; }
+.round b { color: var(--ink); font-weight: 600; }
+.round .mono { color: var(--ink); }
+.shift-form { font: 400 var(--step--1)/1.6 var(--font-mono); color: var(--ink-2); background: var(--bg); border-radius: 6px; padding: 10px 12px; overflow-wrap: anywhere; }
+.shift-form b { color: var(--accent); font-weight: 600; }
+
+table.mults { width: 100%; border-collapse: collapse; font-size: var(--step--1); }
+table.mults th { font: 600 0.7rem/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 0 8px 8px 0; }
+table.mults td { padding: 7px 8px 7px 0; border-top: 1px solid var(--rule); vertical-align: middle; }
+table.mults td.r, table.mults th.r { text-align: right; }
+table.mults tr.exact td { color: var(--ink); font-weight: 600; }
+.chip { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 8px; vertical-align: 1px; }
+.errbar { position: relative; height: 12px; min-width: 90px; }
+.errbar::before { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--rule-strong); }
+.errbar span { position: absolute; top: 2px; height: 8px; border-radius: 2px; }
+.table-scroll { overflow-x: auto; }
+
+/* ---------- findings ---------- */
+.findings { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.finding { background: var(--surface); padding: 18px; display: grid; gap: 8px; align-content: start; }
+.finding .big { font: 700 2.25rem/1 var(--font-display); font-stretch: 80%; font-variant-numeric: tabular-nums; }
+.finding .big small { font-size: 0.5em; font-weight: 600; color: var(--muted); margin-left: 2px; }
+.finding p { font-size: var(--step--1); color: var(--ink-2); line-height: 1.5; }
+@media (max-width: 900px) { .findings { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .findings { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- heatmap ---------- */
+.land { display: grid; grid-template-columns: minmax(0, 520px) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 980px) { .land { grid-template-columns: minmax(0, 1fr); } }
+.heat { display: grid; grid-template-columns: 34px minmax(0, 1fr); grid-template-rows: auto auto auto; gap: 4px 6px; }
+.heat canvas { width: 100%; max-width: 100%; aspect-ratio: 1; image-rendering: pixelated; border-radius: 3px; cursor: crosshair; display: block; }
+.heat .yax, .heat .xax { position: relative; font: 400 0.68rem/1 var(--font-mono); color: var(--muted); }
+.heat .yax span { position: absolute; right: 0; transform: translateY(50%); }
+.heat .xax { height: 14px; }
+.heat .xax span { position: absolute; transform: translateX(-50%); top: 2px; }
+.heat .axname { font: 600 0.68rem/1 var(--font-mono); color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.scale { display: grid; gap: 6px; }
+.scale .bar { height: 10px; border-radius: 3px; }
+.scale .ticks { display: flex; justify-content: space-between; font: 400 0.7rem/1 var(--font-mono); color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; }
+.stat .k { font: 600 0.7rem/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.stat .v { font: 700 1.6rem/1.15 var(--font-display); font-stretch: 85%; font-variant-numeric: tabular-nums; }
+.stat .s { font-size: var(--step--1); color: var(--ink-2); }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.tabs button {
+  font: 500 var(--step--1)/1 var(--font-body); color: var(--ink-2); background: var(--surface);
+  border: 1px solid var(--rule-strong); border-radius: 999px; padding: 7px 12px; cursor: pointer;
+}
+.tabs button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+
+/* ---------- method ---------- */
+.steps { display: grid; gap: 0; counter-reset: s; margin: 0; padding: 0; list-style: none; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; padding-block: 12px; border-top: 1px solid var(--rule); }
+.steps li::before { content: counter(s, decimal-leading-zero); font: 600 var(--step--1)/1.6 var(--font-mono); color: var(--accent); }
+.steps b { font-weight: 600; }
+pre.code {
+  margin: 0; font: 400 0.8rem/1.6 var(--font-mono); background: var(--surface); border: 1px solid var(--rule);
+  border-radius: 8px; padding: 14px 16px; overflow-x: auto; color: var(--ink);
+}
+pre.code .c { color: var(--muted); }
+.formula { font: 500 var(--step-1)/1.4 var(--font-mono); padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--surface); overflow-x: auto; }
+.formula .dim { color: var(--muted); }
+table.files { width: 100%; border-collapse: collapse; font-size: var(--step--1); }
+table.files td { padding: 8px 12px 8px 0; border-top: 1px solid var(--rule); vertical-align: top; }
+table.files td:first-child { font-family: var(--font-mono); white-space: nowrap; }
+.two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+@media (max-width: 860px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
+ul.caveats { margin: 0; padding-left: 18px; display: grid; gap: 6px; color: var(--ink-2); max-width: 75ch; }
+details summary { cursor: pointer; font-size: var(--step--1); color: var(--ink-2); }
+table.data { border-collapse: collapse; font-size: var(--step--1); margin-top: 10px; }
+table.data th, table.data td { padding: 5px 14px 5px 0; border-top: 1px solid var(--rule); text-align: right; }
+table.data th:first-child, table.data td:first-child { text-align: left; }
+footer { padding-block: 32px; color: var(--muted); font-size: var(--step--1); display: grid; gap: 6px; }
+
+/* ---------- tooltip ---------- */
+#tip {
+  position: fixed; z-index: 20; pointer-events: none; max-width: 280px; white-space: pre-line;
+  background: var(--ink); color: var(--surface); font: 400 0.78rem/1.45 var(--font-body);
+  padding: 8px 10px; border-radius: 6px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+#tip b { font-weight: 600; }
+@media (prefers-reduced-motion: no-preference) {
+  .errbar span { transition: left 0.18s ease, width 0.18s ease; }
+}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow"><span>AI Accelerator · final project</span><span>Phase 1 · GPU study</span><span id="meta-date"></span></div>
+    <h1>Approximate multiplication inside a DNN, <em>bit by bit</em></h1>
+    <p class="lede">Every multiplication in an MNIST network goes through the RoBA family of approximate multipliers from Rajiv &amp; Kedia (DATE 2026), the routines a multiplierless Ibex RISC-V core runs with one custom LOD instruction. The network keeps its accuracy. The open question is how much energy that saves on the core.</p>
+    <div class="spec" id="spec"></div>
+  </header>
+
+  <!-- Fig 1: bit explorer -->
+  <section class="fig" id="explorer">
+    <div class="fig-label"><span class="fig-no">Fig. 1</span><h2>Bit explorer</h2></div>
+    <div class="fig-body">
+      <p class="claim">RoBA rounds each operand to a power of two at its leading one, so the product becomes shifts and adds. Pick two operands and compare every multiplier against the exact product.</p>
+      <div class="controls">
+        <span class="ctl"><span class="seg-label">Operand width</span>
+          <span class="seg" role="group" aria-label="Operand width"><button type="button" id="w8" aria-pressed="true">8-bit</button><button type="button" id="w16" aria-pressed="false">16-bit</button></span></span>
+        <button type="button" class="btn" id="rand">Random pair</button>
+      </div>
+      <div class="explorer">
+        <div class="panel">
+          <div class="operand">
+            <div class="op-head"><span class="name">a</span><input type="number" id="a-num" aria-label="Operand a" min="1"><input type="range" id="a-rng" aria-label="Operand a slider" min="1"></div>
+            <div class="bits" id="a-bits"></div>
+            <div class="round" id="a-round"></div>
+          </div>
+          <div class="operand">
+            <div class="op-head"><span class="name">b</span><input type="number" id="b-num" aria-label="Operand b" min="1"><input type="range" id="b-rng" aria-label="Operand b slider" min="1"></div>
+            <div class="bits" id="b-bits"></div>
+            <div class="round" id="b-round"></div>
+          </div>
+          <div class="legend" style="margin-top:6px"><span><i style="background:var(--accent);border-radius:2px"></i>leading one (LOD)</span><span><i style="border:2px solid var(--two);background:transparent;border-radius:2px"></i>next bit: decides round up</span></div>
+        </div>
+        <div class="panel" style="display:grid;gap:14px;align-content:start">
+          <div class="table-scroll">
+            <table class="mults" id="mults">
+              <thead><tr><th>Multiplier</th><th class="r">Product</th><th class="r">Error</th><th id="errscale">Error bar</th><th class="r">Cycles</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="shift-form" id="shift-form"></div>
+          <p class="note">Cycles per multiply are estimates read off the paper's Fig. 4 (unsigned, MULT kernel) at the chosen operand width.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- findings -->
+  <section class="fig" id="findings-sec">
+    <div class="fig-label"><span class="fig-no">Summary</span><h2>What the runs show</h2></div>
+    <div class="fig-body"><div class="findings" id="findings"></div></div>
+  </section>
+
+  <!-- Fig 2: error landscape -->
+  <section class="fig" id="landscape">
+    <div class="fig-label"><span class="fig-no">Fig. 2</span><h2>Error landscape</h2></div>
+    <div class="fig-body">
+      <p class="claim">Each pixel is one pair of 8-bit operands. The error repeats at every power of two, and a second RoBA pass flattens it almost to zero.</p>
+      <div class="tabs" id="heat-tabs" role="group" aria-label="Multiplier"></div>
+      <div class="land">
+        <div class="heat">
+          <div class="axname" style="grid-column:1/3">b ↑</div>
+          <div class="yax" id="yax"></div>
+          <canvas id="heat" width="255" height="255" aria-label="Relative error for every pair of 8-bit operands"></canvas>
+          <div></div>
+          <div class="xax" id="xax"></div>
+          <div></div>
+          <div class="axname" style="text-align:right">a →</div>
+        </div>
+        <div style="display:grid;gap:20px">
+          <div class="scale">
+            <div class="controls"><span class="seg-label">Color scale</span>
+              <span class="seg" role="group" aria-label="Color scale"><button type="button" id="sc-shared" aria-pressed="true">Shared ±25%</button><button type="button" id="sc-fit" aria-pressed="false">Fit to multiplier</button></span></div>
+            <div class="bar" id="scale-bar"></div>
+            <div class="ticks" id="scale-ticks"></div>
+            <div class="ticks"><span>underestimate</span><span>exact</span><span>overestimate</span></div>
+          </div>
+          <div class="stats" id="heat-stats"></div>
+          <p class="note">Hover for values. Click a pixel to load that pair into the bit explorer. Statistics are over 1 million random 8-bit pairs.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fig 3: pareto -->
+  <section class="fig" id="pareto-sec">
+    <div class="fig-label"><span class="fig-no">Fig. 3</span><h2>Error against cost</h2></div>
+    <div class="fig-body">
+      <p class="claim" id="pareto-claim"></p>
+      <div class="controls"><span class="seg-label">Operand width</span>
+        <span class="seg" role="group" aria-label="Operand width for Fig. 3"><button type="button" id="p8" aria-pressed="true">8-bit</button><button type="button" id="p16" aria-pressed="false">16-bit</button></span></div>
+      <div class="legend"><span><i style="background:var(--accent)"></i>RoBA, one pass</span><span><i style="background:var(--two)"></i>RoBA, two passes (new in the paper)</span><span><i style="background:var(--base)"></i>Baselines</span></div>
+      <div class="panel"><div class="chart" id="pareto"></div></div>
+      <p class="note">Mean absolute relative error over 1 million random pairs, log scale. The dashed line links the multipliers no other multiplier beats on both axes.</p>
+    </div>
+  </section>
+
+  <!-- Fig 4: floats vs scaling -->
+  <section class="fig" id="scaling">
+    <div class="fig-label"><span class="fig-no">Fig. 4</span><h2>Floats need scaling, not a new multiplier</h2></div>
+    <div class="fig-body">
+      <p class="claim">RoBA applied directly to floats keeps full accuracy. Casting floats to integers without scaling turns most values into 0 and drops both networks to chance.</p>
+      <div class="legend"><span><i style="background:var(--accent)"></i>MLP</span><span><i style="background:var(--model-b)"></i>LeNet-5</span></div>
+      <div class="panel"><div class="chart" id="domains"></div></div>
+    </div>
+  </section>
+
+  <!-- Fig 5: accuracy -->
+  <section class="fig" id="accuracy">
+    <div class="fig-label"><span class="fig-no">Fig. 5</span><h2>Accuracy per multiplier</h2></div>
+    <div class="fig-body">
+      <p class="claim">Every multiplier lands inside the noise band around exact multiplication, before and after fine-tuning with the approximation in the loop.</p>
+      <div class="controls">
+        <span class="ctl"><span class="seg-label">Model</span><span class="seg" role="group" aria-label="Model"><button type="button" id="m-mlp" aria-pressed="false">MLP</button><button type="button" id="m-lenet5" aria-pressed="true">LeNet-5</button></span></span>
+        <span class="ctl"><span class="seg-label">Precision</span><span class="seg" role="group" aria-label="Precision"><button type="button" id="b8" aria-pressed="true">int8</button><button type="button" id="b16" aria-pressed="false">int16</button></span></span>
+      </div>
+      <div class="legend"><span><i class="ring"></i>after training</span><span><i style="background:var(--ink-2)"></i>after 3 epochs of approximation-aware fine-tuning</span><span><i style="background:var(--band);border-radius:2px;border:1px solid var(--rule-strong)"></i>±0.1 points around exact (10 test images)</span></div>
+      <div class="panel"><div class="chart" id="acc"></div></div>
+      <details><summary>Show as table</summary><div class="table-scroll" id="acc-table"></div></details>
+    </div>
+  </section>
+
+  <!-- Fig 6: energy -->
+  <section class="fig" id="energy">
+    <div class="fig-label"><span class="fig-no">Fig. 6</span><h2>Estimated energy</h2></div>
+    <div class="fig-body">
+      <p class="claim" id="energy-claim"></p>
+      <div class="legend"><span><i style="background:var(--base);opacity:.5"></i>int8 operands</span><span><i style="background:var(--base)"></i>int16 operands</span></div>
+      <div class="panel"><div class="chart" id="dumbbell"></div></div>
+      <p class="note">Energy of the multiplications per inference relative to exact shift-and-add at the same width: cycles per multiply (paper Fig. 4) × relative core power (0.793 without a multiplier, 0.829 with LOD). An estimate until measured on Ibex.</p>
+    </div>
+  </section>
+
+  <!-- Fig 7: accumulator -->
+  <section class="fig" id="register">
+    <div class="fig-label"><span class="fig-no">Fig. 7</span><h2>Accumulator width</h2></div>
+    <div class="fig-body">
+      <p class="claim">int8 dot products fit a 32-bit Ibex register with room to spare. int16 sums need up to 38 bits and would overflow without 64-bit accumulation.</p>
+      <div class="panel"><div class="chart" id="regs"></div></div>
+      <p class="note">Bits needed for the largest dot-product sum seen on the test set, sign bit included, exact multiplier.</p>
+    </div>
+  </section>
+
+  <!-- method -->
+  <section class="fig" id="method">
+    <div class="fig-label"><span class="fig-no">Method</span><h2>How it was run</h2></div>
+    <div class="fig-body">
+      <p class="claim">One library in three implementations that agree bit for bit (PyTorch, Python, C), checked by 27 tests, and one driver script for the whole study.</p>
+      <ol class="steps">
+        <li><span><b>Characterize the multipliers</b> on 1 million random pairs at 8 and 16 bits.</span></li>
+        <li><span><b>Train float baselines</b>: 15 epochs, Adam 1e-3 with cosine decay, batch 128, seed 0.</span></li>
+        <li><span><b>Evaluate</b> in four domains (float, truncated int, int8, int16) × 8 multipliers on the 10,000 test images.</span></li>
+        <li><span><b>Fine-tune</b> 3 epochs with the approximate forward pass and a straight-through gradient, Adam 1e-4.</span></li>
+        <li><span><b>Estimate energy</b> from multiplications per inference (MLP 234,752; LeNet-5 416,520) and the paper's cycle and power figures.</span></li>
+      </ol>
+      <div class="formula">RoBA(a, b) = A<sub>r</sub>·b + (a − A<sub>r</sub>)·B<sub>r</sub> <span class="dim">→ every variant is a sum of per-operand products, so an approximate matmul is 1–4 exact matmuls.</span></div>
+      <div class="two-col">
+        <pre class="code"><span class="c"># roba/multipliers.py</span>
+ROBA_ITERATIONS = {
+    "roba_dn1":    [round_dn],
+    "roba_updn":   [round_updn],
+    "roba_dn2":    [round_dn, round_dn],
+    "roba_updndn": [round_updn, round_dn],
+    "roba_updn2":  [round_updn, round_updn],
+}
+
+def factors(x, mult, side, integer=True):
+    out, r = [], x
+    for rnd in ROBA_ITERATIONS[mult]:
+        rr = _signed_round(r, rnd)
+        <span class="c"># Ar*b + (a - Ar)*Br</span>
+        out += [rr, r - rr] if side == "a" else [r, rr]
+        r = r - rr
+    return out</pre>
+        <pre class="code"><span class="c">/* csrc/roba.c: RoBA-Dn1 for Ibex */</span>
+uint32_t roba_dn1_u(uint32_t a, uint32_t b)
+{
+    if (a == 0 || b == 0)
+        return 0;
+    return roba1(a, b, LOD(a), LOD(b));
+}
+
+static inline uint32_t roba1(uint32_t a, uint32_t b,
+                             uint32_t pa, uint32_t pb)
+{
+    return (b &lt;&lt; pa) + (a &lt;&lt; pb)
+         - ((1u &lt;&lt; pa) &lt;&lt; pb);
+}</pre>
+      </div>
+      <table class="files">
+        <tr><td>roba/</td><td>multipliers, approximate matmul and conv, quantized layers, MNIST loader, cost model</td></tr>
+        <tr><td>csrc/</td><td>C library for Ibex; LOD as a custom instruction or <code>__builtin_clz</code></td></tr>
+        <tr><td>tests/</td><td>PyTorch = Python reference = C on 12,289 pairs; matmul and conv = element by element</td></tr>
+        <tr><td>experiments/run.py</td><td><code>python3 experiments/run.py --stage all</code>, about 7 minutes on one L40</td></tr>
+        <tr><td>experiments/build_site.py</td><td>rebuilds this page from <code>results/*.csv</code></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="fig" id="limits">
+    <div class="fig-label"><span class="fig-no">Limits</span><h2>Read with care</h2></div>
+    <div class="fig-body">
+      <ul class="caveats">
+        <li>One seed. Accuracy differences under about 0.1 points are noise.</li>
+        <li>MNIST is too easy to separate the multipliers; Fashion-MNIST or CIFAR-10 is the next test.</li>
+        <li>Energy covers multiplications only and uses cycle counts read off the paper's figures, for unsigned operands.</li>
+        <li>Our Mitchell is the classic algorithm. The paper's Mitchell gives the same products as RoBA-Dn1.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span>Source paper: S. P. Rajiv and R. Kedia, “Software-Based Approximate Multiplication on Multiplierless CPUs Using Custom Instruction,” DATE 2026.</span>
+    <span id="foot-meta"></span>
+  </footer>
+</div>
+<div id="tip" hidden></div>
+
+<script id="data" type="application/json">__DATA__</script>
+<script>
+// ROBA-BEGIN
+const lod = x => 31 - Math.clz32(x);
+const pow2 = p => 2 ** p;
+const posUpdn = x => { let p = lod(x); if (p > 0 && (Math.floor(x / pow2(p - 1)) & 1)) p++; return p; };
+const roba1 = (a, b, pos) => (a === 0 || b === 0) ? 0 : b * pow2(pos(a)) + a * pow2(pos(b)) - pow2(pos(a) + pos(b));
+const roba2 = (a, b, p1, p2) => {
+  if (a === 0 || b === 0) return 0;
+  const pa = p1(a), pb = p1(b);
+  const r = b * pow2(pa) + a * pow2(pb) - pow2(pa + pb);
+  const ea = a - pow2(pa), eb = b - pow2(pb);
+  const e = roba1(Math.abs(ea), Math.abs(eb), p2);
+  return (ea < 0) !== (eb < 0) ? r - e : r + e;
+};
+const drumTrunc = x => { const p = lod(x); if (p < 6) return x; const s = p - 5; return ((Math.floor(x / pow2(s))) | 1) * pow2(s); };
+const mitchell = (a, b) => {
+  if (a === 0 || b === 0) return 0;
+  const pa = lod(a), pb = lod(b);
+  const m = (a - pow2(pa)) * pow2(pb) + (b - pow2(pb)) * pow2(pa), p = pow2(pa + pb);
+  return m < p ? p + m : 2 * m;
+};
+const MULT = {
+  exact: (a, b) => a * b,
+  mitchell,
+  drum6: (a, b) => (a === 0 || b === 0) ? 0 : drumTrunc(a) * drumTrunc(b),
+  roba_dn1: (a, b) => roba1(a, b, lod),
+  roba_updn: (a, b) => roba1(a, b, posUpdn),
+  roba_dn2: (a, b) => roba2(a, b, lod, lod),
+  roba_updndn: (a, b) => roba2(a, b, posUpdn, lod),
+  roba_updn2: (a, b) => roba2(a, b, posUpdn, posUpdn),
+};
+// ROBA-END
+
+const D = JSON.parse(document.getElementById("data").textContent);
+const ORDER = ["exact", "mitchell", "drum6", "roba_dn1", "roba_updn", "roba_dn2", "roba_updndn", "roba_updn2"];
+const APPROX = ORDER.slice(1);
+const LABEL = { exact: "Exact", mitchell: "Mitchell", drum6: "DRUM6", roba_dn1: "RoBA-Dn1", roba_updn: "RoBA-UpDn",
+  roba_dn2: "RoBA-Dn2", roba_updndn: "RoBA-UpDnDn", roba_updn2: "RoBA-(UpDn)2" };
+const FAM = { exact: "var(--ink)", mitchell: "var(--base)", drum6: "var(--base)", roba_dn1: "var(--accent)",
+  roba_updn: "var(--accent)", roba_dn2: "var(--two)", roba_updndn: "var(--two)", roba_updn2: "var(--two)" };
+const MODEL = { mlp: "MLP", lenet5: "LeNet-5" };
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = (v, d = 2) => v.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+const pct = (v, d = 2) => `${fmt(v * 100, d)}%`;
+const energy = (m, bits) => D.cycles[bits][m] * (m === "exact" ? D.power.none : D.power.lod) / (D.cycles[bits].exact * D.power.none);
+const evalRow = (model, domain, mult) => D.eval.find(r => r.model === model && r.domain === domain && r.multiplier === mult);
+const ftRow = (model, bits, mult) => D.finetune.find(r => r.model === model && r.bits === bits && r.multiplier === mult);
+const errRow = (bits, mult) => D.errors.find(r => r.bits === bits && r.multiplier === mult);
+const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+/* ---------- tooltip ---------- */
+const tip = document.getElementById("tip");
+function showTip(html, x, y) {
+  tip.innerHTML = html; tip.hidden = false;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = `${Math.min(x + 14, innerWidth - w - 8)}px`;
+  tip.style.top = `${y + 14 + h > innerHeight ? y - h - 10 : y + 14}px`;
+}
+document.addEventListener("pointermove", e => {
+  const t = e.target.closest?.("[data-tip]");
+  if (t) showTip(t.getAttribute("data-tip"), e.clientX, e.clientY);
+  else if (!e.target.closest?.("#heat")) tip.hidden = true;
+});
+document.addEventListener("pointerleave", () => { tip.hidden = true; });
+
+/* ---------- segmented controls ---------- */
+function seg(ids, onPick) {
+  ids.forEach(id => document.getElementById(id).addEventListener("click", () => {
+    ids.forEach(o => document.getElementById(o).setAttribute("aria-pressed", String(o === id)));
+    onPick(id);
+  }));
+}
+
+/* ---------- header ---------- */
+document.getElementById("meta-date").textContent = `Results ${D.meta.date}`;
+document.getElementById("spec").innerHTML = [
+  "MNIST · 60k train / 10k test", "MLP 784-256-128-10", "LeNet-5", `${D.meta.gpu}`,
+  `seed ${D.meta.seed}`, "8 multipliers × 4 domains",
+].map(s => `<span>${esc(s)}</span>`).join("");
+document.getElementById("foot-meta").textContent =
+  `Float training ${D.meta.epochs} epochs, fine-tuning ${D.meta.ft_epochs} epochs at learning rate ${D.meta.ft_lr}. Page built from results/*.csv.`;
+
+/* ---------- Fig 1: explorer ---------- */
+const ex = { w: 8, a: 181, b: 107 };
+function bitsHTML(x, w) {
+  const p = lod(x), up = posUpdn(x) > p;
+  let cells = "", idx = "";
+  for (let i = w - 1; i >= 0; i--) {
+    const one = Math.floor(x / pow2(i)) & 1;
+    const cls = ["bit", one ? "one" : "", i === p ? "lod" : "", i === p - 1 ? "next" : ""].join(" ");
+    cells += `<div class="${cls}">${one}</div>`;
+    idx += `<div class="bit-idx">${i}</div>`;
+  }
+  const cols = `grid-template-columns:repeat(${w},minmax(0,1fr))`;
+  return { html: `<div class="bits-row" style="${cols}">${cells}</div><div class="bits-row" style="${cols}">${idx}</div>`, p, up };
+}
+function roundHTML(x, name) {
+  const p = lod(x), q = posUpdn(x);
+  return `<span>LOD(${name}) = <b>${p}</b> → round down: <span class="mono">${name}<sub>r</sub> = 2<sup>${p}</sup> = ${pow2(p).toLocaleString("en-US")}</span></span>` +
+    `<span>next bit ${q > p ? "<b>1</b> → round up" : "<b>0</b> → stay down"}: <span class="mono">nearest = 2<sup>${q}</sup> = ${pow2(q).toLocaleString("en-US")}</span></span>`;
+}
+function renderExplorer() {
+  const max = pow2(ex.w) - 1;
+  for (const k of ["a", "b"]) {
+    const num = document.getElementById(`${k}-num`), rng = document.getElementById(`${k}-rng`);
+    num.max = rng.max = max; num.value = rng.value = ex[k];
+    document.getElementById(`${k}-bits`).innerHTML = bitsHTML(ex[k], ex.w).html;
+    document.getElementById(`${k}-round`).innerHTML = roundHTML(ex[k], k);
+  }
+  const exact = ex.a * ex.b;
+  const rows = ORDER.map(m => { const v = MULT[m](ex.a, ex.b); return { m, v, e: (v - exact) / exact }; });
+  const maxE = Math.max(...rows.map(r => Math.abs(r.e)));
+  const S = [0.01, 0.02, 0.05, 0.1, 0.25, 0.5].find(s => s >= maxE) || 0.5;
+  document.getElementById("errscale").textContent = `Error (±${S * 100}%)`;
+  document.querySelector("#mults tbody").innerHTML = rows.map(r => {
+    const frac = Math.min(1, Math.abs(r.e) / S) * 50;
+    const left = r.e < 0 ? 50 - frac : 50;
+    const color = r.e < 0 ? "var(--under)" : "var(--over)";
+    const cyc = D.cycles[ex.w][r.m];
+    return `<tr class="${r.m === "exact" ? "exact" : ""}"><td><span class="chip" style="background:${FAM[r.m]}"></span>${LABEL[r.m]}</td>` +
+      `<td class="r mono num">${r.v.toLocaleString("en-US")}</td>` +
+      `<td class="r mono num" style="color:${r.e === 0 ? "var(--muted)" : "var(--ink)"}">${r.e === 0 ? "0" : (r.e > 0 ? "+" : "−") + fmt(Math.abs(r.e) * 100, 2) + "%"}</td>` +
+      `<td><div class="errbar"><span style="left:${left}%;width:${frac}%;background:${color}"></span></div></td>` +
+      `<td class="r mono num">${cyc}</td></tr>`;
+  }).join("");
+  const pa = lod(ex.a), pb = lod(ex.b);
+  document.getElementById("shift-form").innerHTML =
+    `RoBA-Dn1: (b &lt;&lt; <b>${pa}</b>) + (a &lt;&lt; <b>${pb}</b>) − (1 &lt;&lt; <b>${pa + pb}</b>) = ` +
+    `${(ex.b * pow2(pa)).toLocaleString("en-US")} + ${(ex.a * pow2(pb)).toLocaleString("en-US")} − ${pow2(pa + pb).toLocaleString("en-US")} = ` +
+    `<b>${MULT.roba_dn1(ex.a, ex.b).toLocaleString("en-US")}</b>`;
+}
+for (const k of ["a", "b"]) {
+  for (const src of [`${k}-num`, `${k}-rng`]) {
+    document.getElementById(src).addEventListener("input", e => {
+      const v = Math.round(Number(e.target.value));
+      if (v >= 1 && v <= pow2(ex.w) - 1) { ex[k] = v; renderExplorer(); }
+    });
+  }
+}
+seg(["w8", "w16"], id => {
+  ex.w = id === "w8" ? 8 : 16;
+  if (ex.w === 16) { ex.a = 23170; ex.b = 13653; }
+  else { ex.a = Math.min(ex.a, 255); ex.b = Math.min(ex.b, 255); }
+  renderExplorer();
+});
+document.getElementById("rand").addEventListener("click", () => {
+  const max = ex.w === 8 ? 255 : 32767;
+  ex.a = 1 + Math.floor(Math.random() * max); ex.b = 1 + Math.floor(Math.random() * max);
+  renderExplorer();
+});
+
+/* ---------- findings ---------- */
+function renderFindings() {
+  const spread = Math.max(...["mlp", "lenet5"].flatMap(mo => APPROX.map(m =>
+    Math.abs(evalRow(mo, "8", m).acc - evalRow(mo, "8", "exact").acc)))) * 100;
+  const trunc = ["mlp", "lenet5"].map(mo => evalRow(mo, "trunc", "exact").acc * 100);
+  const u2 = errRow(16, "roba_updn2");
+  const items = [
+    { big: `${fmt(energy("roba_dn1", 8), 2)}<small>×</small>`, text: `Estimated multiplication energy of RoBA-Dn1 at int8, relative to exact shift-and-add (${fmt(energy("roba_dn1", 16), 2)}× at int16).` },
+    { big: `≤${fmt(spread, 2)}<small>pts</small>`, text: "Largest accuracy change from any approximate multiplier at int8, on either model, before fine-tuning." },
+    { big: `${fmt(trunc[0], 1)}<small>%</small>`, text: `MLP accuracy when floats are cast to integers without scaling (LeNet-5: ${fmt(trunc[1], 1)}%). Chance is 10%.` },
+    { big: `${fmt(u2.max, 2)}<small>%</small>`, text: `Maximum error of RoBA-(UpDn)2 in our library; the paper reports ${D.paper_max.roba_updn2}%.` },
+  ];
+  document.getElementById("findings").innerHTML = items.map(i => `<div class="finding"><div class="big">${i.big}</div><p>${esc(i.text)}</p></div>`).join("");
+}
+
+/* ---------- Fig 2: heatmap ---------- */
+const heat = { m: "roba_dn1", fit: false };
+function hexRGB(c) {
+  const ctx = document.createElement("canvas").getContext("2d");
+  ctx.fillStyle = c; const h = ctx.fillStyle;
+  if (h.startsWith("#")) return [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  return h.match(/\d+/g).slice(0, 3).map(Number);
+}
+const lerp = (c1, c2, t) => c1.map((v, i) => Math.round(v + (c2[i] - v) * t));
+function heatScale() {
+  if (!heat.fit) return 0.25;
+  let m = 0;
+  for (let a = 1; a < 256; a++) for (let b = 1; b < 256; b++) m = Math.max(m, Math.abs(MULT[heat.m](a, b) / (a * b) - 1));
+  return Math.max(m, 0.001);
+}
+function renderHeat() {
+  const cv = document.getElementById("heat"), ctx = cv.getContext("2d");
+  const img = ctx.createImageData(255, 255);
+  const under = hexRGB(css("--under")), over = hexRGB(css("--over")), mid = hexRGB(css("--mid"));
+  const S = heatScale(), f = MULT[heat.m];
+  for (let b = 1; b < 256; b++) for (let a = 1; a < 256; a++) {
+    const e = f(a, b) / (a * b) - 1, t = Math.min(1, Math.sqrt(Math.abs(e) / S));
+    const c = lerp(mid, e < 0 ? under : over, t);
+    const i = ((255 - b) * 255 + (a - 1)) * 4;
+    img.data[i] = c[0]; img.data[i + 1] = c[1]; img.data[i + 2] = c[2]; img.data[i + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  const u = css("--under"), o = css("--over"), md = css("--mid");
+  document.getElementById("scale-bar").style.background = `linear-gradient(90deg, ${u}, ${md}, ${o})`;
+  const sp = S * 100, d = sp < 1 ? 2 : sp < 10 ? 1 : 0;
+  document.getElementById("scale-ticks").innerHTML = `<span>−${fmt(sp, d)}%</span><span>−${fmt(sp / 4, d + 1)}%</span><span>0</span><span>+${fmt(sp / 4, d + 1)}%</span><span>+${fmt(sp, d)}%</span>`;
+  const e8 = errRow(8, heat.m);
+  document.getElementById("heat-stats").innerHTML = [
+    ["Mean |error|", pct(e8.mean / 100, 2), "over random pairs"],
+    ["Max |error|", pct(e8.max / 100, 2), D.paper_max[heat.m] ? `paper: ${D.paper_max[heat.m]}%` : "8-bit operands"],
+    ["Bias", `${e8.bias < 0 ? "−" : "+"}${fmt(Math.abs(e8.bias), 3)}%`, e8.bias < -0.1 ? "always underestimates" : "errors cancel on average"],
+    ["Exact products", pct(e8.frac_exact, 1), "of random pairs"],
+  ].map(([k, v, s]) => `<div class="stat"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${esc(s)}</div></div>`).join("");
+}
+function initHeat() {
+  document.getElementById("heat-tabs").innerHTML = APPROX.map(m =>
+    `<button type="button" data-m="${m}" aria-pressed="${m === heat.m}">${LABEL[m]}</button>`).join("");
+  document.getElementById("heat-tabs").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    heat.m = b.dataset.m;
+    document.querySelectorAll("#heat-tabs button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    renderHeat();
+  });
+  seg(["sc-shared", "sc-fit"], id => { heat.fit = id === "sc-fit"; renderHeat(); });
+  const ticks = [1, 64, 128, 192, 255];
+  document.getElementById("xax").innerHTML = ticks.map(t => `<span style="left:${(t - 0.5) / 255 * 100}%">${t}</span>`).join("");
+  const yax = document.getElementById("yax");
+  yax.innerHTML = ticks.map(t => `<span style="bottom:${(t - 0.5) / 255 * 100}%">${t}</span>`).join("");
+  const cv = document.getElementById("heat");
+  const pick = e => {
+    const r = cv.getBoundingClientRect();
+    const a = Math.min(255, Math.max(1, 1 + Math.floor((e.clientX - r.left) / r.width * 255)));
+    const b = Math.min(255, Math.max(1, 255 - Math.floor((e.clientY - r.top) / r.height * 255)));
+    return { a, b };
+  };
+  cv.addEventListener("pointermove", e => {
+    const { a, b } = pick(e), v = MULT[heat.m](a, b), er = v / (a * b) - 1;
+    showTip(`<b>a = ${a}, b = ${b}</b>\nexact ${(a * b).toLocaleString("en-US")}\n${LABEL[heat.m]} ${v.toLocaleString("en-US")}\nerror ${er >= 0 ? "+" : "−"}${fmt(Math.abs(er) * 100, 2)}%\nclick to open in Fig. 1`, e.clientX, e.clientY);
+  });
+  cv.addEventListener("pointerleave", () => { tip.hidden = true; });
+  cv.addEventListener("click", e => {
+    const { a, b } = pick(e);
+    if (ex.w !== 8) document.getElementById("w8").click();
+    ex.a = a; ex.b = b; renderExplorer();
+    document.getElementById("explorer").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  });
+}
+
+/* ---------- SVG chart helpers ---------- */
+const charts = [];
+function chart(id, draw) {
+  const el = document.getElementById(id);
+  const c = { el, draw, w: 0 };
+  charts.push(c);
+  new ResizeObserver(() => { const w = Math.round(el.clientWidth); if (w && w !== c.w) { c.w = w; draw(el, w); } }).observe(el);
+  return c;
+}
+const redraw = id => { const c = charts.find(x => x.el.id === id); if (c && c.w) c.draw(c.el, c.w); };
+const T = (x, y, s, o = {}) => `<text x="${x}" y="${y}" font-size="${o.size || 12}" text-anchor="${o.anchor || "start"}" style="fill:${o.fill || "var(--ink-2)"}" ${o.weight ? `font-weight="${o.weight}"` : ""}>${esc(s)}</text>`;
+
+/* ---------- Fig 3: pareto ---------- */
+let pBits = 8;
+const LABEL_POS = { roba_dn1: "right", mitchell: "left", roba_updn: "right", roba_dn2: "left", roba_updndn: "left", roba_updn2: "left", drum6: "above" };
+function drawPareto(el, W) {
+  const H = 380, m = { l: 52, r: 20, t: 34, b: 46 };
+  const pts = APPROX.map(k => ({ k, c: D.cycles[pBits][k], e: errRow(pBits, k).mean }));
+  const exC = D.cycles[pBits].exact;
+  const x0 = 10, x1 = Math.max(exC, ...pts.map(p => p.c)) + 8;
+  const X = v => m.l + (v - x0) / (x1 - x0) * (W - m.l - m.r);
+  const lo = Math.log10(0.03), hi = Math.log10(20);
+  const Y = v => m.t + (hi - Math.log10(v)) / (hi - lo) * (H - m.t - m.b);
+  let s = "";
+  for (const t of [0.1, 1, 10]) s += `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(t)}" y2="${Y(t)}" style="stroke:var(--rule)"/>` + T(m.l - 8, Y(t) + 4, `${t}%`, { anchor: "end", size: 11, fill: "var(--muted)" });
+  for (let t = 10; t <= x1; t += 10) s += T(X(t), H - m.b + 18, t, { anchor: "middle", size: 11, fill: "var(--muted)" });
+  s += `<line x1="${m.l}" x2="${W - m.r}" y1="${H - m.b}" y2="${H - m.b}" style="stroke:var(--rule-strong)"/>`;
+  s += T((m.l + W - m.r) / 2, H - 6, "cycles per multiply (estimate)", { anchor: "middle", size: 11, fill: "var(--muted)" });
+  s += T(m.l, 14, "mean |error|", { size: 11, fill: "var(--muted)" });
+  s += `<line x1="${X(exC)}" x2="${X(exC)}" y1="${m.t - 10}" y2="${H - m.b}" style="stroke:var(--ink-2)" stroke-dasharray="4 4"/>` +
+    T(X(exC) - 6, m.t - 14, `exact: 0% error, ${exC} cycles`, { anchor: "end", size: 11, fill: "var(--ink-2)" });
+  const sorted = [...pts].sort((a, b) => a.c - b.c);
+  let best = Infinity; const front = [];
+  for (const p of sorted) if (p.e < best) { best = p.e; front.push(p); }
+  s += `<polyline points="${front.map(p => `${X(p.c)},${Y(p.e)}`).join(" ")}" style="fill:none;stroke:var(--rule-strong)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  for (const p of pts) {
+    const x = X(p.c), y = Y(p.e), pos = LABEL_POS[p.k];
+    const tipTxt = `<b>${LABEL[p.k]}</b>\n${p.c} cycles per multiply\nmean |error| ${fmt(p.e, 3)}%\nmax |error| ${fmt(errRow(pBits, p.k).max, 2)}%`;
+    s += `<circle cx="${x}" cy="${y}" r="7" style="fill:${FAM[p.k]};stroke:var(--surface)" stroke-width="2" data-tip="${esc(tipTxt)}"/>`;
+    s += pos === "above" ? T(x, y - 13, LABEL[p.k], { anchor: "middle", fill: "var(--ink)" })
+      : pos === "left" ? T(x - 12, y + 4, LABEL[p.k], { anchor: "end", fill: "var(--ink)" })
+      : T(x + 12, y + 4, LABEL[p.k], { fill: "var(--ink)" });
+  }
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Mean error against cycles per multiply">${s}</svg>`;
+  const u2 = errRow(pBits, "roba_updn2"), cU2 = D.cycles[pBits].roba_updn2;
+  document.getElementById("pareto-claim").textContent =
+    `At ${pBits}-bit, RoBA-(UpDn)2 gets the error down to ${fmt(u2.mean, 2)}% at ${cU2} cycles, against ${exC} for exact. ` +
+    `RoBA-Dn1 is the cheapest at ${D.cycles[pBits].roba_dn1} cycles but has the largest error.`;
+}
+
+/* ---------- Fig 4: domains ---------- */
+const DOMAIN_ROWS = [
+  { d: "float32", m: "native", label: "Float32 baseline" },
+  { d: "float", m: "roba_dn1", label: "RoBA-Dn1 on floats" },
+  { d: "float", m: "roba_updn2", label: "RoBA-(UpDn)2 on floats" },
+  { d: "trunc", m: "exact", label: "Float → int, no scaling" },
+  { d: "8", m: "exact", label: "int8 fixed point" },
+  { d: "16", m: "exact", label: "int16 fixed point" },
+];
+function drawDomains(el, W) {
+  const narrow = W < 560, lab = narrow ? 0 : 190, bh = 13, gap = 3, rowH = narrow ? 2 * bh + gap + 34 : 2 * bh + gap + 18;
+  const m = { l: lab, r: 64, t: 26 }, H = m.t + DOMAIN_ROWS.length * rowH + 10;
+  const X = v => m.l + v * (W - m.l - m.r);
+  let s = "";
+  for (const t of [0, 0.25, 0.5, 0.75, 1]) s += `<line x1="${X(t)}" x2="${X(t)}" y1="${m.t - 6}" y2="${H - 6}" style="stroke:var(--rule)"/>` + T(X(t), m.t - 12, `${t * 100}%`, { anchor: "middle", size: 11, fill: "var(--muted)" });
+  DOMAIN_ROWS.forEach((r, i) => {
+    let y = m.t + i * rowH + 6;
+    if (narrow) { s += T(0, y + 6, r.label, { fill: "var(--ink)", size: 12, weight: 500 }); y += 14; }
+    else s += T(lab - 12, y + bh + 4, r.label, { anchor: "end", fill: "var(--ink)", weight: r.d === "trunc" ? 600 : 400 });
+    ["mlp", "lenet5"].forEach((mo, j) => {
+      const row = evalRow(mo, r.d, r.m), yy = y + j * (bh + gap);
+      const tipTxt = `<b>${r.label}</b>\n${MODEL[mo]}: ${pct(row.acc)} accuracy\nloss ${fmt(row.loss, 4)}`;
+      s += `<rect x="${X(0)}" y="${yy}" width="${Math.max(2, X(row.acc) - X(0))}" height="${bh}" rx="3" style="fill:${mo === "mlp" ? "var(--accent)" : "var(--model-b)"}" data-tip="${esc(tipTxt)}"/>`;
+      s += T(X(row.acc) + 6, yy + bh - 2, pct(row.acc, row.acc < 0.5 ? 1 : 2), { size: 11, fill: r.d === "trunc" ? "var(--critical)" : "var(--ink-2)", weight: r.d === "trunc" ? 600 : 400 });
+    });
+  });
+  s += `<line x1="${X(0.1)}" x2="${X(0.1)}" y1="${m.t - 6}" y2="${H - 6}" style="stroke:var(--critical)" stroke-dasharray="3 3"/>`;
+  s += T(X(0.1) + 4, H - 2, "chance (10%)", { size: 10.5, fill: "var(--critical)" });
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H + 6}" width="${W}" height="${H + 6}" role="img" aria-label="Test accuracy by number domain">${s}</svg>`;
+}
+
+/* ---------- Fig 5: accuracy ---------- */
+const acc = { model: "lenet5", bits: 8 };
+function drawAcc(el, W) {
+  const narrow = W < 520, lab = narrow ? 104 : 150;
+  const rowH = 34, m = { l: lab, r: 24, t: 30, b: 34 }, H = m.t + ORDER.length * rowH + m.b;
+  const rows = ORDER.map(k => ({ k, ft: ftRow(acc.model, acc.bits, k), ev: evalRow(acc.model, String(acc.bits), k) }));
+  const ref = rows[0].ft.acc_before * 100;
+  const vals = rows.flatMap(r => [r.ft.acc_before * 100, r.ft.acc_after * 100]).concat([ref - 0.1, ref + 0.1]);
+  const x0 = Math.floor((Math.min(...vals) - 0.03) * 20) / 20, x1 = Math.ceil((Math.max(...vals) + 0.03) * 20) / 20;
+  const X = v => m.l + (v - x0) / (x1 - x0) * (W - m.l - m.r);
+  let s = `<rect x="${X(ref - 0.1)}" y="${m.t - 8}" width="${X(ref + 0.1) - X(ref - 0.1)}" height="${ORDER.length * rowH + 4}" style="fill:var(--band)"/>`;
+  s += `<line x1="${X(ref)}" x2="${X(ref)}" y1="${m.t - 8}" y2="${m.t + ORDER.length * rowH - 4}" style="stroke:var(--accent)" stroke-dasharray="3 3"/>`;
+  s += T(X(ref), m.t - 14, `exact ${fmt(ref, 2)}%`, { anchor: "middle", size: 11, fill: "var(--accent)", weight: 600 });
+  const step = (x1 - x0) > 0.5 ? 0.1 : 0.05;
+  for (let t = Math.ceil(x0 / step) * step; t <= x1 + 1e-9; t += step) {
+    s += T(X(t), H - 12, `${fmt(t, 2)}`, { anchor: "middle", size: 11, fill: "var(--muted)" });
+    s += `<line x1="${X(t)}" x2="${X(t)}" y1="${H - m.b + 4}" y2="${H - m.b + 9}" style="stroke:var(--rule-strong)"/>`;
+  }
+  s += `<line x1="${m.l}" x2="${W - m.r}" y1="${H - m.b + 4}" y2="${H - m.b + 4}" style="stroke:var(--rule-strong)"/>`;
+  rows.forEach((r, i) => {
+    const y = m.t + i * rowH + rowH / 2 - 4, b = r.ft.acc_before * 100, a = r.ft.acc_after * 100;
+    s += `<line x1="${m.l}" x2="${W - m.r}" y1="${y}" y2="${y}" style="stroke:var(--rule)" stroke-dasharray="1 4"/>`;
+    s += T(m.l - 12, y + 4, LABEL[r.k], { anchor: "end", fill: "var(--ink)", size: narrow ? 11 : 12.5 });
+    const tipTxt = `<b>${LABEL[r.k]}, ${MODEL[acc.model]} int${acc.bits}</b>\nafter training ${fmt(b, 2)}% (loss ${fmt(r.ft.loss_before, 4)})\nafter fine-tuning ${fmt(a, 2)}% (loss ${fmt(r.ft.loss_after, 4)})\npredictions equal to exact: ${pct(r.ev.agree, 2)}`;
+    s += `<line x1="${X(b)}" x2="${X(a)}" y1="${y}" y2="${y}" style="stroke:${FAM[r.k]}" stroke-width="2" stroke-opacity="0.5"/>`;
+    s += `<circle cx="${X(b)}" cy="${y}" r="6" style="fill:var(--surface);stroke:${FAM[r.k]}" stroke-width="2" data-tip="${esc(tipTxt)}"/>`;
+    s += `<circle cx="${X(a)}" cy="${y}" r="6" style="fill:${FAM[r.k]};stroke:var(--surface)" stroke-width="1.5" data-tip="${esc(tipTxt)}"/>`;
+  });
+  s += T(W - m.r, H + 4, "test accuracy, %", { anchor: "end", size: 11, fill: "var(--muted)" });
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H + 8}" width="${W}" height="${H + 8}" role="img" aria-label="Test accuracy per multiplier before and after fine-tuning">${s}</svg>`;
+  document.getElementById("acc-table").innerHTML = `<table class="data"><tr><th>Multiplier</th><th>After training</th><th>After fine-tuning</th><th>Loss before</th><th>Loss after</th><th>Agrees with exact</th></tr>` +
+    rows.map(r => `<tr><td>${LABEL[r.k]}</td><td class="num">${pct(r.ft.acc_before)}</td><td class="num">${pct(r.ft.acc_after)}</td><td class="num">${fmt(r.ft.loss_before, 4)}</td><td class="num">${fmt(r.ft.loss_after, 4)}</td><td class="num">${pct(r.ev.agree)}</td></tr>`).join("") + `</table>`;
+}
+
+/* ---------- Fig 6: energy dumbbell ---------- */
+function drawDumbbell(el, W) {
+  const narrow = W < 520, lab = narrow ? 104 : 150;
+  const rowH = 38, m = { l: lab, r: 56, t: 34, b: 30 };
+  const order = APPROX.slice().sort((p, q) => energy(p, 16) - energy(q, 16));
+  const H = m.t + order.length * rowH + m.b;
+  const xmax = 1.3, X = v => m.l + v / xmax * (W - m.l - m.r);
+  let s = `<line x1="${X(0)}" x2="${X(0)}" y1="${m.t - 12}" y2="${H - m.b}" style="stroke:var(--rule-strong)"/>`;
+  s += `<line x1="${X(1)}" x2="${X(1)}" y1="${m.t - 12}" y2="${H - m.b}" style="stroke:var(--ink-2)" stroke-dasharray="4 4"/>`;
+  s += T(X(1), m.t - 18, "exact = 1.0×", { anchor: "middle", size: 11, fill: "var(--ink-2)" });
+  for (const t of [0, 0.25, 0.5, 0.75, 1, 1.25]) s += T(X(t), H - 8, `${t}`, { anchor: "middle", size: 11, fill: "var(--muted)" });
+  order.forEach((k, i) => {
+    const y = m.t + i * rowH + 10, a = energy(k, 8), b = energy(k, 16), hl = k === "roba_dn1";
+    const col = hl ? "var(--accent)" : "var(--base)";
+    s += T(m.l - 12, y + 4, LABEL[k], { anchor: "end", fill: hl ? "var(--ink)" : "var(--ink-2)", weight: hl ? 600 : 400, size: narrow ? 11 : 12.5 });
+    s += `<line x1="${X(a)}" x2="${X(b)}" y1="${y}" y2="${y}" style="stroke:${col}" stroke-width="2" stroke-opacity="0.5"/>`;
+    const t8 = `<b>${LABEL[k]}, int8</b>\n${fmt(a, 2)}× exact\n${D.cycles[8][k]} vs ${D.cycles[8].exact} cycles per multiply`;
+    const t16 = `<b>${LABEL[k]}, int16</b>\n${fmt(b, 2)}× exact\n${D.cycles[16][k]} vs ${D.cycles[16].exact} cycles per multiply`;
+    s += `<circle cx="${X(a)}" cy="${y}" r="7" style="fill:${col}" fill-opacity="0.45" data-tip="${esc(t8)}"/>`;
+    s += `<circle cx="${X(b)}" cy="${y}" r="7" style="fill:${col}" data-tip="${esc(t16)}"/>`;
+    const near = a < 1 && X(a) + 46 > X(1);
+    s += near ? T(X(a), y - 12, `${fmt(a, 2)}×`, { anchor: "middle", size: 11.5, fill: hl ? "var(--ink)" : "var(--ink-2)" })
+      : T(X(a) + 12, y + 4, `${fmt(a, 2)}×`, { size: 11.5, fill: hl ? "var(--ink)" : "var(--ink-2)" });
+    s += T(X(b) - 12, y + 4, `${fmt(b, 2)}×`, { anchor: "end", size: 11.5, fill: hl ? "var(--ink)" : "var(--ink-2)", weight: hl ? 600 : 400 });
+  });
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Estimated multiplication energy relative to exact">${s}</svg>`;
+  document.getElementById("energy-claim").textContent =
+    `RoBA-Dn1 needs about ${fmt(energy("roba_dn1", 8), 2)}× the multiplication energy of exact at int8 and ${fmt(energy("roba_dn1", 16), 2)}× at int16. ` +
+    `At int8 the most accurate variant, RoBA-(UpDn)2, saves nothing (${fmt(energy("roba_updn2", 8), 2)}×); at int16 it costs ${fmt(energy("roba_updn2", 16), 2)}×.`;
+}
+
+/* ---------- Fig 7: accumulator register ---------- */
+function drawRegs(el, W) {
+  const rows = [["mlp", "8"], ["lenet5", "8"], ["mlp", "16"], ["lenet5", "16"]].map(([mo, d]) => ({ mo, d, bits: Number(evalRow(mo, d, "exact").acc_bits) }));
+  const narrow = W < 520, lab = narrow ? 92 : 130, N = 40, m = { l: lab, r: 46, t: 34 };
+  const cw = (W - m.l - m.r) / N, ch = 22, rowH = 40, H = m.t + rows.length * rowH + 8;
+  const cx = i => m.l + (N - 1 - i) * cw;   // bit i, MSB on the left
+  let s = `<line x1="${cx(31)}" x2="${cx(31)}" y1="${m.t - 16}" y2="${H - 4}" style="stroke:var(--ink)" stroke-width="2"/>`;
+  s += T(cx(31) + 6, m.t - 18, "32-bit register →", { size: 11, fill: "var(--ink)", weight: 600 });
+  s += T(cx(31) - 6, m.t - 18, "← overflow", { size: 11, anchor: "end", fill: "var(--critical)" });
+  for (const t of [0, 8, 16, 24, 32, 39]) s += T(cx(t) + cw / 2, H + 8, t, { anchor: "middle", size: 10, fill: "var(--muted)" });
+  rows.forEach((r, j) => {
+    const y = m.t + j * rowH;
+    s += T(m.l - 12, y + ch / 2 + 4, `${MODEL[r.mo]} · int${r.d}`, { anchor: "end", fill: "var(--ink)", size: narrow ? 11 : 12.5 });
+    for (let i = 0; i < N; i++) {
+      const used = i < r.bits, over = used && i >= 32;
+      const fill = over ? "var(--critical)" : used ? "var(--accent)" : "var(--mid)";
+      s += `<rect x="${cx(i) + 1}" y="${y}" width="${Math.max(1, cw - 2)}" height="${ch}" rx="2" style="fill:${fill}" ${used ? 'fill-opacity="0.85"' : ""}/>`;
+    }
+    const tipTxt = `<b>${MODEL[r.mo]}, int${r.d}</b>\nlargest sum needs ${r.bits} bits\n${r.bits > 32 ? `${r.bits - 32} bits past a 32-bit register` : `${32 - r.bits} bits of headroom`}`;
+    s += `<rect x="${m.l}" y="${y}" width="${W - m.l - m.r}" height="${ch}" style="fill:transparent" data-tip="${esc(tipTxt)}"/>`;
+    s += T(W - m.r + 8, y + ch / 2 + 4, `${r.bits} b`, { size: 11.5, fill: r.bits > 32 ? "var(--critical)" : "var(--ink-2)", weight: 600 });
+  });
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H + 12}" width="${W}" height="${H + 12}" role="img" aria-label="Accumulator bits needed per model and precision">${s}</svg>`;
+}
+
+/* ---------- boot ---------- */
+renderExplorer();
+renderFindings();
+initHeat();
+renderHeat();
+chart("pareto", drawPareto);
+chart("domains", drawDomains);
+chart("acc", drawAcc);
+chart("dumbbell", drawDumbbell);
+chart("regs", drawRegs);
+seg(["p8", "p16"], id => { pBits = id === "p8" ? 8 : 16; redraw("pareto"); });
+seg(["m-mlp", "m-lenet5"], id => { acc.model = id === "m-mlp" ? "mlp" : "lenet5"; redraw("acc"); });
+seg(["b8", "b16"], id => { acc.bits = id === "b8" ? 8 : 16; redraw("acc"); });
+const reheat = () => renderHeat();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", reheat);
+new MutationObserver(reheat).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+</script>

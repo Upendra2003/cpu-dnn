@@ -1,0 +1,154 @@
+[00:19:19] device cuda NVIDIA L40
+[00:19:19] errors  8-bit mitchell     mean 3.787% max 11.111% bias -3.787%
+[00:19:19] errors  8-bit drum6        mean 1.301% max 6.348% bias +0.571%
+[00:19:19] errors  8-bit roba_dn1     mean 8.919% max 24.804% bias -8.919%
+[00:19:19] errors  8-bit roba_updn    mean 2.863% max 11.111% bias -0.008%
+[00:19:19] errors  8-bit roba_dn2     mean 0.834% max 6.104% bias -0.834%
+[00:19:19] errors  8-bit roba_updndn  mean 0.236% max 2.634% bias -0.002%
+[00:19:19] errors  8-bit roba_updn2   mean 0.073% max 0.826% bias -0.000%
+[00:19:19] errors 16-bit mitchell     mean 3.846% max 11.111% bias -3.846%
+[00:19:19] errors 16-bit drum6        mean 1.466% max 6.257% bias +0.053%
+[00:19:19] errors 16-bit roba_dn1     mean 9.406% max 24.976% bias -9.406%
+[00:19:19] errors 16-bit roba_updn    mean 2.884% max 11.102% bias -0.036%
+[00:19:19] errors 16-bit roba_dn2     mean 0.988% max 6.232% bias -0.988%
+[00:19:19] errors 16-bit roba_updndn  mean 0.317% max 2.772% bias -0.003%
+[00:19:19] errors 16-bit roba_updn2   mean 0.080% max 0.824% bias -0.000%
+[00:19:19] wrote results/multiplier_errors.csv
+[00:19:19] stage errors finished in 0s
+[00:19:21] train mlp epoch 1/15 train_loss 0.2729 test_loss 0.1548 test_acc 0.9525
+[00:19:22] train mlp epoch 2/15 train_loss 0.1043 test_loss 0.0965 test_acc 0.9690
+[00:19:24] train mlp epoch 3/15 train_loss 0.0682 test_loss 0.0890 test_acc 0.9729
+[00:19:25] train mlp epoch 4/15 train_loss 0.0488 test_loss 0.0729 test_acc 0.9759
+[00:19:26] train mlp epoch 5/15 train_loss 0.0350 test_loss 0.0710 test_acc 0.9795
+[00:19:27] train mlp epoch 6/15 train_loss 0.0248 test_loss 0.0666 test_acc 0.9816
+[00:19:28] train mlp epoch 7/15 train_loss 0.0173 test_loss 0.0614 test_acc 0.9820
+[00:19:29] train mlp epoch 8/15 train_loss 0.0097 test_loss 0.0652 test_acc 0.9821
+[00:19:30] train mlp epoch 9/15 train_loss 0.0054 test_loss 0.0619 test_acc 0.9832
+[00:19:31] train mlp epoch 10/15 train_loss 0.0032 test_loss 0.0653 test_acc 0.9824
+[00:19:32] train mlp epoch 11/15 train_loss 0.0020 test_loss 0.0626 test_acc 0.9846
+[00:19:33] train mlp epoch 12/15 train_loss 0.0014 test_loss 0.0638 test_acc 0.9842
+[00:19:34] train mlp epoch 13/15 train_loss 0.0011 test_loss 0.0638 test_acc 0.9844
+[00:19:35] train mlp epoch 14/15 train_loss 0.0010 test_loss 0.0640 test_acc 0.9843
+[00:19:36] train mlp epoch 15/15 train_loss 0.0009 test_loss 0.0641 test_acc 0.9842
+[00:19:36] train mlp done in 17s
+[00:19:39] train lenet5 epoch 1/15 train_loss 0.3112 test_loss 0.0854 test_acc 0.9729
+[00:19:41] train lenet5 epoch 2/15 train_loss 0.0756 test_loss 0.0587 test_acc 0.9819
+[00:19:42] train lenet5 epoch 3/15 train_loss 0.0530 test_loss 0.0483 test_acc 0.9825
+[00:19:44] train lenet5 epoch 4/15 train_loss 0.0405 test_loss 0.0382 test_acc 0.9872
+[00:19:46] train lenet5 epoch 5/15 train_loss 0.0332 test_loss 0.0372 test_acc 0.9876
+[00:19:48] train lenet5 epoch 6/15 train_loss 0.0254 test_loss 0.0294 test_acc 0.9888
+[00:19:50] train lenet5 epoch 7/15 train_loss 0.0215 test_loss 0.0291 test_acc 0.9904
+[00:19:52] train lenet5 epoch 8/15 train_loss 0.0165 test_loss 0.0286 test_acc 0.9896
+[00:19:54] train lenet5 epoch 9/15 train_loss 0.0135 test_loss 0.0242 test_acc 0.9921
+[00:19:56] train lenet5 epoch 10/15 train_loss 0.0102 test_loss 0.0278 test_acc 0.9903
+[00:19:58] train lenet5 epoch 11/15 train_loss 0.0077 test_loss 0.0262 test_acc 0.9917
+[00:20:00] train lenet5 epoch 12/15 train_loss 0.0063 test_loss 0.0248 test_acc 0.9925
+[00:20:02] train lenet5 epoch 13/15 train_loss 0.0052 test_loss 0.0252 test_acc 0.9916
+[00:20:04] train lenet5 epoch 14/15 train_loss 0.0046 test_loss 0.0250 test_acc 0.9920
+[00:20:06] train lenet5 epoch 15/15 train_loss 0.0043 test_loss 0.0251 test_acc 0.9920
+[00:20:06] train lenet5 done in 29s
+[00:20:06] stage train finished in 47s
+[00:20:06] eval mlp float32 native acc 0.9842 loss 0.0641
+[00:20:06] eval mlp float  exact        acc 0.9842 loss 0.0641 agree 1.0000 (0.0s)
+[00:20:07] eval mlp float  mitchell     acc 0.9844 loss 0.0589 agree 0.9995 (0.7s)
+[00:20:07] eval mlp float  drum6        acc 0.9844 loss 0.0645 agree 0.9997 (0.0s)
+[00:20:07] eval mlp float  roba_dn1     acc 0.9842 loss 0.0561 agree 0.9984 (0.0s)
+[00:20:07] eval mlp float  roba_updn    acc 0.9840 loss 0.0641 agree 0.9995 (0.0s)
+[00:20:07] eval mlp float  roba_dn2     acc 0.9842 loss 0.0631 agree 1.0000 (0.0s)
+[00:20:07] eval mlp float  roba_updndn  acc 0.9842 loss 0.0641 agree 1.0000 (0.0s)
+[00:20:07] eval mlp float  roba_updn2   acc 0.9842 loss 0.0641 agree 1.0000 (0.0s)
+[00:20:07] eval mlp trunc  exact        acc 0.0974 loss 2.3045 agree 1.0000 (0.0s)
+[00:20:08] eval mlp trunc  mitchell     acc 0.0974 loss 2.3045 agree 1.0000 (0.7s)
+[00:20:08] eval mlp trunc  drum6        acc 0.0974 loss 2.3045 agree 1.0000 (0.0s)
+[00:20:08] eval mlp trunc  roba_dn1     acc 0.0974 loss 2.3045 agree 1.0000 (0.0s)
+[00:20:08] eval mlp trunc  roba_updn    acc 0.0974 loss 2.3045 agree 1.0000 (0.0s)
+[00:20:08] eval mlp trunc  roba_dn2     acc 0.0974 loss 2.3045 agree 1.0000 (0.0s)
+[00:20:08] eval mlp trunc  roba_updndn  acc 0.0974 loss 2.3045 agree 1.0000 (0.0s)
+[00:20:08] eval mlp trunc  roba_updn2   acc 0.0974 loss 2.3045 agree 1.0000 (0.0s)
+[00:20:08] eval mlp 8      exact        acc 0.9843 loss 0.0639 agree 1.0000 (0.0s)
+[00:20:09] eval mlp 8      mitchell     acc 0.9846 loss 0.0598 agree 0.9991 (0.7s)
+[00:20:09] eval mlp 8      drum6        acc 0.9843 loss 0.0644 agree 0.9995 (0.0s)
+[00:20:09] eval mlp 8      roba_dn1     acc 0.9842 loss 0.0569 agree 0.9978 (0.0s)
+[00:20:09] eval mlp 8      roba_updn    acc 0.9844 loss 0.0637 agree 0.9986 (0.0s)
+[00:20:09] eval mlp 8      roba_dn2     acc 0.9844 loss 0.0626 agree 0.9995 (0.1s)
+[00:20:09] eval mlp 8      roba_updndn  acc 0.9843 loss 0.0640 agree 0.9995 (0.1s)
+[00:20:09] eval mlp 8      roba_updn2   acc 0.9844 loss 0.0640 agree 0.9999 (0.1s)
+[00:20:09] eval mlp 16     exact        acc 0.9842 loss 0.0641 agree 1.0000 (0.0s)
+[00:20:10] eval mlp 16     mitchell     acc 0.9840 loss 0.0604 agree 0.9995 (0.7s)
+[00:20:10] eval mlp 16     drum6        acc 0.9842 loss 0.0640 agree 0.9992 (0.0s)
+[00:20:10] eval mlp 16     roba_dn1     acc 0.9840 loss 0.0562 agree 0.9975 (0.0s)
+[00:20:10] eval mlp 16     roba_updn    acc 0.9841 loss 0.0639 agree 0.9990 (0.0s)
+[00:20:10] eval mlp 16     roba_dn2     acc 0.9842 loss 0.0628 agree 0.9998 (0.1s)
+[00:20:10] eval mlp 16     roba_updndn  acc 0.9842 loss 0.0641 agree 0.9999 (0.1s)
+[00:20:10] eval mlp 16     roba_updn2   acc 0.9842 loss 0.0641 agree 1.0000 (0.1s)
+[00:20:10] wrote results/eval_mlp.csv
+[00:20:10] eval lenet5 float32 native acc 0.9920 loss 0.0251
+[00:20:10] eval lenet5 float  exact        acc 0.9920 loss 0.0251 agree 1.0000 (0.2s)
+[00:20:11] eval lenet5 float  mitchell     acc 0.9921 loss 0.0242 agree 0.9991 (1.5s)
+[00:20:12] eval lenet5 float  drum6        acc 0.9923 loss 0.0252 agree 0.9993 (0.3s)
+[00:20:12] eval lenet5 float  roba_dn1     acc 0.9925 loss 0.0249 agree 0.9978 (0.3s)
+[00:20:12] eval lenet5 float  roba_updn    acc 0.9918 loss 0.0253 agree 0.9981 (0.3s)
+[00:20:13] eval lenet5 float  roba_dn2     acc 0.9919 loss 0.0248 agree 0.9997 (0.5s)
+[00:20:13] eval lenet5 float  roba_updndn  acc 0.9919 loss 0.0250 agree 0.9997 (0.5s)
+[00:20:14] eval lenet5 float  roba_updn2   acc 0.9920 loss 0.0250 agree 1.0000 (0.5s)
+[00:20:14] eval lenet5 trunc  exact        acc 0.1009 loss 2.3051 agree 1.0000 (0.2s)
+[00:20:15] eval lenet5 trunc  mitchell     acc 0.1009 loss 2.3051 agree 1.0000 (1.5s)
+[00:20:16] eval lenet5 trunc  drum6        acc 0.1009 loss 2.3051 agree 1.0000 (0.3s)
+[00:20:16] eval lenet5 trunc  roba_dn1     acc 0.1009 loss 2.3051 agree 1.0000 (0.3s)
+[00:20:16] eval lenet5 trunc  roba_updn    acc 0.1009 loss 2.3051 agree 1.0000 (0.3s)
+[00:20:17] eval lenet5 trunc  roba_dn2     acc 0.1009 loss 2.3051 agree 1.0000 (0.5s)
+[00:20:17] eval lenet5 trunc  roba_updndn  acc 0.1009 loss 2.3051 agree 1.0000 (0.5s)
+[00:20:18] eval lenet5 trunc  roba_updn2   acc 0.1009 loss 2.3051 agree 1.0000 (0.5s)
+[00:20:18] eval lenet5 8      exact        acc 0.9918 loss 0.0250 agree 1.0000 (0.2s)
+[00:20:19] eval lenet5 8      mitchell     acc 0.9912 loss 0.0246 agree 0.9989 (1.5s)
+[00:20:20] eval lenet5 8      drum6        acc 0.9917 loss 0.0251 agree 0.9988 (0.3s)
+[00:20:20] eval lenet5 8      roba_dn1     acc 0.9919 loss 0.0263 agree 0.9970 (0.3s)
+[00:20:20] eval lenet5 8      roba_updn    acc 0.9920 loss 0.0252 agree 0.9990 (0.3s)
+[00:20:21] eval lenet5 8      roba_dn2     acc 0.9920 loss 0.0248 agree 0.9991 (0.5s)
+[00:20:21] eval lenet5 8      roba_updndn  acc 0.9919 loss 0.0251 agree 0.9994 (0.5s)
+[00:20:22] eval lenet5 8      roba_updn2   acc 0.9921 loss 0.0250 agree 0.9995 (0.5s)
+[00:20:22] eval lenet5 16     exact        acc 0.9920 loss 0.0251 agree 1.0000 (0.2s)
+[00:20:24] eval lenet5 16     mitchell     acc 0.9913 loss 0.0242 agree 0.9987 (1.5s)
+[00:20:24] eval lenet5 16     drum6        acc 0.9916 loss 0.0252 agree 0.9992 (0.3s)
+[00:20:24] eval lenet5 16     roba_dn1     acc 0.9918 loss 0.0266 agree 0.9972 (0.3s)
+[00:20:25] eval lenet5 16     roba_updn    acc 0.9920 loss 0.0253 agree 0.9993 (0.3s)
+[00:20:25] eval lenet5 16     roba_dn2     acc 0.9918 loss 0.0247 agree 0.9994 (0.5s)
+[00:20:26] eval lenet5 16     roba_updndn  acc 0.9920 loss 0.0251 agree 1.0000 (0.5s)
+[00:20:26] eval lenet5 16     roba_updn2   acc 0.9921 loss 0.0251 agree 0.9999 (0.5s)
+[00:20:26] wrote results/eval_lenet5.csv
+[00:20:26] stage eval finished in 20s
+[00:20:31] finetune mlp int8 exact        acc 0.9843 -> 0.9843 loss 0.0639 -> 0.0667 (4s)
+[00:20:49] finetune mlp int8 mitchell     acc 0.9846 -> 0.9846 loss 0.0598 -> 0.0635 (17s)
+[00:20:54] finetune mlp int8 drum6        acc 0.9843 -> 0.9844 loss 0.0644 -> 0.0668 (5s)
+[00:20:58] finetune mlp int8 roba_dn1     acc 0.9842 -> 0.9844 loss 0.0569 -> 0.0581 (5s)
+[00:21:03] finetune mlp int8 roba_updn    acc 0.9844 -> 0.9842 loss 0.0637 -> 0.0668 (5s)
+[00:21:08] finetune mlp int8 roba_dn2     acc 0.9844 -> 0.9851 loss 0.0626 -> 0.0653 (5s)
+[00:21:13] finetune mlp int8 roba_updndn  acc 0.9843 -> 0.9844 loss 0.0640 -> 0.0670 (5s)
+[00:21:19] finetune mlp int8 roba_updn2   acc 0.9844 -> 0.9847 loss 0.0640 -> 0.0667 (5s)
+[00:21:23] finetune mlp int16 exact        acc 0.9842 -> 0.9845 loss 0.0641 -> 0.0667 (4s)
+[00:21:41] finetune mlp int16 mitchell     acc 0.9840 -> 0.9846 loss 0.0604 -> 0.0635 (17s)
+[00:21:46] finetune mlp int16 drum6        acc 0.9842 -> 0.9845 loss 0.0640 -> 0.0667 (4s)
+[00:21:50] finetune mlp int16 roba_dn1     acc 0.9840 -> 0.9845 loss 0.0562 -> 0.0576 (4s)
+[00:21:55] finetune mlp int16 roba_updn    acc 0.9841 -> 0.9841 loss 0.0639 -> 0.0667 (4s)
+[00:22:00] finetune mlp int16 roba_dn2     acc 0.9842 -> 0.9847 loss 0.0628 -> 0.0653 (5s)
+[00:22:05] finetune mlp int16 roba_updndn  acc 0.9842 -> 0.9845 loss 0.0641 -> 0.0666 (5s)
+[00:22:11] finetune mlp int16 roba_updn2   acc 0.9842 -> 0.9845 loss 0.0641 -> 0.0667 (5s)
+[00:22:11] wrote results/finetune_mlp.csv
+[00:22:19] finetune lenet5 int8 exact        acc 0.9918 -> 0.9921 loss 0.0250 -> 0.0257 (8s)
+[00:22:55] finetune lenet5 int8 mitchell     acc 0.9912 -> 0.9920 loss 0.0246 -> 0.0248 (34s)
+[00:23:06] finetune lenet5 int8 drum6        acc 0.9917 -> 0.9920 loss 0.0251 -> 0.0256 (11s)
+[00:23:17] finetune lenet5 int8 roba_dn1     acc 0.9919 -> 0.9918 loss 0.0263 -> 0.0238 (11s)
+[00:23:28] finetune lenet5 int8 roba_updn    acc 0.9920 -> 0.9922 loss 0.0252 -> 0.0254 (11s)
+[00:23:42] finetune lenet5 int8 roba_dn2     acc 0.9920 -> 0.9921 loss 0.0248 -> 0.0252 (14s)
+[00:23:57] finetune lenet5 int8 roba_updndn  acc 0.9919 -> 0.9918 loss 0.0251 -> 0.0253 (14s)
+[00:24:11] finetune lenet5 int8 roba_updn2   acc 0.9921 -> 0.9919 loss 0.0250 -> 0.0257 (14s)
+[00:24:20] finetune lenet5 int16 exact        acc 0.9920 -> 0.9921 loss 0.0251 -> 0.0256 (8s)
+[00:24:55] finetune lenet5 int16 mitchell     acc 0.9913 -> 0.9921 loss 0.0242 -> 0.0247 (34s)
+[00:25:07] finetune lenet5 int16 drum6        acc 0.9916 -> 0.9920 loss 0.0252 -> 0.0256 (11s)
+[00:25:18] finetune lenet5 int16 roba_dn1     acc 0.9918 -> 0.9914 loss 0.0266 -> 0.0238 (11s)
+[00:25:29] finetune lenet5 int16 roba_updn    acc 0.9920 -> 0.9919 loss 0.0253 -> 0.0254 (11s)
+[00:25:43] finetune lenet5 int16 roba_dn2     acc 0.9918 -> 0.9920 loss 0.0247 -> 0.0251 (14s)
+[00:25:58] finetune lenet5 int16 roba_updndn  acc 0.9920 -> 0.9921 loss 0.0251 -> 0.0256 (14s)
+[00:26:12] finetune lenet5 int16 roba_updn2   acc 0.9921 -> 0.9922 loss 0.0251 -> 0.0256 (14s)
+[00:26:12] wrote results/finetune_lenet5.csv
+[00:26:12] stage finetune finished in 346s
