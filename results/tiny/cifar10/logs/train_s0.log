@@ -1,0 +1,12 @@
+[13:43:14] train resnet8 seed 0 epoch 20/200 loss 0.6516 val 0.6610
+[13:44:14] train resnet8 seed 0 epoch 40/200 loss 0.5777 val 0.7716
+[13:45:15] train resnet8 seed 0 epoch 60/200 loss 0.5386 val 0.7470
+[13:46:16] train resnet8 seed 0 epoch 80/200 loss 0.5218 val 0.6704
+[13:47:16] train resnet8 seed 0 epoch 100/200 loss 0.4997 val 0.7698
+[13:48:18] train resnet8 seed 0 epoch 120/200 loss 0.4794 val 0.7972
+[13:49:18] train resnet8 seed 0 epoch 140/200 loss 0.4508 val 0.8174
+[13:50:19] train resnet8 seed 0 epoch 160/200 loss 0.4029 val 0.8414
+[13:51:20] train resnet8 seed 0 epoch 180/200 loss 0.3185 val 0.8646
+[13:52:21] train resnet8 seed 0 epoch 200/200 loss 0.2569 val 0.8814
+[13:52:21] train resnet8 seed 0 done in 609s, float test acc 0.8724
+[13:52:21] stage train finished in 609s

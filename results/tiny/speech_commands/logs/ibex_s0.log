@@ -1,0 +1,76 @@
+[15:47:54] compiling 60 programs
+[15:47:57] running 60 simulations on 24 workers
+[15:51:18] 1/60 batches (201s): speech_commands/dscnn/s0/int4/dn1/b00000 simulated in 201s at 984 kHz
+[15:51:18] 2/60 batches (201s): speech_commands/dscnn/s0/int4/dn1/b00008 simulated in 201s at 987 kHz
+[15:51:19] 3/60 batches (202s): speech_commands/dscnn/s0/int4/dn1/b00016 simulated in 202s at 987 kHz
+[15:51:21] 4/60 batches (204s): speech_commands/dscnn/s0/int4/dn1/b00004 simulated in 204s at 973 kHz
+[15:51:23] 5/60 batches (206s): speech_commands/dscnn/s0/int4/dn1/b00012 simulated in 206s at 971 kHz
+[15:51:31] 6/60 batches (214s): speech_commands/dscnn/s0/int4/sqtab/b00000 simulated in 214s at 992 kHz
+[15:51:32] 7/60 batches (215s): speech_commands/dscnn/s0/int4/sqtab/b00008 simulated in 215s at 990 kHz
+[15:51:32] 8/60 batches (215s): speech_commands/dscnn/s0/int4/sqtab/b00012 simulated in 215s at 990 kHz
+[15:51:34] 9/60 batches (217s): speech_commands/dscnn/s0/int4/sqtab/b00004 simulated in 217s at 982 kHz
+[15:51:35] 10/60 batches (218s): speech_commands/dscnn/s0/int4/sqtab/b00016 simulated in 218s at 980 kHz
+[15:51:43] 11/60 batches (226s): speech_commands/dscnn/s0/int4/dn2/b00000 simulated in 226s at 977 kHz
+[15:51:43] 12/60 batches (226s): speech_commands/dscnn/s0/int4/dn2/b00004 simulated in 226s at 976 kHz
+[15:51:44] 13/60 batches (227s): speech_commands/dscnn/s0/int4/dn2/b00016 simulated in 227s at 977 kHz
+[15:51:46] 14/60 batches (229s): speech_commands/dscnn/s0/int4/dn2/b00012 simulated in 229s at 969 kHz
+[15:51:47] 15/60 batches (230s): speech_commands/dscnn/s0/int4/dn2/b00008 simulated in 230s at 959 kHz
+[15:51:58] 16/60 batches (241s): speech_commands/dscnn/s0/int4/exact/b00000 simulated in 241s at 994 kHz
+[15:51:59] 17/60 batches (242s): speech_commands/dscnn/s0/int4/exact/b00016 simulated in 242s at 995 kHz
+[15:51:59] 18/60 batches (242s): speech_commands/dscnn/s0/int4/exact/b00012 simulated in 242s at 995 kHz
+[15:52:03] 19/60 batches (246s): speech_commands/dscnn/s0/int4/exact/b00004 simulated in 246s at 977 kHz
+[15:52:03] 20/60 batches (246s): speech_commands/dscnn/s0/int4/exact/b00008 simulated in 246s at 976 kHz
+[15:55:32] 21/60 batches (455s): speech_commands/dscnn/s0/int8/sqtab/b00000 simulated in 254s at 991 kHz
+[15:55:35] 22/60 batches (458s): speech_commands/dscnn/s0/int8/sqtab/b00008 simulated in 254s at 993 kHz
+[15:55:37] 23/60 batches (460s): speech_commands/dscnn/s0/int8/sqtab/b00004 simulated in 258s at 974 kHz
+[15:55:40] 24/60 batches (463s): speech_commands/dscnn/s0/int8/sqtab/b00012 simulated in 257s at 981 kHz
+[15:55:46] 25/60 batches (469s): speech_commands/dscnn/s0/int8/sqtab/b00016 simulated in 255s at 989 kHz
+[15:55:59] 26/60 batches (482s): speech_commands/dscnn/s0/int8/exact/b00000 simulated in 482s at 1031 kHz
+[15:56:00] 27/60 batches (483s): speech_commands/dscnn/s0/int8/exact/b00008 simulated in 483s at 1026 kHz
+[15:56:00] 28/60 batches (483s): speech_commands/dscnn/s0/int8/exact/b00004 simulated in 483s at 1028 kHz
+[15:56:04] 29/60 batches (487s): speech_commands/dscnn/s0/int8/exact/b00012 simulated in 487s at 1010 kHz
+[15:56:17] 30/60 batches (500s): speech_commands/dscnn/s0/int8/dn1/b00004 simulated in 285s at 992 kHz
+[15:56:18] 31/60 batches (501s): speech_commands/dscnn/s0/int8/dn1/b00000 simulated in 286s at 987 kHz
+[15:56:19] 32/60 batches (502s): speech_commands/dscnn/s0/int8/dn1/b00012 simulated in 284s at 992 kHz
+[15:56:20] 33/60 batches (503s): speech_commands/dscnn/s0/int8/dn1/b00008 simulated in 286s at 986 kHz
+[15:56:29] 34/60 batches (511s): speech_commands/dscnn/s0/int8/dn1/b00016 simulated in 285s at 987 kHz
+[15:57:26] 35/60 batches (569s): speech_commands/dscnn/s0/int8/sqapx/b00000 simulated in 327s at 1009 kHz
+[15:57:32] 36/60 batches (575s): speech_commands/dscnn/s0/int8/sqapx/b00004 simulated in 333s at 990 kHz
+[15:57:33] 37/60 batches (576s): speech_commands/dscnn/s0/int8/dn2/b00000 simulated in 350s at 981 kHz
+[15:57:35] 38/60 batches (577s): speech_commands/dscnn/s0/int8/dn2/b00004 simulated in 351s at 980 kHz
+[15:57:37] 39/60 batches (580s): speech_commands/dscnn/s0/int8/sqapx/b00012 simulated in 333s at 990 kHz
+[15:57:37] 40/60 batches (580s): speech_commands/dscnn/s0/int8/sqapx/b00008 simulated in 334s at 986 kHz
+[15:57:38] 41/60 batches (581s): speech_commands/dscnn/s0/int8/dn2/b00012 simulated in 350s at 976 kHz
+[15:57:38] 42/60 batches (581s): speech_commands/dscnn/s0/int8/dn2/b00008 simulated in 352s at 975 kHz
+[15:57:53] 43/60 batches (596s): speech_commands/dscnn/s0/int8/dn2/b00016 simulated in 355s at 965 kHz
+[15:59:26] 44/60 batches (689s): speech_commands/dscnn/s0/int8/exact/b00016 simulated in 488s at 1010 kHz
+[16:00:59] 45/60 batches (782s): speech_commands/dscnn/s0/int8/sqapx/b00016 simulated in 327s at 1007 kHz
+[16:01:55] 46/60 batches (838s): speech_commands/dscnn/s0/int16/dn1/b00000 simulated in 356s at 989 kHz
+[16:01:56] 47/60 batches (839s): speech_commands/dscnn/s0/int16/dn1/b00004 simulated in 356s at 986 kHz
+[16:01:59] 48/60 batches (842s): speech_commands/dscnn/s0/int16/dn1/b00008 simulated in 355s at 991 kHz
+[16:02:10] 49/60 batches (853s): speech_commands/dscnn/s0/int16/dn1/b00012 simulated in 353s at 990 kHz
+[16:02:18] 50/60 batches (861s): speech_commands/dscnn/s0/int16/dn1/b00016 simulated in 361s at 972 kHz
+[16:03:32] 51/60 batches (935s): speech_commands/dscnn/s0/int16/dn2/b00004 simulated in 432s at 988 kHz
+[16:03:35] 52/60 batches (937s): speech_commands/dscnn/s0/int16/dn2/b00000 simulated in 436s at 984 kHz
+[16:03:43] 53/60 batches (946s): speech_commands/dscnn/s0/int16/dn2/b00008 simulated in 435s at 987 kHz
+[16:04:36] 54/60 batches (999s): speech_commands/dscnn/s0/int16/dn2/b00012 simulated in 430s at 987 kHz
+[16:04:45] 55/60 batches (1008s): speech_commands/dscnn/s0/int16/dn2/b00016 simulated in 433s at 986 kHz
+[16:11:47] 56/60 batches (1430s): speech_commands/dscnn/s0/int16/exact/b00004 simulated in 970s at 1062 kHz
+[16:11:50] 57/60 batches (1433s): speech_commands/dscnn/s0/int16/exact/b00012 simulated in 964s at 1058 kHz
+[16:12:01] 58/60 batches (1444s): speech_commands/dscnn/s0/int16/exact/b00008 simulated in 981s at 1056 kHz
+[16:12:03] 59/60 batches (1446s): speech_commands/dscnn/s0/int16/exact/b00000 simulated in 988s at 1046 kHz
+[16:12:06] 60/60 batches (1449s): speech_commands/dscnn/s0/int16/exact/b00016 simulated in 968s at 1062 kHz
+[16:12:06] wrote results/tiny/speech_commands/dscnn_ibex_images.csv
+[16:12:06] s0 int4  exact logits match 1.000 |    59.96 M cycles | 1.00x | energy 1.00
+[16:12:06] s0 int4  sqtab logits match 1.000 |    52.99 M cycles | 1.13x | energy 0.88
+[16:12:06] s0 int4  dn1   logits match 1.000 |    49.52 M cycles | 1.21x | energy 0.86
+[16:12:06] s0 int4  dn2   logits match 1.000 |    55.14 M cycles | 1.09x | energy 0.96
+[16:12:06] s0 int8  exact logits match 1.000 |   123.49 M cycles | 1.00x | energy 1.00
+[16:12:06] s0 int8  sqtab logits match 1.000 |    62.83 M cycles | 1.97x | energy 0.51
+[16:12:06] s0 int8  dn1   logits match 1.000 |    70.34 M cycles | 1.76x | energy 0.60
+[16:12:06] s0 int8  dn2   logits match 1.000 |    85.52 M cycles | 1.44x | energy 0.72
+[16:12:06] s0 int8  sqapx logits match 1.000 |    82.20 M cycles | 1.50x | energy 0.70
+[16:12:06] s0 int16 exact logits match 1.000 |   257.18 M cycles | 1.00x | energy 1.00
+[16:12:06] s0 int16 dn1   logits match 1.000 |    87.55 M cycles | 2.94x | energy 0.36
+[16:12:06] s0 int16 dn2   logits match 1.000 |   106.59 M cycles | 2.41x | energy 0.43
+[16:12:06] wrote results/tiny/speech_commands/dscnn_ibex_summary.csv

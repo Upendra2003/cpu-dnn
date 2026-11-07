@@ -1,0 +1,19 @@
+[15:02:12] train dscnn seed 0 epoch 20/100 loss 0.4029 val 0.9025
+[15:02:55] train dscnn seed 0 epoch 40/100 loss 0.3627 val 0.9228
+[15:03:46] train dscnn seed 0 epoch 60/100 loss 0.3337 val 0.9341
+[15:04:31] train dscnn seed 0 epoch 80/100 loss 0.2890 val 0.9412
+[15:05:20] train dscnn seed 0 epoch 100/100 loss 0.2209 val 0.9494
+[15:05:20] train dscnn seed 0 done in 233s, float test acc 0.9558
+[15:06:10] train dscnn seed 1 epoch 20/100 loss 0.3938 val 0.9086
+[15:06:52] train dscnn seed 1 epoch 40/100 loss 0.3617 val 0.9270
+[15:07:45] train dscnn seed 1 epoch 60/100 loss 0.3307 val 0.9308
+[15:08:37] train dscnn seed 1 epoch 80/100 loss 0.2844 val 0.9388
+[15:09:30] train dscnn seed 1 epoch 100/100 loss 0.2146 val 0.9494
+[15:09:30] train dscnn seed 1 done in 249s, float test acc 0.9530
+[15:10:23] train dscnn seed 2 epoch 20/100 loss 0.3799 val 0.9194
+[15:11:16] train dscnn seed 2 epoch 40/100 loss 0.3541 val 0.9259
+[15:11:50] train dscnn seed 2 epoch 60/100 loss 0.3255 val 0.9295
+[15:12:16] train dscnn seed 2 epoch 80/100 loss 0.2770 val 0.9486
+[15:13:04] train dscnn seed 2 epoch 100/100 loss 0.2121 val 0.9531
+[15:13:04] train dscnn seed 2 done in 214s, float test acc 0.9536
+[15:13:04] stage train finished in 696s

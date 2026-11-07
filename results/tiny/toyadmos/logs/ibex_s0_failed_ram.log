@@ -1,0 +1,81 @@
+[17:13:56] compiling 48 programs
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: /home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/exact/b00000/tiny.elf section `.bss' will not fit in region `ram'
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: section .stack VMA [00000000001f0000,00000000001f1fff] overlaps section .bss VMA [000000000018ab90,000000000020d7af]
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: region `ram' overflowed by 120752 bytes
+collect2: error: ld returned 1 exit status
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: /home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/dn1/b00000/tiny.elf section `.bss' will not fit in region `ram'
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: section .stack VMA [00000000001f0000,00000000001f1fff] overlaps section .bss VMA [000000000018adf0,000000000020da0f]
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: region `ram' overflowed by 121360 bytes
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: /home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/exact/b00005/tiny.elf section `.bss' will not fit in region `ram'
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: section .stack VMA [00000000001f0000,00000000001f1fff] overlaps section .bss VMA [000000000018ab90,000000000020d7af]
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: region `ram' overflowed by 120752 bytes
+collect2: error: ld returned 1 exit status
+collect2: error: ld returned 1 exit status
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: /home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/exact/b00015/tiny.elf section `.bss' will not fit in region `ram'
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: section .stack VMA [00000000001f0000,00000000001f1fff] overlaps section .bss VMA [000000000018ab90,000000000020d7af]
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: region `ram' overflowed by 120752 bytes
+collect2: error: ld returned 1 exit status
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: /home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/dn1/b00005/tiny.elf section `.bss' will not fit in region `ram'
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: section .stack VMA [00000000001f0000,00000000001f1fff] overlaps section .bss VMA [000000000018adf0,000000000020da0f]
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: region `ram' overflowed by 121360 bytes
+collect2: error: ld returned 1 exit status
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: /home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/dn1/b00015/tiny.elf section `.bss' will not fit in region `ram'
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: section .stack VMA [00000000001f0000,00000000001f1fff] overlaps section .bss VMA [000000000018adf0,000000000020da0f]
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: region `ram' overflowed by 121360 bytes
+collect2: error: ld returned 1 exit status
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: /home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/exact/b00010/tiny.elf section `.bss' will not fit in region `ram'
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: section .stack VMA [00000000001f0000,00000000001f1fff] overlaps section .bss VMA [000000000018ab90,000000000020d7af]
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: region `ram' overflowed by 120752 bytes
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ldcollect2: error: ld returned 1 exit status
+: /home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/dn1/b00010/tiny.elf section `.bss' will not fit in region `ram'
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: section .stack VMA [00000000001f0000,00000000001f1fff] overlaps section .bss VMA [000000000018adf0,000000000020da0f]
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: region `ram' overflowed by 121360 bytes
+collect2: error: ld returned 1 exit status
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: /home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/dn2/b00005/tiny.elf section `.bss' will not fit in region `ram'
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: section .stack VMA [00000000001f0000,00000000001f1fff] overlaps section .bss VMA [000000000018ae88,000000000020daa7]
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: region `ram' overflowed by 121512 bytes
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ldcollect2: error: ld returned 1 exit status
+: /home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/dn2/b00000/tiny.elf section `.bss' will not fit in region `ram'
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: section .stack VMA [00000000001f0000,00000000001f1fff] overlaps section .bss VMA [000000000018ae88,000000000020daa7]
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: region `ram' overflowed by 121512 bytes
+collect2: error: ld returned 1 exit status
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: /home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/dn2/b00010/tiny.elf section `.bss' will not fit in region `ram'
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: section .stack VMA [00000000001f0000,00000000001f1fff] overlaps section .bss VMA [000000000018ae88,000000000020daa7]
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: region `ram' overflowed by 121512 bytes
+collect2: error: ld returned 1 exit status
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: /home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/dn2/b00015/tiny.elf section `.bss' will not fit in region `ram'
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: section .stack VMA [00000000001f0000,00000000001f1fff] overlaps section .bss VMA [000000000018ae88,000000000020daa7]
+/home/ms_upendra/tools/riscv/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/bin/ld: region `ram' overflowed by 121512 bytes
+collect2: error: ld returned 1 exit status
+Traceback (most recent call last):
+  File "/home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/run_tiny.py", line 269, in <module>
+    main()
+    ~~~~^^
+  File "/home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/run_tiny.py", line 222, in main
+    list(ex.map(build, jobs))
+    ~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ms_upendra/miniconda3/lib/python3.13/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/ms_upendra/miniconda3/lib/python3.13/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ~~~~~~~~~~^^^^^^^^^
+  File "/home/ms_upendra/miniconda3/lib/python3.13/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/home/ms_upendra/miniconda3/lib/python3.13/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/ms_upendra/miniconda3/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/run_tiny.py", line 187, in build
+    ri.compile_elf(HW / "sw" / "tiny.c", job["elf"], include_dirs=[job["bdir"], job["bdir"].parent],
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                   defines=defines(job["method"]))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/run_ibex.py", line 77, in compile_elf
+    subprocess.run(cmd, check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ms_upendra/miniconda3/lib/python3.13/subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/home/ms_upendra/tools/riscv/bin/riscv32-unknown-elf-gcc', '-march=rv32ic', '-mabi=ilp32', '-static', '-mcmodel=medany', '-Wall', '-O3', '-fvisibility=hidden', '-nostdlib', '-nostartfiles', '-ffreestanding', '-DROBA_LOD_INSN', '-DMULT_NZ=roba_exact_nz', '-I/home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/ibex/examples/sw/simple_system/common', '-I/home/ms_upendra/projects/course_work/AIAccelerator/Project/csrc', '-I/home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/sw', '-I/home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/exact/b00000', '-I/home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/exact', '-T', '/home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/sw/link_1mb.ld', '/home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/sw/tiny.c', '/home/ms_upendra/projects/course_work/AIAccelerator/Project/csrc/roba.c', '/home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/ibex/examples/sw/simple_system/common/simple_system_common.c', '/home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/ibex/examples/sw/simple_system/common/crt0.S', '-o', '/home/ms_upendra/projects/course_work/AIAccelerator/Project/hw/gen/tiny/toyadmos/fcae/s0/int16/exact/b00000/tiny.elf', '-lgcc']' returned non-zero exit status 1.

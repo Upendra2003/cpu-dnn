@@ -1,0 +1,13 @@
+[16:04:40] train fcae seed 0 epoch 20/60 loss 10.1141 val -10.0992
+[16:08:21] train fcae seed 0 epoch 40/60 loss 9.9511 val -9.9203
+[16:12:07] train fcae seed 0 epoch 60/60 loss 9.9041 val -9.8820
+[16:12:07] train fcae seed 0 done in 659s, float test acc 0.7745
+[16:15:42] train fcae seed 1 epoch 20/60 loss 10.0541 val -10.0605
+[16:19:06] train fcae seed 1 epoch 40/60 loss 9.9070 val -9.8795
+[16:22:07] train fcae seed 1 epoch 60/60 loss 9.8636 val -9.8369
+[16:22:07] train fcae seed 1 done in 600s, float test acc 0.7742
+[16:24:32] train fcae seed 2 epoch 20/60 loss 10.0758 val -10.1357
+[16:27:41] train fcae seed 2 epoch 40/60 loss 9.9293 val -9.8973
+[16:31:22] train fcae seed 2 epoch 60/60 loss 9.8893 val -9.8693
+[16:31:23] train fcae seed 2 done in 555s, float test acc 0.7816
+[16:31:23] stage train finished in 1814s

@@ -1,0 +1,136 @@
+[16:12:28] compiling 120 programs
+[16:12:35] running 120 simulations on 32 workers
+[16:18:55] 1/120 batches (380s): cifar10/resnet8/s0/int4/sqtab/b00010 simulated in 380s at 978 kHz
+[16:18:56] 2/120 batches (381s): cifar10/resnet8/s0/int4/sqtab/b00000 simulated in 381s at 976 kHz
+[16:18:58] 3/120 batches (383s): cifar10/resnet8/s0/int4/sqtab/b00004 simulated in 383s at 970 kHz
+[16:18:58] 4/120 batches (383s): cifar10/resnet8/s0/int4/sqtab/b00002 simulated in 383s at 969 kHz
+[16:18:59] 5/120 batches (384s): cifar10/resnet8/s0/int4/sqtab/b00012 simulated in 384s at 967 kHz
+[16:18:59] 6/120 batches (384s): cifar10/resnet8/s0/int4/sqtab/b00006 simulated in 384s at 966 kHz
+[16:18:59] 7/120 batches (384s): cifar10/resnet8/s0/int4/sqtab/b00008 simulated in 384s at 967 kHz
+[16:19:00] 8/120 batches (385s): cifar10/resnet8/s0/int4/sqtab/b00014 simulated in 385s at 967 kHz
+[16:19:00] 9/120 batches (385s): cifar10/resnet8/s0/int4/sqtab/b00018 simulated in 385s at 966 kHz
+[16:19:04] 10/120 batches (389s): cifar10/resnet8/s0/int4/sqtab/b00016 simulated in 389s at 957 kHz
+[16:20:12] 11/120 batches (457s): cifar10/resnet8/s0/int4/dn1/b00004 simulated in 457s at 989 kHz
+[16:20:13] 12/120 batches (457s): cifar10/resnet8/s0/int4/dn1/b00000 simulated in 457s at 986 kHz
+[16:20:13] 13/120 batches (458s): cifar10/resnet8/s0/int4/dn1/b00018 simulated in 458s at 988 kHz
+[16:20:14] 14/120 batches (459s): cifar10/resnet8/s0/int4/dn1/b00014 simulated in 459s at 982 kHz
+[16:20:14] 15/120 batches (459s): cifar10/resnet8/s0/int4/dn1/b00006 simulated in 459s at 982 kHz
+[16:20:15] 16/120 batches (460s): cifar10/resnet8/s0/int4/dn1/b00002 simulated in 460s at 980 kHz
+[16:20:17] 17/120 batches (462s): cifar10/resnet8/s0/int4/dn1/b00016 simulated in 462s at 979 kHz
+[16:20:19] 18/120 batches (464s): cifar10/resnet8/s0/int4/dn1/b00010 simulated in 464s at 968 kHz
+[16:20:23] 19/120 batches (468s): cifar10/resnet8/s0/int4/dn1/b00012 simulated in 468s at 971 kHz
+[16:20:23] 20/120 batches (468s): cifar10/resnet8/s0/int4/dn1/b00008 simulated in 468s at 968 kHz
+[16:21:08] 21/120 batches (513s): cifar10/resnet8/s0/int4/dn2/b00002 simulated in 513s at 983 kHz
+[16:21:14] 22/120 batches (519s): cifar10/resnet8/s0/int4/exact/b00000 simulated in 519s at 1000 kHz
+[16:21:14] 23/120 batches (519s): cifar10/resnet8/s0/int4/exact/b00010 simulated in 519s at 999 kHz
+[16:21:16] 24/120 batches (521s): cifar10/resnet8/s0/int4/exact/b00008 simulated in 521s at 1002 kHz
+[16:21:17] 25/120 batches (522s): cifar10/resnet8/s0/int4/exact/b00004 simulated in 522s at 1000 kHz
+[16:21:19] 26/120 batches (524s): cifar10/resnet8/s0/int4/exact/b00018 simulated in 524s at 995 kHz
+[16:21:20] 27/120 batches (524s): cifar10/resnet8/s0/int4/dn2/b00000 simulated in 524s at 963 kHz
+[16:21:22] 28/120 batches (527s): cifar10/resnet8/s0/int4/exact/b00006 simulated in 527s at 987 kHz
+[16:21:23] 29/120 batches (528s): cifar10/resnet8/s0/int4/exact/b00016 simulated in 528s at 988 kHz
+[16:21:24] 30/120 batches (529s): cifar10/resnet8/s0/int4/exact/b00014 simulated in 529s at 981 kHz
+[16:21:27] 31/120 batches (531s): cifar10/resnet8/s0/int4/exact/b00002 simulated in 531s at 978 kHz
+[16:21:31] 32/120 batches (536s): cifar10/resnet8/s0/int4/exact/b00012 simulated in 536s at 979 kHz
+[16:27:09] 33/120 batches (874s): cifar10/resnet8/s0/int8/sqtab/b00000 simulated in 406s at 979 kHz
+[16:27:10] 34/120 batches (875s): cifar10/resnet8/s0/int8/sqtab/b00002 simulated in 407s at 976 kHz
+[16:27:30] 35/120 batches (895s): cifar10/resnet8/s0/int4/dn2/b00006 simulated in 514s at 982 kHz
+[16:27:31] 36/120 batches (896s): cifar10/resnet8/s0/int4/dn2/b00010 simulated in 513s at 981 kHz
+[16:27:34] 37/120 batches (899s): cifar10/resnet8/s0/int4/dn2/b00014 simulated in 514s at 982 kHz
+[16:27:34] 38/120 batches (899s): cifar10/resnet8/s0/int4/dn2/b00018 simulated in 515s at 984 kHz
+[16:27:38] 39/120 batches (903s): cifar10/resnet8/s0/int4/dn2/b00016 simulated in 519s at 978 kHz
+[16:27:38] 40/120 batches (903s): cifar10/resnet8/s0/int4/dn2/b00012 simulated in 519s at 982 kHz
+[16:27:39] 41/120 batches (904s): cifar10/resnet8/s0/int4/dn2/b00004 simulated in 524s at 968 kHz
+[16:27:43] 42/120 batches (908s): cifar10/resnet8/s0/int4/dn2/b00008 simulated in 525s at 967 kHz
+[16:27:58] 43/120 batches (923s): cifar10/resnet8/s0/int8/sqtab/b00004 simulated in 410s at 969 kHz
+[16:28:00] 44/120 batches (925s): cifar10/resnet8/s0/int8/sqtab/b00008 simulated in 406s at 979 kHz
+[16:28:03] 45/120 batches (927s): cifar10/resnet8/s0/int8/sqtab/b00012 simulated in 405s at 980 kHz
+[16:28:03] 46/120 batches (928s): cifar10/resnet8/s0/int8/sqtab/b00006 simulated in 409s at 971 kHz
+[16:28:03] 47/120 batches (928s): cifar10/resnet8/s0/int8/sqtab/b00010 simulated in 407s at 976 kHz
+[16:28:09] 48/120 batches (934s): cifar10/resnet8/s0/int8/sqtab/b00016 simulated in 409s at 972 kHz
+[16:28:10] 49/120 batches (934s): cifar10/resnet8/s0/int8/sqtab/b00014 simulated in 410s at 970 kHz
+[16:28:12] 50/120 batches (937s): cifar10/resnet8/s0/int8/sqtab/b00018 simulated in 410s at 969 kHz
+[16:30:17] 51/120 batches (1062s): cifar10/resnet8/s0/int8/dn1/b00000 simulated in 535s at 992 kHz
+[16:30:27] 52/120 batches (1072s): cifar10/resnet8/s0/int8/dn1/b00006 simulated in 536s at 992 kHz
+[16:30:31] 53/120 batches (1076s): cifar10/resnet8/s0/int8/dn1/b00004 simulated in 545s at 976 kHz
+[16:30:42] 54/120 batches (1087s): cifar10/resnet8/s0/int8/dn1/b00002 simulated in 558s at 951 kHz
+[16:33:58] 55/120 batches (1283s): cifar10/resnet8/s0/int8/exact/b00000 simulated in 898s at 1041 kHz
+[16:34:06] 56/120 batches (1291s): cifar10/resnet8/s0/int8/exact/b00002 simulated in 903s at 1035 kHz
+[16:35:02] 57/120 batches (1347s): cifar10/resnet8/s0/int8/exact/b00014 simulated in 887s at 1040 kHz
+[16:35:21] 58/120 batches (1366s): cifar10/resnet8/s0/int8/exact/b00006 simulated in 908s at 1038 kHz
+[16:35:22] 59/120 batches (1367s): cifar10/resnet8/s0/int8/exact/b00004 simulated in 910s at 1040 kHz
+[16:35:30] 60/120 batches (1375s): cifar10/resnet8/s0/int8/exact/b00008 simulated in 917s at 1035 kHz
+[16:35:36] 61/120 batches (1381s): cifar10/resnet8/s0/int8/exact/b00012 simulated in 922s at 1044 kHz
+[16:35:39] 62/120 batches (1384s): cifar10/resnet8/s0/int8/exact/b00010 simulated in 925s at 1005 kHz
+[16:35:41] 63/120 batches (1386s): cifar10/resnet8/s0/int8/exact/b00018 simulated in 922s at 1021 kHz
+[16:35:47] 64/120 batches (1392s): cifar10/resnet8/s0/int8/exact/b00016 simulated in 931s at 1008 kHz
+[16:36:03] 65/120 batches (1408s): cifar10/resnet8/s0/int8/dn1/b00010 simulated in 533s at 990 kHz
+[16:36:10] 66/120 batches (1415s): cifar10/resnet8/s0/int8/dn1/b00008 simulated in 541s at 986 kHz
+[16:36:31] 67/120 batches (1436s): cifar10/resnet8/s0/int8/dn1/b00014 simulated in 540s at 978 kHz
+[16:36:34] 68/120 batches (1439s): cifar10/resnet8/s0/int8/dn1/b00018 simulated in 540s at 986 kHz
+[16:36:39] 69/120 batches (1444s): cifar10/resnet8/s0/int8/dn1/b00016 simulated in 545s at 974 kHz
+[16:36:40] 70/120 batches (1445s): cifar10/resnet8/s0/int8/dn1/b00012 simulated in 549s at 978 kHz
+[16:37:47] 71/120 batches (1512s): cifar10/resnet8/s0/int8/sqapx/b00000 simulated in 578s at 1006 kHz
+[16:37:52] 72/120 batches (1517s): cifar10/resnet8/s0/int8/sqapx/b00002 simulated in 580s at 999 kHz
+[16:38:48] 73/120 batches (1573s): cifar10/resnet8/s0/int8/dn2/b00002 simulated in 670s at 989 kHz
+[16:38:58] 74/120 batches (1582s): cifar10/resnet8/s0/int8/dn2/b00004 simulated in 678s at 984 kHz
+[16:38:58] 75/120 batches (1583s): cifar10/resnet8/s0/int8/dn2/b00000 simulated in 680s at 974 kHz
+[16:39:08] 76/120 batches (1593s): cifar10/resnet8/s0/int8/dn2/b00006 simulated in 685s at 972 kHz
+[16:39:09] 77/120 batches (1594s): cifar10/resnet8/s0/int8/dn2/b00014 simulated in 666s at 989 kHz
+[16:39:10] 78/120 batches (1595s): cifar10/resnet8/s0/int8/dn2/b00010 simulated in 669s at 986 kHz
+[16:39:15] 79/120 batches (1599s): cifar10/resnet8/s0/int8/dn2/b00008 simulated in 677s at 988 kHz
+[16:39:20] 80/120 batches (1605s): cifar10/resnet8/s0/int8/dn2/b00016 simulated in 677s at 980 kHz
+[16:39:27] 81/120 batches (1612s): cifar10/resnet8/s0/int8/dn2/b00012 simulated in 685s at 989 kHz
+[16:39:28] 82/120 batches (1613s): cifar10/resnet8/s0/int8/dn2/b00018 simulated in 679s at 980 kHz
+[16:39:51] 83/120 batches (1636s): cifar10/resnet8/s0/int8/sqapx/b00004 simulated in 574s at 1007 kHz
+[16:40:08] 84/120 batches (1653s): cifar10/resnet8/s0/int8/sqapx/b00008 simulated in 577s at 1006 kHz
+[16:40:10] 85/120 batches (1655s): cifar10/resnet8/s0/int8/sqapx/b00006 simulated in 583s at 992 kHz
+[16:40:19] 86/120 batches (1664s): cifar10/resnet8/s0/int8/sqapx/b00010 simulated in 578s at 1003 kHz
+[16:43:35] 87/120 batches (1860s): cifar10/resnet8/s0/int8/sqapx/b00012 simulated in 577s at 1003 kHz
+[16:43:45] 88/120 batches (1870s): cifar10/resnet8/s0/int8/sqapx/b00014 simulated in 579s at 1001 kHz
+[16:44:49] 89/120 batches (1934s): cifar10/resnet8/s0/int8/sqapx/b00016 simulated in 587s at 988 kHz
+[16:45:07] 90/120 batches (1952s): cifar10/resnet8/s0/int8/sqapx/b00018 simulated in 586s at 991 kHz
+[16:47:06] 91/120 batches (2071s): cifar10/resnet8/s0/int16/dn1/b00000 simulated in 627s at 987 kHz
+[16:47:12] 92/120 batches (2077s): cifar10/resnet8/s0/int16/dn1/b00002 simulated in 633s at 979 kHz
+[16:48:19] 93/120 batches (2144s): cifar10/resnet8/s0/int16/dn1/b00004 simulated in 631s at 981 kHz
+[16:48:20] 94/120 batches (2145s): cifar10/resnet8/s0/int16/dn1/b00006 simulated in 627s at 988 kHz
+[16:49:13] 95/120 batches (2198s): cifar10/resnet8/s0/int16/dn1/b00008 simulated in 626s at 996 kHz
+[16:49:25] 96/120 batches (2209s): cifar10/resnet8/s0/int16/dn1/b00010 simulated in 627s at 979 kHz
+[16:49:30] 97/120 batches (2215s): cifar10/resnet8/s0/int16/dn1/b00012 simulated in 632s at 995 kHz
+[16:49:34] 98/120 batches (2219s): cifar10/resnet8/s0/int16/dn1/b00016 simulated in 625s at 990 kHz
+[16:49:36] 99/120 batches (2220s): cifar10/resnet8/s0/int16/dn1/b00014 simulated in 627s at 976 kHz
+[16:49:45] 100/120 batches (2230s): cifar10/resnet8/s0/int16/dn1/b00018 simulated in 636s at 980 kHz
+[16:52:26] 101/120 batches (2391s): cifar10/resnet8/s0/int16/dn2/b00000 simulated in 792s at 991 kHz
+[16:52:43] 102/120 batches (2408s): cifar10/resnet8/s0/int16/dn2/b00002 simulated in 803s at 978 kHz
+[16:52:46] 103/120 batches (2411s): cifar10/resnet8/s0/int16/dn2/b00004 simulated in 798s at 993 kHz
+[16:52:47] 104/120 batches (2412s): cifar10/resnet8/s0/int16/dn2/b00006 simulated in 799s at 989 kHz
+[16:53:11] 105/120 batches (2436s): cifar10/resnet8/s0/int16/dn2/b00008 simulated in 800s at 993 kHz
+[16:53:17] 106/120 batches (2442s): cifar10/resnet8/s0/int16/dn2/b00010 simulated in 789s at 992 kHz
+[16:53:22] 107/120 batches (2447s): cifar10/resnet8/s0/int16/dn2/b00014 simulated in 782s at 993 kHz
+[16:53:44] 108/120 batches (2469s): cifar10/resnet8/s0/int16/dn2/b00012 simulated in 814s at 990 kHz
+[16:56:45] 109/120 batches (2650s): cifar10/resnet8/s0/int16/dn2/b00016 simulated in 789s at 995 kHz
+[16:57:48] 110/120 batches (2713s): cifar10/resnet8/s0/int16/dn2/b00018 simulated in 843s at 938 kHz
+[17:04:17] 111/120 batches (3102s): cifar10/resnet8/s0/int16/exact/b00002 simulated in 1728s at 1078 kHz
+[17:04:25] 112/120 batches (3110s): cifar10/resnet8/s0/int16/exact/b00010 simulated in 1718s at 1082 kHz
+[17:04:26] 113/120 batches (3111s): cifar10/resnet8/s0/int16/exact/b00014 simulated in 1696s at 1077 kHz
+[17:04:48] 114/120 batches (3133s): cifar10/resnet8/s0/int16/exact/b00000 simulated in 1765s at 1057 kHz
+[17:04:49] 115/120 batches (3134s): cifar10/resnet8/s0/int16/exact/b00006 simulated in 1750s at 1077 kHz
+[17:05:00] 116/120 batches (3145s): cifar10/resnet8/s0/int16/exact/b00008 simulated in 1759s at 1081 kHz
+[17:05:23] 117/120 batches (3168s): cifar10/resnet8/s0/int16/exact/b00016 simulated in 1732s at 1081 kHz
+[17:05:24] 118/120 batches (3169s): cifar10/resnet8/s0/int16/exact/b00004 simulated in 1789s at 1060 kHz
+[17:05:44] 119/120 batches (3188s): cifar10/resnet8/s0/int16/exact/b00018 simulated in 1749s at 1077 kHz
+[17:06:46] 120/120 batches (3251s): cifar10/resnet8/s0/int16/exact/b00012 simulated in 1843s at 1052 kHz
+[17:06:46] wrote results/tiny/cifar10/resnet8_ibex_images.csv
+[17:06:46] s0 int4  exact logits match 1.000 |   259.50 M cycles | 1.00x | energy 1.00
+[17:06:46] s0 int4  sqtab logits match 1.000 |   185.02 M cycles | 1.40x | energy 0.71
+[17:06:46] s0 int4  dn1   logits match 1.000 |   224.86 M cycles | 1.15x | energy 0.91
+[17:06:46] s0 int4  dn2   logits match 1.000 |   252.15 M cycles | 1.03x | energy 1.02
+[17:06:46] s0 int8  exact logits match 1.000 |   469.24 M cycles | 1.00x | energy 1.00
+[17:06:46] s0 int8  sqtab logits match 1.000 |   197.91 M cycles | 2.37x | energy 0.42
+[17:06:46] s0 int8  dn1   logits match 1.000 |   264.87 M cycles | 1.77x | energy 0.59
+[17:06:46] s0 int8  dn2   logits match 1.000 |   331.68 M cycles | 1.41x | energy 0.74
+[17:06:46] s0 int8  sqapx logits match 1.000 |   288.77 M cycles | 1.62x | energy 0.64
+[17:06:46] s0 int16 exact logits match 1.000 |   938.44 M cycles | 1.00x | energy 1.00
+[17:06:46] s0 int16 dn1   logits match 1.000 |   308.71 M cycles | 3.04x | energy 0.34
+[17:06:46] s0 int16 dn2   logits match 1.000 |   393.32 M cycles | 2.39x | energy 0.44
+[17:06:46] wrote results/tiny/cifar10/resnet8_ibex_summary.csv

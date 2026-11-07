@@ -1,0 +1,43 @@
+[17:13:56] calib seed 1 int4 pct 99.9: ptq val -14.1723
+[17:14:00] calib seed 1 int4 pct 99.99: ptq val -14.8372
+[17:14:04] calib seed 1 int4 pct 99.999: ptq val -15.9819
+[17:14:07] calib seed 1 int4 pct 100.0: ptq val -17.5027
+[17:21:51] qat seed 1 int4 exact (calib 99.9): ptq -14.1723 | lr 0.001 -10.5980 | lr 0.0002 -10.4145 -> kept lr 0.0002 (464s)
+[17:30:03] qat seed 1 int4 dn1   (calib 99.9): ptq -15.8771 | lr 0.001 -10.6007 | lr 0.0002 -10.4833 -> kept lr 0.0002 (491s)
+[17:38:46] qat seed 1 int4 dn2   (calib 99.9): ptq -14.1537 | lr 0.001 -10.7023 | lr 0.0002 -10.4065 -> kept lr 0.0002 (521s)
+[17:38:46] calib seed 1 int8 pct 99.9: ptq val -9.8959
+[17:38:46] calib seed 1 int8 pct 99.99: ptq val -9.8707
+[17:38:47] calib seed 1 int8 pct 99.999: ptq val -9.8698
+[17:38:47] calib seed 1 int8 pct 100.0: ptq val -9.8742
+[17:42:45] qat seed 1 int8 exact (calib 99.999): ptq -9.8698 | lr 0.001 -10.1496 | lr 0.0002 -9.9035 -> kept ptq (237s)
+[17:46:59] qat seed 1 int8 dn1   (calib 99.999): ptq -17.6826 | lr 0.001 -10.4108 | lr 0.0002 -10.1957 -> kept lr 0.0002 (252s)
+[17:51:22] qat seed 1 int8 dn2   (calib 99.999): ptq -10.1005 | lr 0.001 -10.0007 | lr 0.0002 -9.9345 -> kept lr 0.0002 (261s)
+[17:51:22] calib seed 1 int16 pct 99.9: ptq val -9.8686
+[17:51:23] calib seed 1 int16 pct 99.99: ptq val -9.8405
+[17:51:23] calib seed 1 int16 pct 99.999: ptq val -9.8371
+[17:51:26] calib seed 1 int16 pct 100.0: ptq val -9.8369
+[17:53:01] qat seed 1 int16 exact (calib 100.0): ptq -9.8369 | lr 0.001 -9.9986 | lr 0.0002 -9.9094 -> kept ptq (93s)
+[17:54:43] qat seed 1 int16 dn1   (calib 100.0): ptq -18.0569 | lr 0.001 -10.6972 | lr 0.0002 -10.2969 -> kept lr 0.0002 (101s)
+[17:56:30] qat seed 1 int16 dn2   (calib 100.0): ptq -10.1655 | lr 0.001 -10.0517 | lr 0.0002 -9.9666 -> kept lr 0.0002 (106s)
+[17:56:34] calib seed 2 int4 pct 99.9: ptq val -13.0539
+[17:56:36] calib seed 2 int4 pct 99.99: ptq val -14.6706
+[17:56:41] calib seed 2 int4 pct 99.999: ptq val -17.0488
+[17:56:43] calib seed 2 int4 pct 100.0: ptq val -20.0543
+[18:04:28] qat seed 2 int4 exact (calib 99.9): ptq -13.0539 | lr 0.001 -10.7408 | lr 0.0002 -10.3739 -> kept lr 0.0002 (463s)
+[18:12:50] qat seed 2 int4 dn1   (calib 99.9): ptq -14.6231 | lr 0.001 -10.6378 | lr 0.0002 -10.4423 -> kept lr 0.0002 (501s)
+[18:21:37] qat seed 2 int4 dn2   (calib 99.9): ptq -13.0149 | lr 0.001 -10.8731 | lr 0.0002 -10.3806 -> kept lr 0.0002 (525s)
+[18:21:41] calib seed 2 int8 pct 99.9: ptq val -9.9087
+[18:21:45] calib seed 2 int8 pct 99.99: ptq val -9.8968
+[18:21:48] calib seed 2 int8 pct 99.999: ptq val -9.9126
+[18:21:51] calib seed 2 int8 pct 100.0: ptq val -9.9350
+[18:25:49] qat seed 2 int8 exact (calib 99.99): ptq -9.8968 | lr 0.001 -10.1856 | lr 0.0002 -9.9272 -> kept ptq (237s)
+[18:30:02] qat seed 2 int8 dn1   (calib 99.99): ptq -18.2742 | lr 0.001 -10.2185 | lr 0.0002 -10.1837 -> kept lr 0.0002 (252s)
+[18:34:26] qat seed 2 int8 dn2   (calib 99.99): ptq -10.1400 | lr 0.001 -10.0646 | lr 0.0002 -9.9438 -> kept lr 0.0002 (262s)
+[18:34:31] calib seed 2 int16 pct 99.9: ptq val -9.8964
+[18:34:37] calib seed 2 int16 pct 99.99: ptq val -9.8722
+[18:34:42] calib seed 2 int16 pct 99.999: ptq val -9.8695
+[18:34:47] calib seed 2 int16 pct 100.0: ptq val -9.8693
+[18:36:24] qat seed 2 int16 exact (calib 100.0): ptq -9.8693 | lr 0.001 -9.9972 | lr 0.0002 -9.9422 -> kept ptq (96s)
+[18:38:07] qat seed 2 int16 dn1   (calib 100.0): ptq -18.3402 | lr 0.001 -10.2623 | lr 0.0002 -10.2699 -> kept lr 0.001 (102s)
+[18:39:56] qat seed 2 int16 dn2   (calib 100.0): ptq -10.1922 | lr 0.001 -10.0834 | lr 0.0002 -9.9642 -> kept lr 0.0002 (107s)
+[18:39:56] stage qat finished in 5165s

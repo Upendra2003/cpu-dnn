@@ -1,0 +1,64 @@
+[17:28:26] compiling 48 programs
+[17:28:30] running 48 simulations on 12 workers
+[17:28:58] 1/48 batches (28s): toyadmos/fcae/s0/int4/sqtab/b00010 simulated in 28s at 1000 kHz
+[17:28:58] 2/48 batches (28s): toyadmos/fcae/s0/int4/sqtab/b00005 simulated in 28s at 994 kHz
+[17:28:58] 3/48 batches (28s): toyadmos/fcae/s0/int4/sqtab/b00000 simulated in 28s at 987 kHz
+[17:28:58] 4/48 batches (28s): toyadmos/fcae/s0/int4/sqtab/b00015 simulated in 28s at 982 kHz
+[17:29:04] 5/48 batches (34s): toyadmos/fcae/s0/int4/dn1/b00005 simulated in 34s at 1002 kHz
+[17:29:04] 6/48 batches (34s): toyadmos/fcae/s0/int4/dn1/b00015 simulated in 34s at 996 kHz
+[17:29:05] 7/48 batches (35s): toyadmos/fcae/s0/int4/dn1/b00000 simulated in 35s at 995 kHz
+[17:29:06] 8/48 batches (36s): toyadmos/fcae/s0/int4/dn1/b00010 simulated in 36s at 959 kHz
+[17:29:06] 9/48 batches (36s): toyadmos/fcae/s0/int4/exact/b00015 simulated in 36s at 1011 kHz
+[17:29:06] 10/48 batches (36s): toyadmos/fcae/s0/int4/exact/b00005 simulated in 36s at 1012 kHz
+[17:29:07] 11/48 batches (37s): toyadmos/fcae/s0/int4/exact/b00010 simulated in 37s at 1012 kHz
+[17:29:07] 12/48 batches (37s): toyadmos/fcae/s0/int4/exact/b00000 simulated in 37s at 1008 kHz
+[17:29:35] 13/48 batches (65s): toyadmos/fcae/s0/int8/sqtab/b00000 simulated in 29s at 989 kHz
+[17:29:35] 14/48 batches (65s): toyadmos/fcae/s0/int8/sqtab/b00005 simulated in 29s at 991 kHz
+[17:29:36] 15/48 batches (66s): toyadmos/fcae/s0/int8/sqtab/b00010 simulated in 29s at 1005 kHz
+[17:29:36] 16/48 batches (66s): toyadmos/fcae/s0/int4/dn2/b00005 simulated in 38s at 991 kHz
+[17:29:37] 17/48 batches (67s): toyadmos/fcae/s0/int4/dn2/b00010 simulated in 39s at 993 kHz
+[17:29:37] 18/48 batches (67s): toyadmos/fcae/s0/int4/dn2/b00015 simulated in 39s at 974 kHz
+[17:29:39] 19/48 batches (69s): toyadmos/fcae/s0/int4/dn2/b00000 simulated in 41s at 949 kHz
+[17:29:40] 20/48 batches (70s): toyadmos/fcae/s0/int8/sqtab/b00015 simulated in 32s at 894 kHz
+[17:30:11] 21/48 batches (101s): toyadmos/fcae/s0/int8/exact/b00005 simulated in 67s at 1056 kHz
+[17:30:11] 22/48 batches (101s): toyadmos/fcae/s0/int8/exact/b00015 simulated in 65s at 1052 kHz
+[17:30:12] 23/48 batches (102s): toyadmos/fcae/s0/int8/exact/b00000 simulated in 68s at 1051 kHz
+[17:30:14] 24/48 batches (104s): toyadmos/fcae/s0/int8/dn1/b00005 simulated in 39s at 1003 kHz
+[17:30:15] 25/48 batches (104s): toyadmos/fcae/s0/int8/exact/b00010 simulated in 70s at 1055 kHz
+[17:30:15] 26/48 batches (105s): toyadmos/fcae/s0/int8/dn1/b00010 simulated in 39s at 1004 kHz
+[17:30:15] 27/48 batches (105s): toyadmos/fcae/s0/int8/dn1/b00015 simulated in 39s at 992 kHz
+[17:30:15] 28/48 batches (105s): toyadmos/fcae/s0/int8/dn1/b00000 simulated in 40s at 1003 kHz
+[17:30:28] 29/48 batches (118s): toyadmos/fcae/s0/int8/dn2/b00005 simulated in 51s at 976 kHz
+[17:30:29] 30/48 batches (119s): toyadmos/fcae/s0/int8/dn2/b00000 simulated in 52s at 992 kHz
+[17:30:29] 31/48 batches (119s): toyadmos/fcae/s0/int8/dn2/b00015 simulated in 50s at 979 kHz
+[17:30:30] 32/48 batches (120s): toyadmos/fcae/s0/int8/dn2/b00010 simulated in 51s at 992 kHz
+[17:30:52] 33/48 batches (142s): toyadmos/fcae/s0/int8/sqapx/b00000 simulated in 41s at 1008 kHz
+[17:30:52] 34/48 batches (142s): toyadmos/fcae/s0/int8/sqapx/b00005 simulated in 41s at 1024 kHz
+[17:30:54] 35/48 batches (144s): toyadmos/fcae/s0/int8/sqapx/b00010 simulated in 42s at 984 kHz
+[17:30:55] 36/48 batches (145s): toyadmos/fcae/s0/int8/sqapx/b00015 simulated in 41s at 1015 kHz
+[17:31:14] 37/48 batches (164s): toyadmos/fcae/s0/int16/dn1/b00000 simulated in 46s at 999 kHz
+[17:31:14] 38/48 batches (164s): toyadmos/fcae/s0/int16/dn1/b00015 simulated in 44s at 997 kHz
+[17:31:14] 39/48 batches (164s): toyadmos/fcae/s0/int16/dn1/b00005 simulated in 45s at 984 kHz
+[17:31:15] 40/48 batches (165s): toyadmos/fcae/s0/int16/dn1/b00010 simulated in 46s at 997 kHz
+[17:31:50] 41/48 batches (200s): toyadmos/fcae/s0/int16/dn2/b00005 simulated in 58s at 993 kHz
+[17:31:52] 42/48 batches (202s): toyadmos/fcae/s0/int16/dn2/b00015 simulated in 56s at 993 kHz
+[17:31:52] 43/48 batches (202s): toyadmos/fcae/s0/int16/dn2/b00000 simulated in 60s at 987 kHz
+[17:31:53] 44/48 batches (203s): toyadmos/fcae/s0/int16/dn2/b00010 simulated in 59s at 996 kHz
+[17:32:20] 45/48 batches (230s): toyadmos/fcae/s0/int16/exact/b00015 simulated in 125s at 1055 kHz
+[17:32:23] 46/48 batches (233s): toyadmos/fcae/s0/int16/exact/b00005 simulated in 128s at 1059 kHz
+[17:32:29] 47/48 batches (239s): toyadmos/fcae/s0/int16/exact/b00000 simulated in 135s at 1065 kHz
+[17:32:34] 48/48 batches (244s): toyadmos/fcae/s0/int16/exact/b00010 simulated in 140s at 1021 kHz
+[17:32:34] wrote results/tiny/toyadmos/fcae_ibex_images.csv
+[17:32:34] s0 int4  exact logits match 1.000 |     6.50 M cycles | 1.00x | energy 1.00
+[17:32:34] s0 int4  sqtab logits match 1.000 |     4.92 M cycles | 1.32x | energy 0.76
+[17:32:34] s0 int4  dn1   logits match 1.000 |     5.95 M cycles | 1.09x | energy 0.96
+[17:32:34] s0 int4  dn2   logits match 1.000 |     6.74 M cycles | 0.96x | energy 1.08
+[17:32:34] s0 int8  exact logits match 1.000 |    13.28 M cycles | 1.00x | energy 1.00
+[17:32:34] s0 int8  sqtab logits match 1.000 |     5.12 M cycles | 2.59x | energy 0.39
+[17:32:34] s0 int8  dn1   logits match 1.000 |     6.91 M cycles | 1.92x | energy 0.54
+[17:32:34] s0 int8  dn2   logits match 1.000 |     9.11 M cycles | 1.46x | energy 0.72
+[17:32:34] s0 int8  sqapx logits match 1.000 |     7.21 M cycles | 1.84x | energy 0.57
+[17:32:34] s0 int16 exact logits match 1.000 |    26.71 M cycles | 1.00x | energy 1.00
+[17:32:34] s0 int16 dn1   logits match 1.000 |     8.02 M cycles | 3.33x | energy 0.31
+[17:32:34] s0 int16 dn2   logits match 1.000 |    10.58 M cycles | 2.52x | energy 0.41
+[17:32:34] wrote results/tiny/toyadmos/fcae_ibex_summary.csv
