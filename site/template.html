@@ -21,10 +21,12 @@
   --two: #eb6834;             /* two-pass RoBA */
   --base: #9aa3ad;            /* baselines (Mitchell, DRUM6) */
   --model-b: #1baf7a;         /* LeNet-5 */
+  --table: #7b52d6;           /* square table (Ibex) */
   --over: #2a78d6;            /* error > 0 */
   --under: #e34948;           /* error < 0 */
   --mid: #eef0f2;             /* error = 0 */
   --critical: #d03b3b;
+  --good: #0a8a0a;
   --band: rgba(42, 120, 214, 0.08);
   --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -41,16 +43,16 @@
   :root:not([data-theme="light"]) {
     --bg: #0d1115; --surface: #151a20; --ink: #e9edf1; --ink-2: #aab4bf; --muted: #7c8793;
     --rule: #252d36; --rule-strong: #36404b; --accent: #4a92ea; --accent-ink: #ffffff;
-    --two: #e0703f; --base: #6f7984; --model-b: #22b583; --over: #4a92ea; --under: #e66767; --mid: #262d35;
-    --critical: #e05a5a; --band: rgba(74, 146, 234, 0.12);
+    --two: #e0703f; --base: #6f7984; --model-b: #22b583; --table: #9d7cf2; --over: #4a92ea; --under: #e66767; --mid: #262d35;
+    --critical: #e05a5a; --good: #2fb52f; --band: rgba(74, 146, 234, 0.12);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0d1115; --surface: #151a20; --ink: #e9edf1; --ink-2: #aab4bf; --muted: #7c8793;
   --rule: #252d36; --rule-strong: #36404b; --accent: #4a92ea; --accent-ink: #ffffff;
-  --two: #e0703f; --base: #6f7984; --model-b: #22b583; --over: #4a92ea; --under: #e66767; --mid: #262d35;
-  --critical: #e05a5a; --band: rgba(74, 146, 234, 0.12);
+  --two: #e0703f; --base: #6f7984; --model-b: #22b583; --table: #9d7cf2; --over: #4a92ea; --under: #e66767; --mid: #262d35;
+  --critical: #e05a5a; --good: #2fb52f; --band: rgba(74, 146, 234, 0.12);
   color-scheme: dark;
 }
 
@@ -263,6 +265,45 @@ table.data th:first-child, table.data td:first-child { text-align: left; }
 .empty { display: grid; place-items: center; min-height: 240px; text-align: center; color: var(--ink-2); gap: 8px; padding: 24px; }
 .empty b { font: 700 var(--step-1)/1.2 var(--font-display); color: var(--ink); }
 
+/* ---------- Ibex slides ---------- */
+.encoding { display: grid; grid-template-columns: repeat(32, minmax(0, 1fr)); border: 1px solid var(--rule-strong); border-radius: 6px; overflow: hidden; background: var(--surface); }
+.encoding .f { display: grid; gap: 4px; padding: 8px 4px; text-align: center; border-right: 1px solid var(--rule-strong); min-width: 0; }
+.encoding .f:last-child { border-right: 0; }
+.encoding .f.fixed { background: var(--band); }
+.encoding .bits-txt { font: 600 0.8rem/1 var(--font-mono); color: var(--ink); overflow-wrap: anywhere; }
+.encoding .lbl { font: 500 0.66rem/1.2 var(--font-mono); color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.04em; }
+.encoding .rng { font: 400 0.62rem/1 var(--font-mono); color: var(--muted); }
+.flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.flow .step { position: relative; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; display: grid; gap: 4px; align-content: start; margin-right: 22px; }
+.flow .step:last-child { margin-right: 0; }
+.flow .step:not(:last-child)::after { content: "→"; position: absolute; right: -19px; top: 50%; transform: translateY(-50%); color: var(--muted); font: 600 1rem/1 var(--font-mono); }
+.flow .step b { font: 650 var(--step-0)/1.25 var(--font-display); font-stretch: 88%; }
+.flow .step span { font-size: var(--step--1); color: var(--ink-2); line-height: 1.4; }
+@media (max-width: 900px) {
+  .flow { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .flow .step { margin-right: 0; }
+  .flow .step:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -17px; transform: translateX(-50%); }
+}
+.badges { display: flex; flex-wrap: wrap; gap: 8px; }
+.badge { display: inline-flex; align-items: center; gap: 8px; font: 500 var(--step--1)/1.2 var(--font-body); padding: 7px 11px; border-radius: 999px; background: var(--surface); border: 1px solid var(--rule-strong); color: var(--ink); }
+.badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--good); flex: none; }
+.badge.warn::before { background: var(--two); }
+
+.trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.trio div { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; display: grid; gap: 4px; align-content: start; }
+.trio b { font: 650 var(--step-0)/1.25 var(--font-display); font-stretch: 88%; }
+.trio span { font-size: var(--step--1); color: var(--ink-2); line-height: 1.4; }
+@media (max-width: 900px) { .trio { grid-template-columns: minmax(0, 1fr); } }
+.sq-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 18px; align-items: start; }
+@media (max-width: 960px) { .sq-grid { grid-template-columns: minmax(0, 1fr); } }
+.loops { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 12px; }
+.loops pre.code.two { column-count: 2; column-gap: 28px; }
+@media (max-width: 760px) { .loops { grid-template-columns: minmax(0, 1fr); } .loops pre.code.two { column-count: 1; } }
+.loops .seg-label { display: block; margin-bottom: 6px; }
+.loops pre.code { font-size: 0.72rem; line-height: 1.45; }
+.loops pre.code .k { color: var(--accent); font-weight: 600; }
+.loops pre.code .t { color: var(--table); font-weight: 600; }
+
 /* ---------- tooltip ---------- */
 #tip { position: fixed; z-index: 20; pointer-events: none; max-width: 280px; white-space: pre-line; background: var(--ink); color: var(--surface); font: 400 0.78rem/1.45 var(--font-body); padding: 8px 10px; border-radius: 6px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18); }
 #tip b { font-weight: 600; }
@@ -280,7 +321,7 @@ table.data th:first-child, table.data td:first-child { text-align: left; }
       <div class="eyebrow"><span>AI Accelerator · final project</span><span>Phase 1 · GPU study</span><span id="meta-date"></span></div>
       <h1>Approximate multiplication inside a DNN, <em>bit by bit</em></h1>
       <div class="title-bits" id="title-bits" aria-hidden="true"></div>
-      <p class="lede">Every multiplication in MNIST and Fashion-MNIST networks goes through the RoBA family of approximate multipliers from Rajiv &amp; Kedia (DATE 2026). A multiplierless Ibex RISC-V core runs these routines with one custom LOD instruction. The networks keep their accuracy; the open question is how much energy that saves on the core.</p>
+      <p class="lede">Every multiplication in MNIST and Fashion-MNIST networks goes through the RoBA family of approximate multipliers from Rajiv &amp; Kedia (DATE 2026). The networks are trained on a GPU, then run on a simulated multiplierless Ibex RISC-V core that has one added instruction, LOD. They keep their accuracy<span id="lede-ibex">.</span></p>
       <div class="spec" id="spec"></div>
       <div class="hint"><span class="key">←</span><span class="key">→</span> or the buttons below to move between slides</div>
     </div>
@@ -437,6 +478,155 @@ table.data th:first-child, table.data td:first-child { text-align: left; }
     </div>
   </section>
 
+  <section class="slide" id="ibex" aria-label="Ibex RISC-V setup">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 9 · Ibex RISC-V</span><h2>One custom instruction on a multiplierless core</h2>
+        <p class="claim">The same int8 networks run as bare-metal C on lowRISC Ibex with no multiplier (RV32IC), simulated cycle by cycle in Verilator. LOD is the only hardware change.</p></div>
+      <div class="encoding" aria-label="LOD instruction encoding">
+        <div class="f fixed" style="grid-column:span 7"><span class="bits-txt">0000000</span><span class="lbl">funct7</span><span class="rng">31–25</span></div>
+        <div class="f fixed" style="grid-column:span 5"><span class="bits-txt">00000</span><span class="lbl">rs2 (unused)</span><span class="rng">24–20</span></div>
+        <div class="f" style="grid-column:span 5"><span class="bits-txt">rs1</span><span class="lbl">source</span><span class="rng">19–15</span></div>
+        <div class="f fixed" style="grid-column:span 3"><span class="bits-txt">000</span><span class="lbl">funct3</span><span class="rng">14–12</span></div>
+        <div class="f" style="grid-column:span 5"><span class="bits-txt">rd</span><span class="lbl">dest</span><span class="rng">11–7</span></div>
+        <div class="f fixed" style="grid-column:span 7"><span class="bits-txt">0001011</span><span class="lbl">custom-0</span><span class="rng">6–0</span></div>
+      </div>
+      <p class="note"><code>LOD rd, rs1</code> writes the bit position of the leading one of rs1 (a 32-bit priority encoder in the ALU). C code emits it with <code>.insn r 0x0b, 0, 0, rd, rs1, x0</code>, so the assembler needs no change.</p>
+      <div class="flow">
+        <div class="step"><b>Int8 checkpoint</b><span>fine-tuned per multiplier on the GPU; weights, rescale factors and test images exported as C headers</span></div>
+        <div class="step"><b>Bare-metal C</b><span>GCC 10.2, <code>-march=rv32ic</code>; every program checked for zero mul/div instructions</span></div>
+        <div class="step"><b>Ibex Simple System</b><span>RV32M = None + LOD, 1 MB RAM, Verilator 4.228 model</span></div>
+        <div class="step"><b>Measured</b><span>mcycle per image and per layer; logits compared bit for bit with a Python reference</span></div>
+      </div>
+      <div class="badges" id="ibex-badges"></div>
+    </div>
+  </section>
+
+  <section class="slide" id="measured" aria-label="Measured cycles per multiply">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 10 · Ibex RISC-V</span><h2>Measured cycles per multiply</h2><p class="claim" id="meas-claim"></p></div>
+      <div class="controls"><span class="seg-label">Operand width</span>
+        <span class="seg" role="group" aria-label="Operand width for Fig. 10"><button type="button" id="mw4" aria-pressed="false">4-bit</button><button type="button" id="mw8" aria-pressed="true">8-bit</button><button type="button" id="mw16" aria-pressed="false">16-bit</button><button type="button" id="mw31" aria-pressed="false">31-bit</button></span>
+        <span class="legend"><span><i style="background:var(--accent)"></i>LOD instruction</span><span><i class="ring"></i>LOD in software</span><span><i style="background:var(--ink-2);border-radius:1px;width:3px;height:12px"></i>paper Fig. 4 estimate</span></span></div>
+      <div class="panel"><div class="chart" id="meas"></div></div>
+      <p class="note">MULT kernel: 10,000 unsigned multiplications per routine, timed with mcycle on the Ibex model. Software LOD uses libgcc's count-leading-zeros routine.</p>
+    </div>
+  </section>
+
+  <section class="slide" id="ibexdnn" aria-label="The networks on Ibex">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 11 · Ibex RISC-V · <span class="ds-name"></span></span><h2>The networks on Ibex</h2><p class="claim" id="idnn-claim"></p></div>
+      <div class="controls">
+        <span class="ctl"><span class="seg-label">Model</span><span class="seg" role="group" aria-label="Model for Fig. 11"><button type="button" id="i-mlp" aria-pressed="true">MLP</button><button type="button" id="i-lenet5" aria-pressed="false">LeNet-5</button></span></span>
+        <span class="legend" id="layer-legend"></span>
+      </div>
+      <div class="panel"><div class="chart" id="idnn"></div></div>
+      <div class="badges" id="idnn-badges"></div>
+      <details><summary>Show as table</summary><div class="table-scroll" id="idnn-table"></div></details>
+    </div>
+  </section>
+
+  <section class="slide" id="profile" aria-label="Where the cycles go">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 12 · Ibex RISC-V · <span id="prof-ds"></span></span><h2>Where the cycles go</h2><p class="claim" id="prof-claim"></p></div>
+      <div class="controls">
+        <span class="ctl"><span class="seg-label">Model</span><span class="seg" role="group" aria-label="Model for Fig. 12"><button type="button" id="pr-mlp" aria-pressed="true">MLP</button><button type="button" id="pr-lenet5" aria-pressed="false">LeNet-5</button></span></span>
+        <span class="ctl"><span class="seg-label">Show</span><span class="seg" role="group" aria-label="Scale for Fig. 12"><button type="button" id="pr-share" aria-pressed="true">Share of time</button><button type="button" id="pr-abs" aria-pressed="false">Cycles</button></span></span>
+      </div>
+      <div class="legend" id="prof-legend"></div>
+      <div class="panel"><div class="chart" id="prof"></div></div>
+      <p class="note">One test image per configuration, run with the Ibex instruction tracer. Each retired instruction's cycles (stalls included) are charged to the C function and line it came from, using the debug info; the traced totals match the core's cycle counter within 0.1%. "Sign &amp; zero handling" is the wrapper around each multiply, including the call. Profiled with one routine call per multiply, as in Fig. 11; Fig. 13 removes that overhead.</p>
+    </div>
+  </section>
+
+  <section class="slide" id="fused" aria-label="Fusing the multiply into the loop">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 13 · Ibex RISC-V · <span class="ds-name"></span></span><h2>Fusing the multiply into the loop</h2><p class="claim" id="fuse-claim"></p></div>
+      <div class="trio">
+        <div><b>Inline the routine</b><span>no call or return, and one zero check per product instead of two</span></div>
+        <div><b>Sign-magnitude weights</b><span>bit 7 holds the sign, so restoring it takes two branch-free instructions</span></div>
+        <div><b>ReLU outputs are ≥ 0</b><span>every layer after the first skips the activation's sign</span></div>
+      </div>
+      <div class="controls">
+        <span class="ctl"><span class="seg-label">Model</span><span class="seg" role="group" aria-label="Model for Fig. 13"><button type="button" id="f-mlp" aria-pressed="true">MLP</button><button type="button" id="f-lenet5" aria-pressed="false">LeNet-5</button></span></span>
+        <span class="legend"><span><i class="ring"></i>one call per multiply (Fig. 11)</span><span><i style="background:var(--accent)"></i>fused into the loop</span></span>
+      </div>
+      <div class="panel"><div class="chart" id="fuse"></div></div>
+      <p class="note">All 8 multipliers, exact included, get the same three changes, so the comparison with exact stays fair. Logits are bit-exact with the Python reference in both versions.</p>
+      <details><summary>Show as table</summary><div class="table-scroll" id="fuse-table"></div></details>
+    </div>
+  </section>
+
+  <section class="slide" id="sqtab" aria-label="A table of squares instead of a multiplier">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 14 · Ibex RISC-V · <span class="ds-name"></span></span><h2>No multiplier at all: a table of squares</h2><p class="claim" id="sq-claim"></p></div>
+      <div class="sq-grid">
+        <div style="display:grid;gap:12px;align-content:start">
+          <div class="shift-form">Σ<sub>k</sub> x<sub>k</sub>w<sub>k</sub> = ( <b>Σ<sub>k</sub> S[x<sub>k</sub> + w<sub>k</sub>]</b> − Σ<sub>k</sub> S[x<sub>k</sub>] − Σ<sub>k</sub> S[w<sub>k</sub>] ) / 2<br>S[v] = v², a 509-entry table for v = −254…254 (1 KB)</div>
+          <p class="note">The polarization identity turns every product into one lookup in a table of squares. Σ S[x] is computed once per layer input and shared by all output neurons, and Σ S[w] is fixed per neuron, so each multiply-accumulate costs a single table load. The products are exact, and no LOD instruction is needed.</p>
+          <p class="note">It works this well because Ibex reads its RAM in one cycle and int8 + int8 indexes a small table. At int16 the table would need 131,071 entries (512 KB), while the LOD-based RoBA routines cost the same at any width.</p>
+          <p class="note">Below: the inner loop of the MLP's first layer as compiled (GCC 10.2, -O3), the layer that holds 85% of the MLP's multiplies. RoBA-Dn1 runs only 10 of its 26 instructions when x = 0; the square table always runs all 10.</p>
+        </div>
+        <div class="panel"><div class="chart" id="sq"></div></div>
+      </div>
+      <div class="loops">
+        <div><span class="seg-label" id="loop-dn1-label">RoBA-Dn1, fused · 26 instructions per product</span><pre class="code two" id="loop-dn1">   lb    a5,0(a0)   <span class="c">x</span>
+   addi  a0,a0,1
+   j     1f
+1: srai  a7,a5,31   <span class="c">sign of x</span>
+   xor   t3,a7,a5
+   lbu   a3,0(a1)   <span class="c">w, sign-magnitude</span>
+   sub   t3,t3,a7   <span class="c">|x|</span>
+   beqz  a5,2f      <span class="c">x = 0: skip</span>
+   andi  a5,a3,127  <span class="c">|w|</span>
+   beqz  a5,2f      <span class="c">w = 0: skip</span>
+   <span class="k">lod  </span> a6,t3      <span class="c">pa</span>
+   <span class="k">lod  </span> t1,a5      <span class="c">pb</span>
+   sll   a5,a5,a6
+   srli  a4,a3,7    <span class="c">sign of w</span>
+   sll   t3,t3,t1
+   sll   a6,t5,a6
+   neg   a4,a4
+   add   a5,a5,t3
+   sll   a6,a6,t1   <span class="c">2^(pa+pb)</span>
+   xor   a4,a4,a7
+   sub   a5,a5,a6   <span class="c">Dn1 product</span>
+   xor   a5,a5,a4   <span class="c">restore sign</span>
+   sub   a5,a5,a4
+   add   a2,a2,a5   <span class="c">acc +=</span>
+2: addi  a1,a1,1
+   bne   a1,t0,loop</pre></div>
+        <div><span class="seg-label" id="loop-sq-label">Square table · 10 instructions per product</span><pre class="code" id="loop-sq">   lb    a5,0(a4)   <span class="c">x</span>
+   lb    a0,0(a3)   <span class="c">w</span>
+   addi  a4,a4,1
+   addi  a3,a3,1
+   add   a5,a5,a0   <span class="c">x + w</span>
+   slli  a5,a5,1
+   add   a5,a5,a1   <span class="c">&amp;S[0]</span>
+   <span class="t">lhu  </span> a5,0(a5)   <span class="c">S[x + w]</span>
+   add   a2,a2,a5   <span class="c">d +=</span>
+   bne   s1,a4,loop</pre></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" id="zeroskip" aria-label="Zero-skipping ablation">
+    <div class="slide-inner">
+      <div class="slide-head"><span class="fig-no">Fig. 15 · Ablation · <span class="ds-name"></span></span><h2>Skipping zeros</h2><p class="claim" id="zs-claim"></p></div>
+      <div class="controls">
+        <span class="ctl"><span class="seg-label">Model</span><span class="seg" role="group" aria-label="Model for Fig. 15"><button type="button" id="z-mlp" aria-pressed="true">MLP</button><button type="button" id="z-lenet5" aria-pressed="false">LeNet-5</button></span></span>
+        <span class="legend"><span><i style="background:var(--ink-2)"></i>Exact, fused</span><span><i style="background:var(--accent)"></i>RoBA-Dn1, fused</span><span><i style="background:var(--table)"></i>Square table</span></span>
+      </div>
+      <div class="sq-grid">
+        <div class="panel"><div class="chart" id="zs"></div></div>
+        <div style="display:grid;gap:12px;align-content:start">
+          <p class="note"><b>Skip zeros</b>: fully connected layers gather the nonzero activations once per layer input and loop only over those; conv layers skip taps whose input is zero. The multiplier versions already skip zero operands one product at a time; the square table otherwise visits every product.</p>
+          <p class="note"><b>Raw pixels</b>: the input normalization (x − mean) / std is folded into the first layer's weights and bias, so the network reads raw pixels, and the background is exactly zero (81% of MNIST and 51% of Fashion-MNIST test pixels). For LeNet-5 the fold gives conv1 one bias per output position, because zero padding of raw pixels is not zero padding of normalized ones.</p>
+          <div class="table-scroll" id="zs-acc"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="slide" id="findings" aria-label="Summary">
     <div class="slide-inner">
       <div class="slide-head"><span class="fig-no">Summary · <span class="ds-name"></span></span><h2>What the runs show</h2></div>
@@ -447,7 +637,7 @@ table.data th:first-child, table.data td:first-child { text-align: left; }
   <section class="slide" id="method" aria-label="Method">
     <div class="slide-inner">
       <div class="slide-head"><span class="fig-no">Method</span><h2>How it was run</h2>
-        <p class="claim">One library in three implementations that agree bit for bit (PyTorch, Python, C), checked by 27 tests, and one driver script per dataset.</p></div>
+        <p class="claim">One library in three implementations that agree bit for bit (PyTorch, Python, C), checked by 35 tests, and one driver script per dataset.</p></div>
       <div class="two-col">
         <div style="display:grid;gap:14px;align-content:start">
           <ol class="steps" id="steps"></ol>
@@ -455,6 +645,7 @@ table.data th:first-child, table.data td:first-child { text-align: left; }
             <tr><td>roba/</td><td>multipliers, approximate matmul and conv, quantized layers, data loaders, cost model</td></tr>
             <tr><td>csrc/</td><td>C library for Ibex; LOD as a custom instruction or <code>__builtin_clz</code></td></tr>
             <tr><td>experiments/</td><td><code>run.py --dataset mnist|fashion</code>, <code>build_site.py</code> for this deck</td></tr>
+            <tr><td>hw/</td><td>Ibex LOD patch, bare-metal inference (<code>sw/dnn.c</code>), <code>run_ibex.py</code> and <code>profile_ibex.py</code></td></tr>
           </table>
         </div>
         <pre class="code"><span class="c"># roba/multipliers.py: every variant as per-operand factors</span>
@@ -488,16 +679,18 @@ sum(a @ b.T for a, b in zip(fx, fw))</pre>
         <div class="panel" style="display:grid;gap:10px;align-content:start"><b style="font-family:var(--font-display);font-size:var(--step-1)">Limits</b>
           <ul class="caveats">
             <li>One seed per dataset. Accuracy differences under about 0.1 points are noise.</li>
-            <li>Energy covers multiplications only and uses cycle counts read off the paper's figures, for unsigned operands.</li>
+            <li>Ibex cycles are measured in simulation on the first 100 test images per configuration; energy multiplies them by the paper's relative core power, not a power measurement.</li>
             <li>Our Mitchell is the classic algorithm. The paper's Mitchell gives the same products as RoBA-Dn1.</li>
             <li>int16 sums exceed 32 bits, so int16 on Ibex needs 64-bit accumulation that the estimate leaves out.</li>
+            <li>The square table relies on one-cycle RAM and a 1 KB table. With caches, wait states or int16 operands (a 512 KB table) the balance against LOD-based RoBA changes.</li>
           </ul></div>
         <div class="panel" style="display:grid;gap:10px;align-content:start"><b style="font-family:var(--font-display);font-size:var(--step-1)">Next</b>
           <ol class="next">
             <li>3–5 seeds per dataset, mean ± standard deviation.</li>
             <li>CIFAR-10 with a small CNN.</li>
             <li>Per-layer choice of multiplier: cheap where tolerant, accurate where sensitive.</li>
-            <li>Ibex in Verilator with the LOD instruction: measured cycles replace the estimates.</li>
+            <li>int16 networks on Ibex, where a table of squares no longer fits and RoBA keeps its cost.</li>
+            <li>FPGA: the same Ibex + LOD RTL on a board, measuring cycles and power on silicon.</li>
           </ol></div>
       </div>
       <p class="note">Source paper: S. P. Rajiv and R. Kedia, “Software-Based Approximate Multiplication on Multiplierless CPUs Using Custom Instruction,” DATE 2026.</p>
@@ -603,12 +796,19 @@ function seg(ids, onPick) {
   }
   document.getElementById("title-bits").innerHTML = s;
 })();
+function renderLede() {
+  const ratio = (a, b) => DS_KEYS.flatMap(ds => ["mlp", "lenet5"].map(mo => {
+    const x = ibexRow("dnn", ds, mo, a), y = ibexRow("dnn", ds, mo, b); return x && y ? x.cycles_per_image / y.cycles_per_image : 0; }));
+  const d1 = Math.max(...ratio("exact", "roba_dn1")), sq = Math.max(...ratio("exact", "sqtab"));
+  if (d1 > 0) document.getElementById("lede-ibex").textContent =
+    `, and RoBA-Dn1 runs them up to ${fmt(d1, 1)}× faster than an equally optimized exact multiply.` + (sq > 0 ? ` An exact table of squares is faster still, up to ${fmt(sq, 1)}×.` : "");
+}
 function renderMeta() {
   const runs = DS_KEYS.filter(k => D.datasets[k]);
   document.getElementById("meta-date").textContent = `Results ${runs.map(k => D.datasets[k].meta.date).sort().at(-1)}`;
   document.getElementById("spec").innerHTML = [
     ...runs.map(k => `${DS_LABEL[k]} · ${D.datasets[k].meta.epochs} + ${D.datasets[k].meta.ft_epochs} epochs`),
-    "MLP 784-256-128-10", "LeNet-5", D.gpu, "8 multipliers × 4 domains",
+    "MLP 784-256-128-10", "LeNet-5", D.gpu, "Ibex RV32IC + LOD · Verilator", "8 multipliers × 4 domains",
   ].map(s => `<span>${esc(s)}</span>`).join("");
   document.getElementById("ds-seg").innerHTML = DS_KEYS.map(k =>
     `<button type="button" data-ds="${k}" aria-pressed="${k === state.ds}" ${D.datasets[k] ? "" : "disabled title=\"not run yet\""}>${DS_LABEL[k]}</button>`).join("");
@@ -627,7 +827,7 @@ document.getElementById("ds-seg").addEventListener("click", e => {
   state.ds = b.dataset.ds;
   try { localStorage.setItem("roba-ds", state.ds); } catch (err) { /* storage unavailable */ }
   renderMeta(); renderFindings();
-  ["domains", "acc", "regs"].forEach(redraw);
+  ["domains", "acc", "regs", "idnn", "fuse", "sq", "zs"].forEach(redraw);
 });
 
 /* ---------- Fig 1: explorer ---------- */
@@ -950,6 +1150,277 @@ function drawRegs(el, W) {
     `On ${DS_LABEL[state.ds]}, int8 dot products need at most ${i8} bits and fit a 32-bit Ibex register. int16 sums need up to ${i16} bits and would overflow without 64-bit accumulation.`;
 }
 
+/* ---------- Fig 9-15: Ibex ---------- */
+// IBEX.call: one routine call per multiply (Figs. 11-12); IBEX.dnn: fused into the loop + the square
+// table (Figs. 13-14); IBEX.zeroskip: the ablation (Fig. 15)
+const IBEX = D.ibex || {};
+const LAYER_NAMES = { mlp: ["FC 784→256", "FC 256→128", "FC 128→10"],
+  lenet5: ["conv1 + pool", "conv2 + pool", "FC 400→120", "FC 120→84", "FC 84→10"] };
+const ibexRow = (src, ds, model, mult) => (IBEX[src] || []).find(r => r.dataset === ds && r.model === model && r.multiplier === mult);
+const measRow = (lod, k, bits) => (IBEX.mult || []).find(r => r.lod === lod && r.multiplier === k && r.bits === bits);
+// exact shift-and-add and the square table run on the core without LOD
+const ibexEnergy = r => r.cycles_per_image * (r.multiplier === "exact" || r.multiplier === "sqtab" ? D.power.none : D.power.lod);
+const METHOD = { exact: "Exact", roba_dn1: "RoBA-Dn1", sqtab: "Square table" };
+const METHOD_FILL = { exact: "var(--ink-2)", roba_dn1: "var(--accent)", sqtab: "var(--table)" };
+const mTicks = xmax => { const st = xmax > 24e6 ? 5e6 : xmax > 10e6 ? 2e6 : 1e6; return Array.from({ length: Math.floor(xmax / st) + 1 }, (_, i) => i * st); };
+const emptyIbex = (el, what) => { el.innerHTML = `<div class="empty"><b>${what} not run yet</b><span>Run <code>python3 hw/run_ibex.py --stage all</code>, then <code>python3 experiments/build_site.py</code>.</span></div>`; };
+
+function renderIbexBadges() {
+  const all = [...(IBEX.call || []), ...(IBEX.dnn || []),
+    ...(IBEX.zeroskip || []).filter(r => r.zero_skip || r.input === "raw")];   // the rest repeat IBEX.dnn
+  const n = all.reduce((s, r) => s + r.images, 0);
+  const bit = all.reduce((s, r) => s + r.images * r.logits_match_ref, 0);
+  const tor = all.reduce((s, r) => s + r.images * r.pred_match_torch, 0);
+  const setup = ["41 lines of RTL in 4 files", "LOD test: 20,097 of 20,097 values correct", "0 mul/div instructions in every program"];
+  const res = n ? [`Logits bit-exact with the Python reference: ${Math.round(bit).toLocaleString("en-US")} of ${n.toLocaleString("en-US")} inferences`,
+    `Same prediction as the GPU int8 model: ${pct(tor / n, 1)}`] : [];
+  document.getElementById("ibex-badges").innerHTML = [...setup, ...res].map(s => `<span class="badge">${esc(s)}</span>`).join("");
+  document.getElementById("idnn-badges").innerHTML = res.map(s => `<span class="badge">${esc(s)}</span>`).join("");
+}
+
+let mBits = 8;
+function drawMeas(el, W) {
+  if (!IBEX.mult) { emptyIbex(el, "The MULT benchmark"); document.getElementById("meas-claim").textContent = ""; return; }
+  const narrow = W < 520, lab = narrow ? 104 : 150, rowH = 34, m = { l: lab, r: 48, t: 30, b: 34 }, H = m.t + ORDER.length * rowH + m.b;
+  const pk = mBits === 31 ? 32 : mBits;
+  const rows = ORDER.map(k => ({ k, hw: measRow("instruction", k, mBits).cycles, sw: measRow("software", k, mBits).cycles, paper: D.cycles[pk][k] }));
+  const xmax = Math.ceil(Math.max(...rows.flatMap(r => [r.hw, r.sw, r.paper])) * 1.06 / 50) * 50;
+  const X = v => m.l + v / xmax * (W - m.l - m.r), ex = rows[0].hw;
+  let s = `<line x1="${X(ex)}" x2="${X(ex)}" y1="${m.t - 8}" y2="${H - m.b}" style="stroke:var(--ink-2)" stroke-dasharray="4 4"/>` + T(X(ex), m.t - 14, `exact: ${fmt(ex, 0)} cycles`, { anchor: "middle", size: 11 });
+  for (let t = 0; t <= xmax; t += xmax > 200 ? 50 : 25) s += T(X(t), H - 12, t, { anchor: "middle", size: 11, fill: "var(--muted)" }) + `<line x1="${X(t)}" x2="${X(t)}" y1="${m.t - 4}" y2="${H - m.b}" style="stroke:var(--rule)"/>`;
+  s += T(W - m.r, H + 4, "cycles per multiply (measured)", { anchor: "end", size: 11, fill: "var(--muted)" });
+  rows.forEach((r, i) => {
+    const y = m.t + i * rowH + rowH / 2 - 4, hl = r.k === "roba_dn1";
+    s += T(m.l - 12, y + 4, LABEL[r.k], { anchor: "end", fill: "var(--ink)", weight: hl ? 600 : 400, size: narrow ? 11 : 12.5 });
+    const tt = `<b>${LABEL[r.k]}, ${mBits}-bit</b>\nLOD instruction: ${fmt(r.hw, 1)} cycles\nLOD in software: ${fmt(r.sw, 1)} cycles\npaper Fig. 4 estimate: ${r.paper} cycles`;
+    if (r.k !== "exact") s += `<line x1="${X(r.hw)}" x2="${X(r.sw)}" y1="${y}" y2="${y}" style="stroke:var(--rule-strong)" stroke-width="2"/>` +
+      `<circle cx="${X(r.sw)}" cy="${y}" r="6" style="fill:var(--surface);stroke:var(--ink-2)" stroke-width="2" data-tip="${esc(tt)}"/>` + T(X(r.sw) + 11, y + 4, fmt(r.sw, 0), { size: 11 });
+    s += `<line x1="${X(r.paper)}" x2="${X(r.paper)}" y1="${y - 9}" y2="${y + 9}" style="stroke:var(--ink-2)" stroke-width="2.5" data-tip="${esc(tt)}"/>`;
+    s += `<circle cx="${X(r.hw)}" cy="${y}" r="7" style="fill:${r.k === "exact" ? "var(--ink)" : "var(--accent)"};stroke:var(--surface)" stroke-width="2" data-tip="${esc(tt)}"/>`;
+    s += T(X(r.hw) - 12, y + 4, fmt(r.hw, 0), { anchor: "end", size: 11.5, fill: "var(--ink)", weight: hl ? 600 : 400 });
+  });
+  el.innerHTML = svgWrap(W, H + 8, "Measured cycles per multiply on Ibex", s);
+  const d1 = rows.find(r => r.k === "roba_dn1");
+  document.getElementById("meas-claim").textContent =
+    `At ${mBits}-bit on Ibex, RoBA-Dn1 takes ${fmt(d1.hw, 0)} cycles per multiply against ${fmt(ex, 0)} for exact shift-and-add (${fmt(ex / d1.hw, 1)}× fewer). ` +
+    `Without the LOD instruction it takes ${fmt(d1.sw, 0)}, ${d1.sw > ex ? "slower than exact" : `only ${fmt(ex / d1.sw, 1)}× fewer`}.`;
+}
+
+const idnn = { model: "mlp" };
+function drawIdnn(el, W) {
+  const rows = ORDER.map(k => ibexRow("call", state.ds, idnn.model, k)).filter(Boolean);
+  if (!rows.length) { emptyIbex(el, `Ibex inference for ${DS_LABEL[state.ds]}`); document.getElementById("idnn-claim").textContent = ""; document.getElementById("idnn-table").innerHTML = ""; return; }
+  const names = LAYER_NAMES[idnn.model], nl = names.length;
+  const op = i => [1, 0.72, 0.5, 0.34, 0.22].at(i);
+  document.getElementById("layer-legend").innerHTML = names.map((n, i) => `<span><i style="background:var(--accent);opacity:${op(i)};border-radius:2px"></i>${n}</span>`).join("");
+  const narrow = W < 560, lab = narrow ? 104 : 150, cols = narrow ? 92 : 170, rowH = 34;
+  const m = { l: lab, r: cols + 12, t: 34, b: 30 }, H = m.t + rows.length * rowH + m.b;
+  const ex = rows.find(r => r.multiplier === "exact");
+  const xmax = Math.max(...rows.map(r => r.cycles_per_image)) * 1.12;
+  const X = v => m.l + v / xmax * (W - m.l - m.r);
+  const cSpeed = W - cols + 10, cAcc = W - (narrow ? 4 : 62);
+  let s = T(cSpeed, m.t - 14, "vs exact", { size: 11, fill: "var(--muted)" });
+  if (!narrow) s += T(cAcc, m.t - 14, "accuracy", { size: 11, fill: "var(--muted)" });
+  s += T(m.l, m.t - 14, "million cycles per image", { size: 11, fill: "var(--muted)" });
+  rows.forEach((r, i) => {
+    const y = m.t + i * rowH, hl = r.multiplier === "roba_dn1", bh = 18;
+    s += T(m.l - 12, y + bh / 2 + 4, LABEL[r.multiplier], { anchor: "end", fill: "var(--ink)", weight: hl ? 600 : 400, size: narrow ? 11 : 12.5 });
+    let x = X(0);
+    for (let l = 0; l < nl; l++) {
+      const c = r[`layer${l}_cycles`] || 0, w = X(c) - X(0);
+      const tt = `<b>${LABEL[r.multiplier]} · ${names[l]}</b>\n${fmt(c / 1e6, 2)} M cycles (${pct(c / r.cycles_per_image, 0)} of the image)`;
+      s += `<rect x="${x}" y="${y}" width="${Math.max(0.5, w - 1)}" height="${bh}" style="fill:${r.multiplier === "exact" ? "var(--ink-2)" : "var(--accent)"}" fill-opacity="${op(l)}" data-tip="${esc(tt)}"/>`;
+      x += w;
+    }
+    s += T(x + 8, y + bh / 2 + 4, `${fmt(r.cycles_per_image / 1e6, 1)} M`, { size: 11.5, fill: "var(--ink)", weight: hl ? 600 : 400 });
+    s += T(cSpeed, y + bh / 2 + 4, r.multiplier === "exact" ? "1.00×" : `${fmt(ex.cycles_per_image / r.cycles_per_image, 2)}×`, { size: 12, fill: "var(--ink)", weight: hl ? 700 : 500 });
+    if (!narrow) s += T(cAcc, y + bh / 2 + 4, pct(r.ibex_acc, 0), { size: 12, fill: "var(--ink-2)" });
+  });
+  el.innerHTML = svgWrap(W, H, "Cycles per image on Ibex per multiplier", s);
+  const d1 = rows.find(r => r.multiplier === "roba_dn1");
+  const e = ibexEnergy(d1) / ibexEnergy(ex);
+  document.getElementById("idnn-claim").textContent =
+    `${MODEL[idnn.model]} on ${DS_LABEL[state.ds]}, calling the multiply routine for every product as the paper does: RoBA-Dn1 runs one inference in ${fmt(d1.cycles_per_image / 1e6, 1)} M cycles against ${fmt(ex.cycles_per_image / 1e6, 1)} M for exact (${fmt(ex.cycles_per_image / d1.cycles_per_image, 2)}× faster, about ${fmt(e, 2)}× the energy), ` +
+    `with ${pct(d1.ibex_acc, 0)} vs ${pct(ex.ibex_acc, 0)} accuracy on the first ${ex.images} test images.`;
+  document.getElementById("idnn-table").innerHTML = `<table class="data"><tr><th>Multiplier</th><th>M cycles / image</th><th>Speedup</th><th>Energy vs exact</th><th>Ibex accuracy</th><th>GPU int8 accuracy</th><th>Logits bit-exact</th></tr>` +
+    rows.map(r => `<tr><td>${LABEL[r.multiplier]}</td><td class="num">${fmt(r.cycles_per_image / 1e6, 2)}</td><td class="num">${fmt(ex.cycles_per_image / r.cycles_per_image, 2)}×</td><td class="num">${fmt(ibexEnergy(r) / ibexEnergy(ex), 2)}×</td><td class="num">${pct(r.ibex_acc, 0)}</td><td class="num">${pct(r.torch_int8_acc, 0)}</td><td class="num">${pct(r.logits_match_ref, 0)}</td></tr>`).join("") +
+    `</table><p class="note">Energy vs exact = measured cycles × relative core power (0.793 without a multiplier, 0.829 with LOD, from the paper).</p>`;
+}
+
+/* ---------- Fig 12: cycle profile ---------- */
+const PROF_GROUPS = [
+  { name: "Multiplier routine", cats: ["Multiplier routine"], fill: "var(--accent)", op: 1 },
+  { name: "Sign & zero handling", cats: ["Sign & zero handling"], fill: "var(--accent)", op: 0.45 },
+  { name: "Operand loads & stores", cats: ["Operand loads & stores"], fill: "var(--ink-2)", op: 0.85 },
+  { name: "Loop control & accumulate", cats: ["Loop control & accumulate"], fill: "var(--ink-2)", op: 0.45 },
+  { name: "Rescale & ReLU", cats: ["Rescale & ReLU"], fill: "var(--two)", op: 0.85 },
+  { name: "Pooling & bookkeeping", cats: ["Pooling", "Bookkeeping"], fill: "var(--base)", op: 0.5 },
+];
+const prof = { model: "mlp", share: true };
+function drawProf(el, W) {
+  const P = IBEX.profile || [];
+  if (!P.length) { emptyIbex(el, "The cycle profile"); document.getElementById("prof-claim").textContent = ""; return; }
+  const ds = P[0].dataset;
+  document.getElementById("prof-ds").textContent = DS_LABEL[ds] || ds;
+  document.getElementById("prof-legend").innerHTML = PROF_GROUPS.map(g => `<span><i style="background:${g.fill};opacity:${g.op};border-radius:2px"></i>${g.name}</span>`).join("");
+  const rows = ORDER.map(k => {
+    const parts = PROF_GROUPS.map(g => P.filter(r => r.model === prof.model && r.multiplier === k && g.cats.includes(r.category)).reduce((s, r) => s + r.cycles, 0));
+    return { k, parts, total: parts.reduce((a, b) => a + b, 0) };
+  }).filter(r => r.total > 0);
+  const narrow = W < 560, lab = narrow ? 104 : 150, rowH = 34, m = { l: lab, r: narrow ? 52 : 70, t: 28, b: 30 }, H = m.t + rows.length * rowH + m.b;
+  const maxT = Math.max(...rows.map(r => r.total));
+  const X = v => m.l + v * (W - m.l - m.r);
+  let s = "";
+  const ticks = prof.share ? [0, 0.25, 0.5, 0.75, 1] : [0, 0.25, 0.5, 0.75, 1].map(f => f * maxT);
+  for (const t of ticks) {
+    const f = prof.share ? t : t / maxT;
+    s += `<line x1="${X(f)}" x2="${X(f)}" y1="${m.t - 6}" y2="${H - m.b}" style="stroke:var(--rule)"/>` + T(X(f), H - 10, prof.share ? `${t * 100}%` : `${fmt(t / 1e6, 0)} M`, { anchor: "middle", size: 11, fill: "var(--muted)" });
+  }
+  rows.forEach((r, i) => {
+    const y = m.t + i * rowH, bh = 20, hl = r.k === "roba_dn1";
+    s += T(m.l - 12, y + bh / 2 + 4, LABEL[r.k], { anchor: "end", fill: "var(--ink)", weight: hl ? 600 : 400, size: narrow ? 11 : 12.5 });
+    let acc = 0;
+    r.parts.forEach((c, gi) => {
+      const f0 = prof.share ? acc / r.total : acc / maxT, f1 = prof.share ? (acc + c) / r.total : (acc + c) / maxT, g = PROF_GROUPS.at(gi);
+      const tt = `<b>${LABEL[r.k]} · ${g.name}</b>\n${fmt(c / 1e6, 2)} M cycles, ${pct(c / r.total, 1)} of the inference`;
+      if (c > 0) s += `<rect x="${X(f0)}" y="${y}" width="${Math.max(0.5, X(f1) - X(f0) - 1)}" height="${bh}" style="fill:${g.fill}" fill-opacity="${g.op}" data-tip="${esc(tt)}"/>`;
+      if (gi === 0 && X(f1) - X(f0) > 34) s += T(X(f0) + 6, y + bh / 2 + 4, pct(c / r.total, 0), { size: 11, fill: "var(--accent-ink)", weight: 600 });
+      acc += c;
+    });
+    s += T(prof.share ? W - m.r + 8 : X(r.total / maxT) + 8, y + bh / 2 + 4, `${fmt(r.total / 1e6, 1)} M`, { size: 11.5, fill: "var(--ink-2)" });
+  });
+  el.innerHTML = svgWrap(W, H, "Share of inference cycles per category on Ibex", s);
+  const ex = rows.find(r => r.k === "exact"), d1 = rows.find(r => r.k === "roba_dn1");
+  const sh = (r, n) => r.parts.at(n) / r.total;
+  document.getElementById("prof-claim").textContent =
+    `With exact multiplication, the multiply routine is ${pct(sh(ex, 0), 0)} of ${prof.model === "mlp" ? "an" : "a"} ${MODEL[prof.model]} inference (${pct(sh(ex, 0) + sh(ex, 1), 0)} with its sign/zero wrapper), so even a free multiply could speed it up at most ${fmt(1 / (1 - sh(ex, 0)), 1)}×. ` +
+    `With RoBA-Dn1 the routine falls to ${pct(sh(d1, 0), 0)}, and the overhead around it now costs more than the multiply itself.`;
+}
+
+/* ---------- Fig 13: fused MAC ---------- */
+const fuse = { model: "mlp" };
+function drawFuse(el, W) {
+  const rows = ORDER.map(k => ({ k, c: ibexRow("call", state.ds, fuse.model, k), f: ibexRow("dnn", state.ds, fuse.model, k) })).filter(r => r.c && r.f);
+  if (!rows.length) { emptyIbex(el, `Fused runs for ${DS_LABEL[state.ds]}`); document.getElementById("fuse-claim").textContent = ""; document.getElementById("fuse-table").innerHTML = ""; return; }
+  const narrow = W < 560, lab = narrow ? 104 : 150, cols = narrow ? 64 : 200, rowH = 34;
+  const m = { l: lab, r: cols + 16, t: 34, b: 30 }, H = m.t + rows.length * rowH + m.b;
+  const ex = rows.find(r => r.k === "exact");
+  const xmax = Math.max(...rows.map(r => r.c.cycles_per_image)) * 1.04;
+  const X = v => m.l + v / xmax * (W - m.l - m.r);
+  const cCall = W - cols + 10, cFused = W - (narrow ? 4 : 84);
+  let s = T(m.l, m.t - 16, "million cycles per image", { size: 11, fill: "var(--muted)" });
+  if (!narrow) s += T(cCall, m.t - 16, "vs exact, call", { size: 11, fill: "var(--muted)" });
+  s += T(cFused, m.t - 16, narrow ? "vs exact" : "vs exact, fused", { size: 11, fill: "var(--muted)" });
+  for (const t of mTicks(xmax)) s += `<line x1="${X(t)}" x2="${X(t)}" y1="${m.t - 4}" y2="${H - m.b}" style="stroke:var(--rule)"/>` + T(X(t), H - 12, fmt(t / 1e6, 0), { anchor: "middle", size: 11, fill: "var(--muted)" });
+  rows.forEach((r, i) => {
+    const y = m.t + i * rowH + rowH / 2 - 4, hl = r.k === "roba_dn1", c = r.c.cycles_per_image, f = r.f.cycles_per_image;
+    const fill = r.k === "exact" ? "var(--ink)" : FAM[r.k];
+    const tt = `<b>${LABEL[r.k]}</b>\none call per multiply: ${fmt(c / 1e6, 2)} M cycles\nfused into the loop: ${fmt(f / 1e6, 2)} M cycles (${fmt(c / f, 2)}× fewer)`;
+    s += T(m.l - 12, y + 4, LABEL[r.k], { anchor: "end", fill: "var(--ink)", weight: hl ? 600 : 400, size: narrow ? 11 : 12.5 });
+    s += `<line x1="${X(f)}" x2="${X(c)}" y1="${y}" y2="${y}" style="stroke:var(--rule-strong)" stroke-width="2"/>`;
+    s += `<circle cx="${X(c)}" cy="${y}" r="6" style="fill:var(--surface);stroke:var(--ink-2)" stroke-width="2" data-tip="${esc(tt)}"/>`;
+    s += `<circle cx="${X(f)}" cy="${y}" r="7" style="fill:${fill};stroke:var(--surface)" stroke-width="2" data-tip="${esc(tt)}"/>`;
+    s += T(X(f) - 12, y + 4, fmt(f / 1e6, 1), { anchor: "end", size: 11.5, fill: "var(--ink)", weight: hl ? 600 : 400 });
+    if (!narrow) s += T(X(c) + 11, y + 4, fmt(c / 1e6, 1), { size: 11, fill: "var(--muted)" });
+    if (!narrow) s += T(cCall, y + 4, `${fmt(ex.c.cycles_per_image / c, 2)}×`, { size: 12, fill: "var(--muted)" });
+    s += T(cFused, y + 4, `${fmt(ex.f.cycles_per_image / f, 2)}×`, { size: 12, fill: "var(--ink)", weight: hl ? 700 : 500 });
+  });
+  el.innerHTML = svgWrap(W, H, "Cycles per image with one call per multiply and fused into the loop", s);
+  const d1 = rows.find(r => r.k === "roba_dn1");
+  document.getElementById("fuse-claim").textContent =
+    `${MODEL[fuse.model]} on ${DS_LABEL[state.ds]}: fusing takes RoBA-Dn1 from ${fmt(d1.c.cycles_per_image / 1e6, 1)} M to ${fmt(d1.f.cycles_per_image / 1e6, 1)} M cycles per image, and exact from ${fmt(ex.c.cycles_per_image / 1e6, 1)} M to ${fmt(ex.f.cycles_per_image / 1e6, 1)} M. ` +
+    `Against the equally fused exact, RoBA-Dn1 is ${fmt(ex.f.cycles_per_image / d1.f.cycles_per_image, 2)}× faster (${fmt(ex.c.cycles_per_image / d1.c.cycles_per_image, 2)}× with a call per multiply).`;
+  document.getElementById("fuse-table").innerHTML = `<table class="data"><tr><th>Multiplier</th><th>Call: M cycles</th><th>Fused: M cycles</th><th>Fewer cycles</th><th>vs exact, call</th><th>vs exact, fused</th><th>Energy vs exact, fused</th><th>Logits bit-exact</th></tr>` +
+    rows.map(r => `<tr><td>${LABEL[r.k]}</td><td class="num">${fmt(r.c.cycles_per_image / 1e6, 2)}</td><td class="num">${fmt(r.f.cycles_per_image / 1e6, 2)}</td><td class="num">${fmt(r.c.cycles_per_image / r.f.cycles_per_image, 2)}×</td><td class="num">${fmt(ex.c.cycles_per_image / r.c.cycles_per_image, 2)}×</td><td class="num">${fmt(ex.f.cycles_per_image / r.f.cycles_per_image, 2)}×</td><td class="num">${fmt(ibexEnergy(r.f) / ibexEnergy(ex.f), 2)}×</td><td class="num">${pct(r.f.logits_match_ref, 0)}</td></tr>`).join("") + `</table>`;
+}
+
+/* ---------- Fig 14: square table ---------- */
+function drawSq(el, W) {
+  const groups = ["mlp", "lenet5"].map(mo => ({ mo, rows: ["exact", "roba_dn1", "sqtab"].map(k => ibexRow("dnn", state.ds, mo, k)) }))
+    .filter(g => g.rows.every(Boolean));
+  if (!groups.length) { emptyIbex(el, `Square-table runs for ${DS_LABEL[state.ds]}`); document.getElementById("sq-claim").textContent = ""; return; }
+  const narrow = W < 520, lab = narrow ? 96 : 128, cols = narrow ? 50 : 128, rowH = 28, head = 24, gap = 14;
+  const m = { l: lab, r: cols + 10, t: 22, b: 28 };
+  const H = m.t + groups.length * (head + 3 * rowH + gap) + m.b;
+  const xmax = Math.max(...groups.flatMap(g => g.rows.map(r => r.cycles_per_image))) * 1.16;
+  const X = v => m.l + v / xmax * (W - m.l - m.r);
+  const cSp = W - cols + 6, cAcc = W - 4;
+  let s = T(cSp, m.t - 8, "vs exact", { size: 11, fill: "var(--muted)" });
+  if (!narrow) s += T(cAcc, m.t - 8, "accuracy", { size: 11, fill: "var(--muted)", anchor: "end" });
+  const bottom = H - m.b;
+  for (const t of mTicks(xmax)) s += `<line x1="${X(t)}" x2="${X(t)}" y1="${m.t}" y2="${bottom}" style="stroke:var(--rule)"/>` + T(X(t), H - 10, fmt(t / 1e6, 0), { anchor: "middle", size: 11, fill: "var(--muted)" });
+  s += T(W - m.r, H + 4, "million cycles per image", { anchor: "end", size: 11, fill: "var(--muted)" });
+  let y = m.t;
+  for (const g of groups) {
+    s += T(0, y + 16, MODEL[g.mo], { size: 12.5, fill: "var(--ink)", weight: 650 });
+    y += head;
+    const ex = g.rows[0];
+    g.rows.forEach(r => {
+      const k = r.multiplier, bh = 16, hl = k === "sqtab";
+      const tt = `<b>${MODEL[g.mo]} · ${METHOD[k]}</b>\n${fmt(r.cycles_per_image / 1e6, 2)} M cycles per image\n${fmt(ex.cycles_per_image / r.cycles_per_image, 2)}× vs exact, fused\nIbex accuracy ${pct(r.ibex_acc, 0)} on ${r.images} images`;
+      s += T(m.l - 10, y + bh / 2 + 4, k === "sqtab" ? "Square table" : `${METHOD[k]}, fused`, { anchor: "end", size: narrow ? 11 : 12, fill: "var(--ink)", weight: hl ? 600 : 400 });
+      s += `<rect x="${X(0)}" y="${y}" width="${Math.max(1, X(r.cycles_per_image) - X(0))}" height="${bh}" rx="2" style="fill:${METHOD_FILL[k]}" data-tip="${esc(tt)}"/>`;
+      s += T(X(r.cycles_per_image) + 6, y + bh / 2 + 4, `${fmt(r.cycles_per_image / 1e6, 1)} M`, { size: 11.5, fill: "var(--ink)", weight: hl ? 600 : 400 });
+      s += T(cSp, y + bh / 2 + 4, `${fmt(ex.cycles_per_image / r.cycles_per_image, 2)}×`, { size: 12, fill: "var(--ink)", weight: hl ? 700 : 500 });
+      if (!narrow) s += T(cAcc, y + bh / 2 + 4, pct(r.ibex_acc, 0), { size: 12, fill: "var(--ink-2)", anchor: "end" });
+      y += rowH;
+    });
+    y += gap;
+  }
+  el.innerHTML = svgWrap(W, H + 8, "Cycles per image: fused exact, fused RoBA-Dn1 and the square table", s);
+  const g0 = groups.find(g => g.mo === "mlp") || groups[0], [ex, d1, sq] = g0.rows;
+  const g1 = groups.find(g => g.mo === "lenet5");
+  document.getElementById("sq-claim").textContent =
+    `On ${DS_LABEL[state.ds]} the table of squares gives exact products and runs the ${MODEL[g0.mo]} in ${fmt(sq.cycles_per_image / 1e6, 1)} M cycles: ${fmt(ex.cycles_per_image / sq.cycles_per_image, 2)}× faster than fused exact and ${fmt(d1.cycles_per_image / sq.cycles_per_image, 2)}× faster than fused RoBA-Dn1` +
+    (g1 ? ` (LeNet-5: ${fmt(g1.rows[0].cycles_per_image / g1.rows[2].cycles_per_image, 2)}× and ${fmt(g1.rows[1].cycles_per_image / g1.rows[2].cycles_per_image, 2)}×).` : ".");
+}
+
+/* ---------- Fig 15: zero-skipping ablation ---------- */
+const zs = { model: "mlp" };
+const ZS_SETTINGS = [["normalized", 0, "normalized"], ["normalized", 1, "normalized + skip"], ["raw", 0, "raw pixels"], ["raw", 1, "raw + skip"]];
+const zsRow = (ds, mo, k, input, skip) => (IBEX.zeroskip || []).find(r => r.dataset === ds && r.model === mo && r.multiplier === k && r.input === input && r.zero_skip === skip);
+function drawZs(el, W) {
+  const groups = ["exact", "roba_dn1", "sqtab"].map(k => ({ k, rows: ZS_SETTINGS.map(([inp, sk, name]) => ({ name, inp, sk, r: zsRow(state.ds, zs.model, k, inp, sk) })) }))
+    .filter(g => g.rows.every(x => x.r));
+  const base = zsRow(state.ds, zs.model, "exact", "normalized", 0);
+  if (!groups.length || !base) { emptyIbex(el, `The ablation for ${DS_LABEL[state.ds]}`); document.getElementById("zs-claim").textContent = ""; document.getElementById("zs-acc").innerHTML = ""; return; }
+  const narrow = W < 480, lab = narrow ? 104 : 124, cols = 56, rowH = 24, head = 22, gap = 10;
+  const m = { l: lab, r: cols + 8, t: 22, b: 28 };
+  const H = m.t + groups.length * (head + 4 * rowH + gap) + m.b;
+  const xmax = Math.max(...groups.flatMap(g => g.rows.map(x => x.r.cycles_per_image))) * 1.18;
+  const X = v => m.l + v / xmax * (W - m.l - m.r);
+  let s = T(W - 4, m.t - 8, "vs exact", { size: 11, fill: "var(--muted)", anchor: "end" });
+  for (const t of mTicks(xmax)) s += `<line x1="${X(t)}" x2="${X(t)}" y1="${m.t}" y2="${H - m.b}" style="stroke:var(--rule)"/>` + T(X(t), H - 10, fmt(t / 1e6, 0), { anchor: "middle", size: 11, fill: "var(--muted)" });
+  s += T(W - m.r, H + 4, "million cycles per image", { anchor: "end", size: 11, fill: "var(--muted)" });
+  const best = groups.flatMap(g => g.rows.map(x => ({ ...x, k: g.k }))).reduce((a, b) => (b.r.cycles_per_image < a.r.cycles_per_image ? b : a));
+  let y = m.t;
+  for (const g of groups) {
+    s += T(0, y + 15, g.k === "sqtab" ? "Square table" : `${METHOD[g.k]}, fused`, { size: 12, fill: "var(--ink)", weight: 650 });
+    y += head;
+    g.rows.forEach(x => {
+      const bh = 14, c = x.r.cycles_per_image, hl = x === best || (x.name === best.name && g.k === best.k);
+      const tt = `<b>${METHOD[g.k]} · ${x.name}</b>\n${fmt(c / 1e6, 2)} M cycles per image\n${fmt(base.cycles_per_image / c, 2)}× vs exact, fused, normalized\nlogits bit-exact: ${pct(x.r.logits_match_ref, 0)}`;
+      s += T(m.l - 10, y + bh / 2 + 4, x.name, { anchor: "end", size: 11.5, fill: "var(--ink-2)" });
+      s += `<rect x="${X(0)}" y="${y}" width="${Math.max(1, X(c) - X(0))}" height="${bh}" rx="2" style="fill:${METHOD_FILL[g.k]}" fill-opacity="${x.inp === "raw" ? 1 : 0.55}" data-tip="${esc(tt)}"/>`;
+      s += T(X(c) + 6, y + bh / 2 + 4, fmt(c / 1e6, 1), { size: 11, fill: "var(--ink)", weight: hl ? 700 : 400 });
+      s += T(W - 4, y + bh / 2 + 4, `${fmt(base.cycles_per_image / c, 2)}×`, { size: 11.5, fill: "var(--ink)", weight: hl ? 700 : 500, anchor: "end" });
+      y += rowH;
+    });
+    y += gap;
+  }
+  el.innerHTML = svgWrap(W, H + 8, "Cycles per image with and without zero skipping and raw pixels", s);
+  const get = (k, inp, sk) => groups.find(g => g.k === k)?.rows.find(x => x.inp === inp && x.sk === sk)?.r;
+  const ch = (a, b) => b.cycles_per_image <= a.cycles_per_image ? `${fmt(a.cycles_per_image / b.cycles_per_image, 2)}× faster` : `${fmt(b.cycles_per_image / a.cycles_per_image, 2)}× slower`;
+  document.getElementById("zs-claim").textContent =
+    `${MODEL[zs.model]} on ${DS_LABEL[state.ds]}: fastest is ${best.k === "sqtab" ? "the square table" : `fused ${METHOD[best.k]}`} with ${best.name}, ${fmt(best.r.cycles_per_image / 1e6, 1)} M cycles per image, ${fmt(base.cycles_per_image / best.r.cycles_per_image, 2)}× the fused exact baseline. ` +
+    `Raw pixels alone make fused RoBA-Dn1 ${ch(get("roba_dn1", "normalized", 0), get("roba_dn1", "raw", 0))}, because its zero check already skips the black background. ` +
+    `Skipping makes the square table ${ch(get("sqtab", "raw", 0), get("sqtab", "raw", 1))} on raw pixels but ${ch(get("sqtab", "normalized", 0), get("sqtab", "normalized", 1))} on normalized input: every term it keeps needs a second lookup, S[w], so it pays only when most inputs are zero.`;
+  const acc = k => ["normalized", "raw"].map(inp => zsRow(state.ds, zs.model, k, inp, 0));
+  document.getElementById("zs-acc").innerHTML = `<table class="data"><tr><th>Test accuracy (10,000 images)</th><th>Normalized</th><th>Raw pixels</th></tr>` +
+    groups.map(g => { const [a, b] = acc(g.k); return `<tr><td>${g.k === "sqtab" ? "Square table" : `${METHOD[g.k]}, fused`}</td><td class="num">${pct(a.ref_acc_full_test, 2)}</td><td class="num">${pct(b.ref_acc_full_test, 2)}</td></tr>`; }).join("") +
+    `</table><p class="note">Bit-exact Python model of the Ibex arithmetic, int8 checkpoint fine-tuned for each multiplier (the table uses the exact one). Zero skipping never changes a result.</p>`;
+}
+
 /* ---------- summary ---------- */
 function renderFindings() {
   const ds = DS_LABEL[state.ds];
@@ -957,10 +1428,20 @@ function renderFindings() {
   const trunc = ["mlp", "lenet5"].map(mo => evalRow(mo, "trunc", "exact").acc * 100);
   const base = ["mlp", "lenet5"].map(mo => evalRow(mo, "float32", "native").acc * 100);
   const items = [
-    { tag: "all datasets", big: `${fmt(energy("roba_dn1", 8), 2)}<small>×</small>`, text: `Estimated multiplication energy of RoBA-Dn1 at int8, relative to exact shift-and-add (${fmt(energy("roba_dn1", 16), 2)}× at int16).` },
+    (() => {
+      const ex = ibexRow("dnn", state.ds, "mlp", "exact"), d1 = ibexRow("dnn", state.ds, "mlp", "roba_dn1");
+      return ex && d1
+        ? { tag: `measured on Ibex · ${ds}`, big: `${fmt(ex.cycles_per_image / d1.cycles_per_image, 2)}<small>×</small>`, text: `Faster MLP inference with RoBA-Dn1 than with exact shift-and-add on the multiplierless Ibex, both fused into the loop (${fmt(d1.cycles_per_image / 1e6, 1)} M vs ${fmt(ex.cycles_per_image / 1e6, 1)} M cycles per image).` }
+        : { tag: "all datasets", big: `${fmt(energy("roba_dn1", 8), 2)}<small>×</small>`, text: `Estimated multiplication energy of RoBA-Dn1 at int8, relative to exact shift-and-add (${fmt(energy("roba_dn1", 16), 2)}× at int16).` };
+    })(),
+    (() => {
+      const ex = ibexRow("dnn", state.ds, "mlp", "exact"), sq = ibexRow("dnn", state.ds, "mlp", "sqtab"), d1 = ibexRow("dnn", state.ds, "mlp", "roba_dn1");
+      return ex && sq && d1
+        ? { tag: `measured on Ibex · ${ds}`, big: `${fmt(ex.cycles_per_image / sq.cycles_per_image, 2)}<small>×</small>`, text: `Faster MLP inference with a 1 KB table of squares: exact products, ${fmt(d1.cycles_per_image / sq.cycles_per_image, 2)}× faster than fused RoBA-Dn1, no LOD instruction.` }
+        : { tag: "multiplier library", big: `${fmt(errRow(16, "roba_updn2").max, 2)}<small>%</small>`, text: `Maximum error of RoBA-(UpDn)2 in our library; the paper reports ${D.paper_max.roba_updn2}%.` };
+    })(),
     { tag: ds, big: `${fmt(spread, 2)}<small>pts</small>`, text: `Largest accuracy change from any approximate multiplier at int8, either model, before fine-tuning. Float baselines: MLP ${fmt(base[0], 2)}%, LeNet-5 ${fmt(base[1], 2)}%.` },
     { tag: ds, big: `${fmt(trunc[0], 1)}<small>%</small>`, text: `MLP accuracy when floats are cast to integers without scaling (LeNet-5: ${fmt(trunc[1], 1)}%). Chance is 10%.` },
-    { tag: "multiplier library", big: `${fmt(errRow(16, "roba_updn2").max, 2)}<small>%</small>`, text: `Maximum error of RoBA-(UpDn)2 in our library; the paper reports ${D.paper_max.roba_updn2}%.` },
   ];
   document.getElementById("findings-grid").innerHTML = items.map(i => `<div class="finding"><span class="tag">${esc(i.tag)}</span><div class="big">${i.big}</div><p>${esc(i.text)}</p></div>`).join("");
 }
@@ -1019,11 +1500,25 @@ chart("acc", drawAcc);
 chart("cmp", drawCmp);
 chart("dumbbell", drawDumbbell);
 chart("regs", drawRegs);
+chart("meas", drawMeas);
+chart("idnn", drawIdnn);
+chart("prof", drawProf);
+chart("fuse", drawFuse);
+chart("sq", drawSq);
+chart("zs", drawZs);
+renderIbexBadges();
+renderLede();
 seg(["p8", "p16"], id => { pBits = id === "p8" ? 8 : 16; redraw("pareto"); });
 seg(["m-mlp", "m-lenet5"], id => { acc.model = id === "m-mlp" ? "mlp" : "lenet5"; redraw("acc"); });
 seg(["b8", "b16"], id => { acc.bits = id === "b8" ? 8 : 16; redraw("acc"); });
 seg(["c-mlp", "c-lenet5"], id => { cmp.model = id === "c-mlp" ? "mlp" : "lenet5"; redraw("cmp"); });
 seg(["c-before", "c-after"], id => { cmp.stage = id === "c-before" ? "before" : "after"; redraw("cmp"); });
+seg(["mw4", "mw8", "mw16", "mw31"], id => { mBits = Number(id.slice(2)); redraw("meas"); });
+seg(["i-mlp", "i-lenet5"], id => { idnn.model = id === "i-mlp" ? "mlp" : "lenet5"; redraw("idnn"); });
+seg(["pr-mlp", "pr-lenet5"], id => { prof.model = id === "pr-mlp" ? "mlp" : "lenet5"; redraw("prof"); });
+seg(["pr-share", "pr-abs"], id => { prof.share = id === "pr-share"; redraw("prof"); });
+seg(["f-mlp", "f-lenet5"], id => { fuse.model = id === "f-mlp" ? "mlp" : "lenet5"; redraw("fuse"); });
+seg(["z-mlp", "z-lenet5"], id => { zs.model = id === "z-mlp" ? "mlp" : "lenet5"; redraw("zs"); });
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderHeat);
 new MutationObserver(renderHeat).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 const start = SLIDES.findIndex(s => `#${s.id}` === location.hash);

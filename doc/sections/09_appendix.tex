@@ -1,0 +1,179 @@
+\section{A tour of the code, file by file}\label{app:code}
+
+\begin{figure}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{7.6cm}X@{}}
+\toprule
+\textbf{Phase 1 (GPU, Python)} & \\
+\file{roba/multipliers.py} & the eight multipliers in PyTorch, as per-number ``pieces''\\
+\file{roba/reference.py} & the same eight with plain Python bit operations (independent check)\\
+\file{roba/matmul.py} & approximate matrix multiply and convolution from a few exact ones\\
+\file{roba/nn.py} & layers with switchable multiplier and number format; MLP, LeNet-5; calibration\\
+\file{roba/data.py} & reads MNIST / Fashion-MNIST and normalises the pixels\\
+\file{roba/cost.py} & the early cycle and energy \emph{estimate} (replaced by Ibex measurements)\\
+\file{experiments/run.py} & stages errors, train, eval, finetune $\to$ \file{results/<dataset>/}\\
+\midrule
+\textbf{Shared C library} & \\
+\file{csrc/roba.c}, \file{roba.h} & the multipliers in C, one function each (used by the ``call'' builds)\\
+\file{csrc/roba\_core.h} & the same routines as inline functions, for the fused loop\\
+\file{csrc/roba\_core\_test.c} & lets the Python tests call the inline routines\\
+\midrule
+\textbf{Phase 2 (Ibex)} & \\
+\file{hw/setup.sh}, \file{build\_sim.sh}, \file{run\_sim.sh} & install tools, build the simulator, run a program\\
+\file{hw/patches/0001-ibex-lod-instruction.patch} & the LOD instruction (Section~\ref{sec:lodpatch})\\
+\file{hw/sw/lod\_test.c} & checks LOD against a software loop\\
+\file{hw/sw/mult\_bench.c} & cycles per multiplication\\
+\file{hw/sw/dnn.c} & the integer networks for the chip, every method\\
+\file{hw/sw/util.h}, \file{link\_1mb.ld}, \file{Makefile} & printing, cycle counter, memory map, builds\\
+\file{hw/run\_ibex.py} & the whole Phase 2 pipeline (Figure~\ref{fig:flow})\\
+\file{hw/profile\_ibex.py} & where the cycles go (instruction trace of one picture)\\
+\midrule
+\textbf{Checks and presentation} & \\
+\file{tests/test\_multipliers.py} & 35 tests: PyTorch = Python = C for every multiplier\\
+\file{experiments/build\_site.py}, \file{site/template.html} & build the slide deck \file{index.html}\\
+\file{doc/make\_figures.py}, \file{doc/roba\_explained.tex} & this document\\
+\bottomrule
+\end{tabularx}
+\caption{What each file does.}
+\end{figure}
+
+\subsection{\file{roba/multipliers.py}: one description for every RoBA variant}
+
+Each RoBA variant is just a list of rounding rules, one per step:
+\begin{lstlisting}[language=Python]
+ROBA_ITERATIONS = {
+    "roba_dn1":    [round_dn],
+    "roba_updn":   [round_updn],
+    "roba_dn2":    [round_dn, round_dn],
+    "roba_updndn": [round_updn, round_dn],
+    "roba_updn2":  [round_updn, round_updn],
+}
+\end{lstlisting}
+\code{factors(x, mult, side)} turns a number into its pieces (Section~\ref{sec:factors}): for each step it
+rounds the current leftover \code{r}, emits \code{[rr, r - rr]} for the left number or \code{[r, rr]} for the
+right number, and continues with the leftover \code{r - rr}. Summing the products of matching pieces gives the
+approximate product. \code{round\_dn} and \code{round\_updn} use \code{torch.frexp}, which splits a number into
+$m\times2^e$; that is the GPU's way of finding the leading one.
+
+\subsection{\file{roba/nn.py}: switchable layers}
+
+\code{ALinear} and \code{AConv2d} behave like PyTorch's layers but have two settings:
+\code{domain} (\code{None} = normal float32, \code{"float"}, \code{"trunc"}, \code{8}, \code{16}) and
+\code{mult} (one of the eight). In \code{\_forward}, for int8 it quantizes inputs and weights
+(\code{fake\_quant}), computes the exact product (which carries the gradient) and the approximate one
+(computed without gradient), and returns \code{ref + (acc - ref).detach()}: the value of the approximate
+result with the gradient of the exact one, the straight-through estimator. \code{calibrate()} records the
+largest input of every layer on 5{,}000 training pictures, which sets the activation scales.
+
+\subsection{\file{experiments/run.py}: the GPU stages}
+
+\begin{lstlisting}[language=bash]
+python3 experiments/run.py --dataset mnist   --stage all                              # ~7 min
+python3 experiments/run.py --dataset fashion --stage all --epochs 30 --ft-epochs 5    # ~10 min
+\end{lstlisting}
+It writes \file{results/<dataset>/eval\_<model>.csv} (one row per number format and multiplier: accuracy,
+loss, agreement with exact) and \file{finetune\_<model>.csv} (accuracy before and after fine-tuning), and saves
+every checkpoint in \file{checkpoints/<dataset>/} (e.g.\ \file{mlp\_ft\_int8\_roba\_dn1.pt}), which Phase~2
+reads.
+
+\subsection{\file{hw/sw/dnn.c}: one program, many methods}
+
+The same C file is compiled differently for each configuration. The \code{-D} flags pick the method:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\linewidth}{lX}
+\toprule
+Flags & What the multiply-accumulate does\\
+\midrule
+\code{-DMULT\_NZ=roba\_dn1\_nz} & fused (default): \code{mac\_g}/\code{mac\_r} with the routine inlined from
+\file{roba\_core.h}, sign-magnitude weight bytes (\code{WS0}, \dots, built in \code{tables\_init})\\
+\code{-DMAC\_CALL -DMULT\_U=roba\_dn1\_u} & paper style: \code{mul\_s()} calls the routine in \file{roba.c} once per
+product\\
+\code{-DSQTAB} & table of squares: \code{STAB[509]} built in \code{tables\_init}, $\sum S(w)$ per neuron in
+\code{model\_init}, $\sum S(x)$ per layer input\\
+\code{-DZERO\_SKIP} & (with any of the above) gather the non-zero inputs (\code{gather\_nz}), or skip zero taps in
+convolutions\\
+\code{INPUT\_NONNEG} (in \file{model.h}) & raw pixels: the first layer also uses the ``input $\ge 0$'' MAC\\
+\code{C0\_PER\_POSITION} (in \file{model.h}) & LeNet-5 with raw pixels: conv1 bias per output position\\
+\bottomrule
+\end{tabularx}
+\caption{Build options of \file{hw/sw/dnn.c}.}
+\end{table}
+
+The network itself is written once, with a macro for a fully connected layer:
+\begin{lstlisting}[language=C]
+static void forward(const int8_t *x, uint32_t *lc)       /* the MLP */
+{
+    uint32_t t = (uint32_t)cycles(), u;
+    FC(x, 784, 0, 256, h1, 0, MAC_IN);                   /* layer 0: 784 -> 256 */
+    u = (uint32_t)cycles(); lc[0] = u - t; t = u;        /* cycles of layer 0   */
+    FC(h1, 256, 1, 128, h2, 0, MAC_R);                   /* layer 1: 256 -> 128 */
+    u = (uint32_t)cycles(); lc[1] = u - t; t = u;
+    FC(h2, 128, 2, 10, z, 1, MAC_R);                     /* layer 2: 128 -> 10, keep logits */
+    u = (uint32_t)cycles(); lc[2] = u - t;
+}
+\end{lstlisting}
+\code{FC} expands to the right loop for the chosen method (plain, zero-skipping, table, or table with
+skipping), followed by \code{rescale()} and \code{relu\_q()} for every output. \code{main()} builds the tables,
+switches on the cycle counter, runs \code{forward} on every picture in \file{images.h}, and prints the
+\code{IMG,\dots} line.
+
+\subsection{\file{hw/run\_ibex.py}: the pipeline}
+
+\begin{itemize}
+  \item \code{int\_model()}: checkpoint $\to$ int8 weights, $M$, $C$ (and the raw-pixel fold).
+  \item \code{quantize\_images()}: pictures $\to$ int8 (normalised or raw).
+  \item \code{ref\_forward()}: the bit-exact Python copy of \file{dnn.c}; \code{logit\_hash()} the same
+        fingerprint as the C code.
+  \item \code{write\_model\_h()}, \code{write\_images\_h()}: the C headers.
+  \item \code{compile\_elf()}: GCC + the ``no \code{mul}/\code{div}'' check. \code{run\_sim()}: one Verilator run.
+  \item \code{prepare\_jobs()}, \code{run\_job()}, \code{stage\_dnn()}: build every configuration, run the
+        batches in parallel (\code{--jobs 48}), reuse a log only if the program's SHA-256 matches, compare with
+        the reference, write the CSV files.
+\end{itemize}
+A configuration name is a multiplier plus flags: \code{roba\_dn1}, \code{roba\_dn1+call}, \code{sqtab+zs+raw},
+and so on.
+
+\subsection{The CSV result files}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\linewidth}{lX}
+\toprule
+File & Contents\\
+\midrule
+\file{results/<ds>/multiplier\_errors.csv} & error statistics per multiplier (8 and 16 bits)\\
+\file{results/<ds>/eval\_<model>.csv} & GPU accuracy and loss per number format and multiplier\\
+\file{results/<ds>/finetune\_<model>.csv} & GPU accuracy before/after fine-tuning\\
+\file{results/ibex/mult\_bench.csv} & cycles and instructions per multiplication\\
+\file{results/ibex/dnn\_summary.csv} & fused multipliers and the table: cycles per picture and per layer, accuracy,
+match with the reference\\
+\file{results/ibex/dnn\_call\_summary.csv} & the same for one call per multiply\\
+\file{results/ibex/zeroskip\_summary.csv} & the zero-skipping / raw-pixel ablation, with full-test accuracy\\
+\file{results/ibex/*\_images.csv} & one row per picture (answer, hash, cycles)\\
+\file{results/ibex/profile.csv} & time per category for one traced picture\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{How to rerun everything}
+
+\begin{lstlisting}[language=bash]
+# Phase 1: tests and GPU experiments
+python3 -m pytest -q tests                      # 35 tests: PyTorch = Python = C
+python3 experiments/run.py --dataset mnist   --stage all
+python3 experiments/run.py --dataset fashion --stage all --epochs 30 --ft-epochs 5
+
+# Phase 2: Ibex (one-time setup, no sudo), then all stages
+hw/setup.sh
+python3 hw/run_ibex.py --stage all --images 100 --jobs 48     # ~70 minutes on 48 cores
+python3 hw/profile_ibex.py                                    # one traced picture per multiplier
+
+# Slides and this document
+python3 experiments/build_site.py               # index.html
+cd doc && python3 make_figures.py && pdflatex roba_explained && pdflatex roba_explained
+\end{lstlisting}

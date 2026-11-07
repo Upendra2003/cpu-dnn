@@ -1,0 +1,80 @@
+\section{The whole project on one page}
+
+\begin{kid}
+Imagine a calculator that has a \emph{plus} button but no \emph{times} button. You can still
+work out $13\times 11$: add 13 to itself 11 times, or use a smarter trick with doubling.
+Either way it takes many button presses. Now imagine you have to do this
+\textbf{two hundred thousand times} just to recognise one picture of a shoe. That is the
+situation of the small chip in this project.
+
+The paper we follow says: ``Let's give the calculator one extra, very cheap button. It doesn't
+multiply. It only tells you how big a number roughly is (where its leading 1 is). With that
+button, we can get a \emph{nearly} right answer in very few presses.''
+
+This project checks whether the ``nearly right'' answers are good enough for a neural network that
+recognises pictures, and how much faster and cheaper it gets.
+\end{kid}
+
+\subsection*{The questions we asked}
+\begin{enumerate}
+  \item \textbf{Accuracy:} if every multiplication in a neural network is a bit wrong, does the
+        network still recognise the pictures? (Answered on a GPU in Phase~1.)
+  \item \textbf{Speed:} on a real multiplierless CPU with the new LOD instruction, how many clock
+        cycles does one picture take with each multiplier? (Answered on a simulated Ibex
+        RISC-V core in Phase~2.)
+  \item \textbf{Energy:} the LOD instruction makes the chip use slightly more power. Do the saved
+        cycles still save energy overall?
+  \item \textbf{Can we do even better?} We also tried writing the code more cleverly (``fusing''),
+        an exact table-of-squares method that needs no multiplier at all, and skipping zeros.
+\end{enumerate}
+
+\subsection*{The answers in one table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+ & \textbf{Accuracy change} & \multicolumn{3}{c}{\textbf{Speed on Ibex vs.\ exact (fused code)}}\\
+\cmidrule(lr){3-5}
+ & (GPU, int8) & MLP & LeNet-5 & Energy vs.\ exact\\
+\midrule
+Exact shift-and-add & reference & 1.00$\times$ & 1.00$\times$ & 1.00\\
+RoBA-Dn1 (needs LOD) & at most $-0.75$ points & 1.91--1.95$\times$ & 2.25--2.36$\times$ & 0.44--0.55\\
+Square table (no LOD) & none (exact) & 3.49--3.59$\times$ & 3.03--3.17$\times$ & 0.28--0.33\\
+Table + raw pixels + zero skip & none (exact) & 5.0--10.5$\times$ & 2.9--3.3$\times$ & ---\\
+\bottomrule
+\end{tabular}
+\caption{The main results. Ranges cover the two datasets (MNIST and Fashion-MNIST). ``Points''
+means percentage points of test accuracy, so 90.95\% $\to$ 90.20\% is $-0.75$ points.}
+\end{table}
+
+\subsection*{How this document is organised}
+\begin{itemize}
+  \item \textbf{Section~\ref{sec:basics}} starts from zero: bits, shifting, how a computer
+        multiplies with only additions, what a CPU and a clock cycle are, and what the LOD
+        instruction does.
+  \item \textbf{Section~\ref{sec:mult}} explains all eight multipliers with the same small example,
+        $13\times 11$, so you can follow every step by hand.
+  \item \textbf{Section~\ref{sec:nn}} explains neural networks, our two networks, and how decimals
+        are turned into whole numbers (quantization).
+  \item \textbf{Section~\ref{sec:gpu}} shows the GPU accuracy results.
+  \item \textbf{Section~\ref{sec:ibex}} explains the Ibex CPU, how we added LOD to it, and how a
+        trained network ends up running on the simulated chip.
+  \item \textbf{Section~\ref{sec:ibexres}} shows every Ibex result: speed, where the time goes,
+        the faster code, the table of squares, zero skipping, and energy.
+  \item \textbf{Section~\ref{sec:wrap}} sums up, lists the limits, and has a glossary.
+  \item \textbf{The appendix} walks through every code file and gives the commands that rerun
+        everything.
+\end{itemize}
+
+Throughout the document you will see coloured boxes:
+\begin{itemize}
+  \item \textbf{Explained simply} (orange): the idea in everyday words.
+  \item \textbf{Worked example} (blue): small numbers you can check with pencil and paper.
+  \item \textbf{Key idea} (green): the one thing to remember from that part.
+  \item \textbf{Be careful} (red): a common misunderstanding, or a limit of what we measured.
+  \item \textbf{Where this is in the code} (grey): which file and function does what was just
+        explained.
+\end{itemize}
+\newpage

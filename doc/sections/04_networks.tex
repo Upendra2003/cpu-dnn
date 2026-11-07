@@ -1,0 +1,252 @@
+\section{Neural networks, from zero}\label{sec:nn}
+
+\subsection{One neuron}
+
+A \textbf{neuron} takes some numbers in, multiplies each by its own \textbf{weight}, adds everything
+up, adds one more number called the \textbf{bias}, and passes the result through a simple rule
+called \textbf{ReLU}: negative numbers become 0, positive numbers stay as they are.
+\[
+  \text{output} = \text{ReLU}\Big(\sum_k x_k\,w_k + b\Big),\qquad \text{ReLU}(v) = \max(v, 0).
+\]
+Each $x_k w_k$ is one multiplication, and adding it to the running sum is one
+\textbf{multiply-accumulate}, or \textbf{MAC}. MACs are almost all the work a network does.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[>=Stealth,node distance=1.0cm,
+  inp/.style={circle,draw,minimum size=0.8cm,fill=gray!8},
+  neu/.style={circle,draw,thick,minimum size=1.3cm,fill=roba!15}]
+  \node[inp] (x1) at (0,1.4) {2};
+  \node[inp] (x2) at (0,0) {0};
+  \node[inp] (x3) at (0,-1.4) {3};
+  \node[neu] (n) at (4,0) {$\Sigma$, ReLU};
+  \draw[->] (x1) -- node[above,sloped,font=\small] {$w=1$} (n);
+  \draw[->] (x2) -- node[above,font=\small] {$w=-2$} (n);
+  \draw[->] (x3) -- node[below,sloped,font=\small] {$w=4$} (n);
+  \node[above=0.1cm of n,font=\small] {bias $b=1$};
+  \draw[->] (n) -- ++(2.2,0) node[right] {15};
+  \node[font=\small,anchor=west] at (7.4,0) {$2\cdot1 + 0\cdot(-2) + 3\cdot 4 + 1 = 15$};
+\end{tikzpicture}
+\caption{One neuron with three inputs. It does three multiplications. If the weights were
+$(-3,1,1)$ and the bias 0, the sum would be $-6+0+3=-3$, and ReLU would output 0.}
+\end{figure}
+
+\begin{kid}
+A neuron is like a judge giving points. Each clue (input) has an importance (weight). The judge adds
+up \emph{clue $\times$ importance} for all clues. If the total is negative, the judge says ``nothing'' (0).
+\end{kid}
+
+\subsection{Layers, scores and the answer}
+
+A \textbf{layer} is many neurons that all look at the same inputs. The outputs of one layer are the
+inputs of the next. The last layer has one neuron per possible answer (10 here: the digits 0--9, or 10
+kinds of clothes). Its outputs are called \textbf{scores} or \textbf{logits}, and the network's answer is
+the class with the \emph{largest} score (``argmax'').
+
+\begin{example}[: from scores to an answer, and the loss]
+Suppose the scores for three classes are $(2,1,0)$. The answer is class 0. During training, scores are
+turned into probabilities with \emph{softmax}: $e^2=7.39$, $e^1=2.72$, $e^0=1$, total $11.1$, so the
+probabilities are $0.665, 0.245, 0.090$. If class 0 is correct, the \textbf{loss} is
+$-\ln 0.665 = 0.41$. If the network were sure (probability 1), the loss would be 0. The loss measures how
+``surprised'' the network is by the right answer. Training changes the weights to make the loss small.
+\end{example}
+
+\textbf{Training} means: show the network many pictures with the right answers, compute the loss, and
+nudge every weight a tiny bit in the direction that lowers the loss (the direction is found by
+\emph{backpropagation}; the nudging rule we use is called \emph{Adam}). One pass over all training
+pictures is an \textbf{epoch}. \textbf{Test accuracy} is the share of \emph{new} pictures (never seen
+in training) that the network gets right.
+
+\subsection{The two datasets}
+
+\begin{itemize}
+  \item \textbf{MNIST}: 70{,}000 hand-written digits (0--9), each $28\times 28$ grey pixels; 60{,}000 for
+        training and 10{,}000 for testing. Easy: good networks get about 99\%.
+  \item \textbf{Fashion-MNIST}: the same size and format, but the 10 classes are T-shirt, trouser,
+        pullover, dress, coat, sandal, shirt, sneaker, bag and ankle boot. Harder (about 90\%), because
+        a shirt and a pullover can look very alike.
+\end{itemize}
+
+Each pixel is a number from 0 (black) to 255 (white). Before the network sees it, it is divided by 255
+and then \textbf{normalised}: $x = (p/255 - \text{mean})/\text{std}$, with mean $0.1307$ and std
+$0.3081$ for MNIST (mean $0.2860$, std $0.3530$ for Fashion-MNIST). Normalising keeps the numbers centred
+around 0, which makes training easier.
+
+\begin{example}[: normalising a pixel]
+For MNIST, a black pixel ($p=0$) becomes $(0-0.1307)/0.3081 = -0.424$ and a white pixel ($p=255$)
+becomes $(1-0.1307)/0.3081 = 2.82$. Note that black is \textbf{not zero} after normalising. This will
+matter a lot in Section~\ref{sec:zeroskip}.
+\end{example}
+
+\subsection{Network 1: the MLP}
+
+An \textbf{MLP} (multi-layer perceptron) is the simplest network: layers in which every neuron sees
+every input (``fully connected'', FC). Ours flattens the $28\times28$ picture into 784 numbers and uses
+three layers:
+\[
+  784 \xrightarrow{\text{FC}} 256 \xrightarrow{\text{ReLU, FC}} 128 \xrightarrow{\text{ReLU, FC}} 10.
+\]
+
+\begin{example}[: how many multiplications does the MLP do?]
+Every neuron multiplies each of its inputs once:
+\[
+  784\times256 + 256\times128 + 128\times10 = 200{,}704 + 32{,}768 + 1{,}280 = \mathbf{234{,}752}
+\]
+multiplications per picture. 85\% of them are in the first layer.
+\end{example}
+
+\subsection{Network 2: LeNet-5, with convolutions}
+
+A \textbf{convolution} layer slides a small grid of weights (a \textbf{filter}, here $5\times5$) over
+the picture. At every position, it multiplies the 25 pixels under the filter by the 25 weights and adds
+them up. The same filter is used everywhere, so it finds the same pattern (an edge, a curve) wherever it
+appears.
+
+\begin{example}[: a $3\times3$ filter that finds vertical edges]
+Filter $\begin{pmatrix}1&0&-1\\1&0&-1\\1&0&-1\end{pmatrix}$.
+On a patch with a bright left part and a dark right part,
+$\begin{pmatrix}9&9&0\\9&9&0\\9&9&0\end{pmatrix}$, the result is $9+9+9-0-0-0 = 27$: an edge.
+On a flat patch $\begin{pmatrix}9&9&9\\9&9&9\\9&9&9\end{pmatrix}$, the result is
+$27-27 = 0$: no edge. Each position costs 9 multiplications.
+\end{example}
+
+\textbf{Max pooling} ($2\times2$) shrinks a picture by keeping the biggest of every 4 neighbours, e.g.
+$\begin{pmatrix}1&3\\2&0\end{pmatrix}\to 3$. It has no multiplications.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[>=Stealth,font=\small,
+  blk/.style={draw,rounded corners=2pt,align=center,minimum height=1.0cm,inner sep=3pt}]
+  \node[blk,fill=gray!10] (in) {picture\\$1\times28\times28$};
+  \node[blk,fill=roba!15,right=0.35cm of in] (c1) {conv1\\6 filters $5\times5$\\$6\times28\times28$};
+  \node[blk,fill=gray!5,right=0.35cm of c1] (p1) {pool\\$6\times14\times14$};
+  \node[blk,fill=roba!15,right=0.35cm of p1] (c2) {conv2\\16 filters $6\times5\times5$\\$16\times10\times10$};
+  \node[blk,fill=gray!5,right=0.35cm of c2] (p2) {pool\\$16\times5\times5$\\$=400$};
+  \node[blk,fill=roba!15,below=0.9cm of p2] (f1) {FC\\$400\to120$};
+  \node[blk,fill=roba!15,left=0.35cm of f1] (f2) {FC\\$120\to84$};
+  \node[blk,fill=roba!15,left=0.35cm of f2] (f3) {FC\\$84\to10$};
+  \node[blk,fill=gray!10,left=0.35cm of f3] (out) {10 scores};
+  \draw[->] (in) -- (c1); \draw[->] (c1) -- (p1); \draw[->] (p1) -- (c2); \draw[->] (c2) -- (p2);
+  \draw[->] (p2) -- (f1); \draw[->] (f1) -- (f2); \draw[->] (f2) -- (f3); \draw[->] (f3) -- (out);
+\end{tikzpicture}
+\caption{LeNet-5 as used here (ReLU after every layer except the last).}
+\end{figure}
+
+\begin{example}[: how many multiplications does LeNet-5 do?]
+\begin{tabular}{@{}ll@{}}
+conv1: & 6 filters $\times$ $28\times28$ positions $\times$ 25 weights $= 117{,}600$\\
+conv2: & 16 filters $\times$ $10\times10$ positions $\times$ $(6\times25=150)$ weights $= 240{,}000$\\
+FC layers: & $400\times120 + 120\times84 + 84\times10 = 48{,}000+10{,}080+840 = 58{,}920$\\
+total: & $\mathbf{416{,}520}$ multiplications per picture.
+\end{tabular}
+\end{example}
+
+\begin{inthecode}{roba/nn.py}
+\code{class MLP} and \code{class LeNet5} define the two networks. Their layers are \code{ALinear} and
+\code{AConv2d}: normal PyTorch layers whose multiplications can be switched to any of our eight
+multipliers and any number format (``domain'').
+\end{inthecode}
+
+\subsection{Turning decimals into whole numbers: quantization}\label{sec:quant}
+
+A trained network's weights are decimals like $0.2$ or $-0.0371$. Our small CPU has no hardware for
+decimals (no floating-point unit), and the approximate multipliers work on whole numbers anyway. So we
+\textbf{quantize}: represent every decimal as a whole number times a fixed \emph{scale}.
+
+For 8 bits (\textbf{int8}), the whole numbers go from $-127$ to $127$:
+\begin{itemize}
+  \item Weights: for each output neuron, $s_w = \max|w| / 127$ and $w_{\text{int}} = \text{round}(w/s_w)$.
+  \item Activations (layer inputs): $s_x = (\text{largest input seen on 5{,}000 training pictures})/127$
+        and $x_{\text{int}} = \text{round}(x/s_x)$.
+  \item Then $\sum x_k w_k \approx s_x s_w \sum x_{\text{int},k}\, w_{\text{int},k}$. The sum is
+        made of whole-number products, which is what the approximate multipliers compute.
+\end{itemize}
+
+\begin{example}[: quantizing one product]
+Say the largest weight of a neuron is $0.5$, so $s_w = 0.5/127 = 0.003937$. A weight $w=0.2$ becomes
+$\text{round}(0.2/0.003937) = \text{round}(50.8) = 51$.
+Say the largest input is $4.0$, so $s_x = 4/127 = 0.0315$. An input $x=1.3$ becomes
+$\text{round}(41.3) = 41$.
+The integer product is $41\times 51 = 2091$, and $2091\times s_x s_w = 2091\times 0.000124 = 0.2593$.
+The true product is $1.3\times0.2 = 0.26$. Very close.
+\end{example}
+
+\begin{careful}
+Simply cutting decimals to integers \emph{without} a scale (``trunc'') destroys the network:
+$\text{trunc}(0.2) = 0$, and nearly every weight is between $-1$ and $1$, so nearly every weight
+becomes 0. The network then always gives the same answer and gets about \textbf{10\%}, the same as
+guessing (Figure~\ref{fig:domains}). We kept this case in the results to show why scaling is needed.
+\end{careful}
+
+We also tried \textbf{int16} ($-32767\dots32767$), which is more precise. For these networks it gives
+the same accuracy as int8, so the Ibex part uses int8.
+
+\subsubsection*{Integer-only rescaling (what the CPU actually does)}
+
+After a layer adds up its integer products into \code{acc}, the next layer needs its input as int8
+again, with its own scale $s_{\text{next}}$. On the GPU we just multiply by
+$s_x s_w/s_{\text{next}}$. On Ibex there are no decimals, so we use \textbf{fixed point}: store the
+decimal scale as a whole number $M$ that is $2^{24}$ times bigger, and shift right by 24 at the end.
+\[
+  M = \text{round}\Big(\frac{s_x s_w}{s_{\text{next}}}\cdot 2^{24}\Big),\quad
+  C = \text{round}\Big(\frac{b}{s_{\text{next}}}\cdot 2^{24}\Big),\quad
+  y = \big(\texttt{acc}\cdot M + C + 2^{23}\big) \gg 24.
+\]
+The $2^{23}$ (half of $2^{24}$) makes the shift \emph{round} instead of cutting off. Then ReLU and a
+clamp to $0\dots127$ give the next layer's int8 input.
+
+\begin{example}[: one rescale, step by step]
+Take $\texttt{acc} = 2091$, a scale $s_xs_w/s_{\text{next}} = 0.0025$ and a bias that is worth $1.5$
+in the next layer's units.
+\begin{itemize}
+  \item $M = \text{round}(0.0025\times 16{,}777{,}216) = \text{round}(41{,}943.04) = 41{,}943$.
+  \item $C = 1.5\times16{,}777{,}216 = 25{,}165{,}824$.
+  \item $2091\times 41{,}943 = 87{,}702{,}813$, plus $C$, plus $2^{23} = 8{,}388{,}608$, gives
+        $121{,}257{,}245$.
+  \item $121{,}257{,}245 \gg 24 = \lfloor 121{,}257{,}245 / 16{,}777{,}216\rfloor = \lfloor 7.23\rfloor = 7$.
+\end{itemize}
+Check with decimals: $2091\times0.0025 + 1.5 = 6.73$, which rounds to 7. The same answer, using only
+whole numbers.
+\end{example}
+
+The $\texttt{acc}\cdot M$ product is done \emph{exactly} (with a shift-and-add loop), but only once per
+neuron: 394 times per picture for the MLP, against 234{,}752 MACs. It is under 1\% of the time.
+
+\begin{inthecode}{hw/run\_ibex.py and hw/sw/dnn.c}
+\code{int\_model()} in \file{hw/run\_ibex.py} turns a trained PyTorch checkpoint into int8 weights
+\code{W}, multipliers \code{M} and offsets \code{C} (with \code{SH = 24}) and writes them into a C header
+\file{model.h}. \code{rescale()} and \code{relu\_q()} in \file{hw/sw/dnn.c} do the formula above on the CPU.
+\end{inthecode}
+
+\subsection{Running approximate multipliers fast on a GPU}\label{sec:factors}
+
+A GPU is very fast at \emph{exact} matrix multiplication (many MACs at once), but it has no instruction
+for ``RoBA-multiply''. Doing 10{,}000 test pictures $\times$ 400{,}000 products one by one in Python
+would take far too long. The trick (in \file{roba/multipliers.py} and \file{roba/matmul.py}): every
+RoBA method can be rewritten as a sum of a few \emph{exact} products of per-number pieces. For Dn1:
+\[
+  \text{Dn1}(x,w) = \Ar(x)\cdot w + \big(x-\Ar(x)\big)\cdot\Br(w),
+\]
+so a whole layer is two ordinary matrix multiplications:
+$\Ar(X)\,W^{\mathsf T} + (X-\Ar(X))\,\Br(W)^{\mathsf T}$.
+
+\begin{example}[: the piece trick on $13\times 11$]
+$\Ar(13)\cdot 11 + (13-8)\cdot\Br(11) = 8\cdot 11 + 5\cdot 8 = 88+40 = 128$, the same as Dn1. A two-step
+method just adds two more pieces. Only Mitchell (because of its ``if carry'' rule) cannot be split,
+so it is computed element by element in chunks. That is why Mitchell's fine-tuning took about 4 times
+longer than the others.
+\end{example}
+
+\subsection{Fine-tuning with the approximate multiplier}
+
+After quantizing, we can also \textbf{fine-tune}: train a few more epochs (3 for MNIST, 5 for
+Fashion-MNIST, with a small learning rate) while the network uses the approximate multiplier. The
+forward pass uses the real approximate products. The backward pass (which computes how to change the
+weights) pretends the multiplier is exact, because the approximate one has no usable slope. This
+pretending is called the \emph{straight-through estimator}.
+
+\begin{kid}
+Fine-tuning is like practising with a slightly wrong calculator. After a while you learn how it is
+wrong and adjust your own numbers so that the final answers come out right.
+\end{kid}
+\newpage

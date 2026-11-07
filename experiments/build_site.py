@@ -51,9 +51,26 @@ def main():
                "mean": float(r["mean_abs_rel_err_pct"]), "max": float(r["max_abs_rel_err_pct"]),
                "bias": float(r["mean_signed_rel_err_pct"]), "frac_exact": float(r["frac_exact"])}
               for r in rows(first / "multiplier_errors.csv")]
+    ibex = {}
+    if (RESULTS / "ibex" / "mult_bench.csv").exists():
+        ibex["mult"] = [{"lod": r["lod"], "multiplier": r["multiplier"], "bits": int(r["bits"]),
+                         "cycles": float(r["cycles_per_mult"])}
+                        for r in rows(RESULTS / "ibex" / "mult_bench.csv")]
+    # dnn: multipliers fused into the MAC loop + the square table; call: one routine call per product;
+    # zeroskip: the zero-skipping / raw-pixel ablation
+    num = lambda v: float(v) if v not in ("", None) else None
+    text = ("dataset", "model", "config", "multiplier", "mac", "input")
+    for key, name in (("dnn", "dnn_summary"), ("call", "dnn_call_summary"), ("zeroskip", "zeroskip_summary")):
+        if (RESULTS / "ibex" / f"{name}.csv").exists():
+            ibex[key] = [{k: (v if k in text else num(v)) for k, v in r.items()}
+                         for r in rows(RESULTS / "ibex" / f"{name}.csv")]
+    if (RESULTS / "ibex" / "profile.csv").exists():
+        ibex["profile"] = [{"dataset": r["dataset"], "model": r["model"], "multiplier": r["multiplier"],
+                            "category": r["category"], "cycles": int(r["cycles"])}
+                           for r in rows(RESULTS / "ibex" / "profile.csv")]
     data = {
-        "errors": errors, "datasets": datasets,
-        "cycles": {b: cost.CYCLES_PER_MULT[b] for b in (8, 16)},
+        "errors": errors, "datasets": datasets, "ibex": ibex,
+        "cycles": {b: cost.CYCLES_PER_MULT[b] for b in (4, 8, 16, 32)},
         "power": {"none": round(cost.POWER_NONE, 4), "lod": round(cost.POWER_NONE_LOD, 4)},
         "macs": MACS, "paper_max": PAPER_MAX, "gpu": "NVIDIA L40",
     }

@@ -25,3 +25,10 @@ checkpoints/
 .vscode/
 .idea/
 .DS_Store
+
+# Ibex: cloned upstream (pinned commit + hw/patches), generated programs and simulation runs
+hw/ibex/
+hw/gen/
+hw/runs/
+hw/sw/build/
+hw/build_sim.log

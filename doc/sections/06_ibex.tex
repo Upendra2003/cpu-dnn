@@ -1,0 +1,231 @@
+\section{Phase 2 setup: the Ibex CPU and the LOD instruction}\label{sec:ibex}
+
+\subsection{What exactly is simulated}
+
+We did not have a physical chip yet (an FPGA board comes later). Instead, we ran the \emph{real hardware
+description} of Ibex in a simulator:
+\begin{itemize}
+  \item \textbf{Ibex} is written in SystemVerilog, a language that describes circuits: wires, registers,
+        adders, and how they are connected.
+  \item \textbf{Verilator} translates that description into a C++ program that computes, clock tick by
+        clock tick, exactly what every wire of the chip would do. This is called a
+        \textbf{cycle-accurate} simulation: the cycle counts are the ones a real chip built from the same
+        description would have.
+  \item The \textbf{Simple System} is lowRISC's minimal test computer around Ibex: the CPU, 1~MB of
+        memory (RAM that answers in one cycle), a timer, and a ``printer'' address. Characters written there
+        appear in a log file (\file{ibex\_simple\_system.log}).
+\end{itemize}
+
+\begin{kid}
+Verilator builds a perfect toy model of the chip inside the computer, so detailed that it moves every
+little part once per tick. It is slow (about 1 million ticks per second, while a real chip does 50
+million or more), but it never lies about how many ticks a program needs.
+\end{kid}
+
+\subsection{The configuration and the tools}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\linewidth}{lX}
+\toprule
+Ibex version & lowRISC Ibex, fixed at commit \code{7b5df75} (the last one before a big rewrite), plus our
+patch \file{hw/patches/0001-ibex-lod-instruction.patch}\\
+CPU configuration & the ``small'' configuration, with the multiplier set to \code{RV32MNone}: the core
+cannot run \code{mul} or \code{div}. Instruction set RV32IC + our LOD\\
+Simulator & Verilator 4.228 (installed with conda, no administrator rights needed), FuseSoC to build\\
+Compiler & lowRISC GCC 10.2 for RISC-V (\code{-march=rv32ic -O3}), bare metal (no operating system)\\
+Memory & 960~kB for program and data plus a 32~kB stack (\file{hw/sw/link\_1mb.ld}); the int8 MLP weights
+alone are 230~kB\\
+Timing & the CPU's own cycle counter (\code{mcycle}), read before and after every picture and every
+layer\\
+Setup scripts & \file{hw/setup.sh} (tools, Ibex, patch), \file{hw/build\_sim.sh} (builds the simulator),
+\file{hw/run\_sim.sh} (runs one program)\\
+\bottomrule
+\end{tabularx}
+\caption{The Ibex setup.}
+\end{table}
+
+\begin{careful}
+The compiler's helper library (libgcc) was built for a core \emph{with} a multiplier, so a few of its
+helpers contain \code{mul}/\code{div} instructions, which would crash our core. Every time a program is
+built, \file{hw/run\_ibex.py} (and \file{hw/sw/Makefile}) disassemble it and stop with an error if any
+\code{mul}, \code{mulh}, \code{div} or \code{rem} instruction is found. The exact multiply in C
+(\code{a * b}) becomes a call to libgcc's \code{\_\_mulsi3}, which is a shift-and-add loop: the
+paper's baseline.
+\end{careful}
+
+\subsection{How LOD was added to Ibex}\label{sec:lodpatch}
+
+A CPU handles every instruction in steps. Ibex has two main stages: \textbf{fetch} (read the instruction
+from memory) and \textbf{decode/execute} (work out what the instruction means, read the registers, compute
+in the ALU, write the result back). To add an instruction you must teach the \textbf{decoder} to recognise it
+and give the \textbf{ALU} (arithmetic logic unit) a circuit that computes it.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[>=Stealth,font=\small,
+  blk/.style={draw,rounded corners=2pt,align=center,minimum height=1.1cm,minimum width=2.2cm,fill=gray!6},
+  new/.style={draw,thick,rounded corners=2pt,align=center,fill=twoit!25,minimum height=0.8cm}]
+  \node[blk] (if) {Fetch\\(IF stage)};
+  \node[blk,right=0.9cm of if] (dec) {Decoder\\\file{ibex\_decoder.sv}};
+  \node[blk,right=0.9cm of dec] (rf) {Register file\\(32 registers)};
+  \node[blk,right=0.9cm of rf,minimum width=3.4cm,minimum height=2.4cm] (alu) {};
+  \node[anchor=north,font=\small] at (alu.north) {ALU \file{ibex\_alu.sv}};
+  \node[new] (lod) at ($(alu.center)+(0,-0.15)$) {LOD: priority\\encoder (new)};
+  \node[new,below=0.35cm of dec,font=\scriptsize] (dnew) {opcode 0x0b $\Rightarrow$ ALU\_LOD (new)};
+  \draw[->] (if) -- (dec); \draw[->] (dec) -- (rf); \draw[->] (rf) -- (alu);
+  \draw[->] (alu.south) -- ++(0,-0.5) -| node[pos=0.25,below] {result written back to \code{rd}} (rf.south);
+\end{tikzpicture}
+\caption{Where the patch touches Ibex. The orange parts are new; the rest of the core is unchanged.}
+\end{figure}
+
+\paragraph{Step 1: choose an encoding.} Every RISC-V instruction is a 32-bit number. The lowest 7 bits
+(the \emph{opcode}) say which kind of instruction it is. RISC-V reserves opcode \code{0001011} (hex
+\code{0x0b}, called \textbf{custom-0}) for exactly this purpose: vendors may put their own instructions
+there, and no standard instruction will ever use it. LOD uses the standard ``R-type'' layout:
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\small\ttfamily,
+  f/.style={draw,minimum height=0.8cm,align=center}]
+  \node[f,minimum width=2.6cm,fill=gray!10] (f7) at (0,0) {0000000};
+  \node[f,minimum width=1.9cm,fill=gray!10,right=0pt of f7] (rs2) {00000};
+  \node[f,minimum width=1.9cm,fill=roba!15,right=0pt of rs2] (rs1) {01011};
+  \node[f,minimum width=1.3cm,fill=gray!10,right=0pt of rs1] (f3) {000};
+  \node[f,minimum width=1.9cm,fill=roba!15,right=0pt of f3] (rd) {01010};
+  \node[f,minimum width=2.6cm,fill=twoit!25,right=0pt of rd] (op) {0001011};
+  \foreach \n/\t/\b in {f7/funct7 = 0/31--25, rs2/rs2 = x0/24--20, rs1/rs1 = a1 (x11)/19--15,
+                        f3/funct3/14--12, rd/rd = a0 (x10)/11--7, op/custom-0/6--0} {
+    \node[above=1pt of \n,font=\scriptsize\rmfamily] {\t};
+    \node[below=1pt of \n,font=\scriptsize\rmfamily,gray] {bits \b};
+  }
+\end{tikzpicture}
+\caption{The 32 bits of \code{lod a0, a1}. As one number: $(11\ll15) + (10\ll7) + \texttt{0x0b} =
+\texttt{0x0005850B}$.}
+\end{figure}
+
+The assembler does not know the name ``lod'', so the C code uses GCC's generic \code{.insn} directive,
+which builds an R-type instruction from its fields:
+\begin{lstlisting}[language=C]
+static inline uint32_t LOD(uint32_t x)
+{
+    uint32_t r;
+    /* R-type, opcode 0x0b (custom-0), funct3 = 0, funct7 = 0, rd = r, rs1 = x, rs2 = x0 */
+    asm volatile(".insn r 0x0b, 0, 0, %0, %1, x0" : "=r"(r) : "r"(x));
+    return r;
+}
+\end{lstlisting}
+
+\paragraph{Step 2: name the opcode and the operation} (\file{rtl/ibex\_pkg.sv}). One line adds
+\code{OPCODE\_CUSTOM0 = 7'h0b} to the list of opcodes, and one adds \code{ALU\_LOD} to the list of ALU
+operations.
+
+\paragraph{Step 3: teach the decoder} (\file{rtl/ibex\_decoder.sv}). When the opcode is custom-0, read
+register \code{rs1}, write the register file, and send the operation \code{ALU\_LOD} to the ALU. Any
+custom-0 instruction with other \code{funct7}/\code{funct3} values is reported as illegal.
+\begin{lstlisting}
+OPCODE_CUSTOM0: begin  // RoBA: LOD rd, rs1 (R-type, funct7 = funct3 = 0, rs2 unused)
+  rf_ren_a_o   = 1'b1;   // read register rs1
+  rf_we        = 1'b1;   // write the result to rd
+  illegal_insn = ({instr[31:25], instr[14:12]} == {7'b000_0000, 3'b000}) ? 1'b0 : 1'b1;
+end
+...
+OPCODE_CUSTOM0: begin  // RoBA: LOD rd, rs1
+  alu_op_a_mux_sel_o = OP_A_REG_A;
+  alu_op_b_mux_sel_o = OP_B_REG_B;
+  alu_operator_o     = ALU_LOD;
+end
+\end{lstlisting}
+
+\paragraph{Step 4: build the circuit in the ALU} (\file{rtl/ibex\_alu.sv}). A priority encoder: go through
+the 32 bits from the lowest to the highest and remember the position of the last 1 you saw. This
+\code{for} loop is not a program loop that runs over time: it describes 32 small comparisons that all
+exist at the same time as wires, so the answer is ready within the same clock cycle.
+\begin{lstlisting}
+logic [4:0] lod_result;
+always_comb begin
+  lod_result = '0;                       // LOD(0) = 0
+  for (int unsigned i = 0; i < 32; i++)
+    if (operand_a_i[i]) lod_result = 5'(i);
+end
+...
+ALU_LOD: result_o = {27'h0, lod_result};  // in the ALU's result multiplexer
+\end{lstlisting}
+
+\paragraph{Step 5: test it.} \file{hw/sw/lod\_test.c} runs the new instruction on 0, on every single bit,
+on every ``all ones below bit $i$'' pattern, and on 20{,}000 random numbers, and compares each answer with a
+slow software loop. All match.
+
+\begin{keyidea}
+The whole change to the CPU is about 40 lines: a new opcode name, two decoder cases and a 32-input
+priority encoder in the ALU. LOD runs in one cycle, like an addition, and the paper measured that it adds
+4.5\% to the power of the multiplierless core.
+\end{keyidea}
+
+\subsection{From a trained network to cycles on the chip}\label{sec:flow}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[>=Stealth,font=\small,node distance=0.45cm,
+  blk/.style={draw,rounded corners=2pt,align=center,minimum height=1.0cm,text width=3.0cm,fill=gray!6},
+  py/.style={blk,fill=roba!12}, hw/.style={blk,fill=twoit!18}]
+  \node[py] (ck) {trained int8 checkpoint\\(GPU, one per multiplier)};
+  \node[py,right=of ck] (exp) {\file{run\_ibex.py}: integer model + images};
+  \node[blk,right=of exp] (h) {\file{model.h}, \file{images.h}\\(C headers)};
+  \node[hw,below=0.7cm of h] (gcc) {GCC \code{-march=rv32ic -O3}\\+ \code{-D} flags};
+  \node[hw,left=of gcc] (elf) {program (ELF), checked for \code{mul}/\code{div}};
+  \node[hw,left=of elf] (sim) {Verilator Ibex\\(48 in parallel)};
+  \node[blk,below=0.7cm of sim] (log) {log: per picture the answer, logit hash, cycles};
+  \node[py,right=of log] (ref) {Python model of the same integer maths};
+  \node[py,right=of ref] (csv) {compare $\Rightarrow$ CSV files, figures, slides};
+  \draw[->] (ck) -- (exp); \draw[->] (exp) -- (h); \draw[->] (h) -- (gcc); \draw[->] (gcc) -- (elf);
+  \draw[->] (elf) -- (sim); \draw[->] (sim) -- (log); \draw[->] (log) -- (ref); \draw[->] (ref) -- (csv);
+  \draw[->,dashed] (exp.south) -- ++(0,-0.35) -| ($(ref.north)+(0.6,0)$);
+\end{tikzpicture}
+\caption{The Phase~2 pipeline. Blue boxes run in Python on the server, orange boxes build and run the
+program for the simulated chip.}
+\label{fig:flow}
+\end{figure}
+
+Step by step, for one dataset, one network and one \emph{configuration} (a multiplier plus options):
+\begin{enumerate}
+  \item \textbf{Load the checkpoint} fine-tuned at int8 with that multiplier (the table-of-squares runs use the
+        exact one).
+  \item \textbf{Build the integer model} (\code{int\_model}): int8 weights, $M$ and $C$ per neuron
+        (Section~\ref{sec:quant}), written as C arrays into \file{model.h}.
+  \item \textbf{Quantize the first 100 test pictures} to int8 and write them, 10 per batch, into
+        \file{images.h}.
+  \item \textbf{Compute the expected answers in Python}: \code{ref\_forward} repeats exactly the integer
+        arithmetic of the C program, bit for bit, and computes a \emph{logit hash} of the 10 scores.
+  \item \textbf{Compile} \file{hw/sw/dnn.c} with flags that pick the multiplier and the method, for example
+        \code{-DMULT\_NZ=roba\_dn1\_nz} (fused RoBA-Dn1) or \code{-DSQTAB} (table of squares).
+  \item \textbf{Simulate}: every batch runs in its own Verilator process, 48 at a time on the server.
+        The program prints one line per picture:\\
+        {\footnotesize\code{IMG,<index>,<label>,<prediction>,<logit hash>,<total cycles>,<cycles per layer>}}.
+  \item \textbf{Compare}: the prediction and the logit hash must equal the Python ones for every picture.
+        The summaries go to \file{results/ibex/*.csv}.
+\end{enumerate}
+
+\begin{example}[: what a logit hash is for]
+The 10 scores of a picture are 64-bit integers, e.g.\ $(-1043, 2210, \dots)$. Comparing all of them for
+10{,}400 pictures would make long log files. Instead, the program mixes the 10 numbers into one 32-bit
+fingerprint (rotate, XOR, repeat). If even one bit of one score differs, the fingerprint is completely
+different. Equal hashes means equal scores.
+\end{example}
+
+\paragraph{The four stages of \file{hw/run\_ibex.py}.}
+\begin{itemize}
+  \item \code{--stage mult}: time one multiplication (10{,}000 of them per routine and operand size).
+  \item \code{--stage dnn}: both networks, both datasets, eight multipliers fused into the loop, plus the
+        table of squares: 36 configurations.
+  \item \code{--stage call}: the same eight multipliers called once per product, as in the paper: 32
+        configurations.
+  \item \code{--stage zeroskip}: exact, Dn1 and the table, each with/without zero skipping and with
+        normalised/raw pixels: 48 configurations.
+\end{itemize}
+In total: 116 configurations $\times$ 100 pictures = 11{,}600 simulated inferences (10{,}400 different
+ones, because 12 zeroskip configurations repeat the dnn ones), about 160 billion simulated clock cycles in
+roughly 70 minutes on 48 CPU cores. A finished simulation is reused only if the compiled program is
+byte-for-byte the same (its SHA-256 hash matches), so a rerun after an unrelated change is quick.
+\newpage

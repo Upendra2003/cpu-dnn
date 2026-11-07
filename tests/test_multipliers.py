@@ -60,6 +60,19 @@ def test_c_matches_reference(operands, libroba, mult):
 
 
 @pytest.mark.parametrize("mult", MULTIPLIERS)
+def test_c_inline_core_matches_reference(operands, libroba, mult):
+    """csrc/roba_core.h, the copy fused into the Ibex MAC loop, gives the same products as roba.c."""
+    a, b = operands
+    want = [reference.mul(x, y, mult) for x, y in zip(a, b)]
+    ca = np.array(a, dtype=np.int32)
+    cb = np.array(b, dtype=np.int32)
+    out = np.zeros(len(a), dtype=np.int32)
+    p = lambda arr: arr.ctypes.data_as(ctypes.POINTER(ctypes.c_int32))
+    libroba.roba_core_batch_s(MULTIPLIERS.index(mult), p(ca), p(cb), p(out), len(a))
+    assert out.tolist() == want
+
+
+@pytest.mark.parametrize("mult", MULTIPLIERS)
 def test_matmul_matches_elementwise(mult):
     g = torch.Generator().manual_seed(1)
     x = torch.randint(-127, 128, (37, 50), generator=g).double()

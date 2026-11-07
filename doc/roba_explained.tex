@@ -1,0 +1,104 @@
+% Approximate multiplication inside a DNN on a multiplierless RISC-V CPU, explained from scratch.
+% Build:  cd doc && python3 make_figures.py && pdflatex roba_explained && pdflatex roba_explained
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs,tabularx,multirow,makecell}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc,fit,shapes.geometric,matrix,decorations.pathreplacing}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black,citecolor=blue!50!black]{hyperref}
+
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\setlength{\emergencystretch}{3em}
+\setlist{itemsep=0.15em,topsep=0.3em}
+\captionsetup{font=small,labelfont=bf}
+\graphicspath{{figures/}}
+
+% ---------------------------------------------------------------- colours used in every figure
+\definecolor{exact}{HTML}{3B4351}
+\definecolor{roba}{HTML}{2A78D6}
+\definecolor{twoit}{HTML}{E5683F}
+\definecolor{table}{HTML}{7B52D6}
+\definecolor{base}{HTML}{9AA3AD}
+
+% ---------------------------------------------------------------- boxes
+\newtcolorbox{kid}{breakable,enhanced,colback=yellow!7,colframe=orange!75!black,
+  title={Explained simply},fonttitle=\bfseries,left=6pt,right=6pt}
+\newtcolorbox{example}[1][]{breakable,enhanced,colback=blue!3,colframe=blue!55!black,
+  title={Worked example#1},fonttitle=\bfseries,left=6pt,right=6pt}
+\newtcolorbox{keyidea}{breakable,enhanced,colback=green!5,colframe=green!45!black,
+  title={Key idea},fonttitle=\bfseries,left=6pt,right=6pt}
+\newtcolorbox{careful}{breakable,enhanced,colback=red!3,colframe=red!55!black,
+  title={Be careful},fonttitle=\bfseries,left=6pt,right=6pt}
+\newtcolorbox{inthecode}[1]{breakable,enhanced,colback=gray!4,colframe=gray!55!black,
+  title={Where this is in the code: #1},fonttitle=\bfseries\small,left=6pt,right=6pt}
+
+% ---------------------------------------------------------------- code listings
+\lstdefinestyle{code}{basicstyle=\ttfamily\footnotesize,columns=fullflexible,keepspaces=true,
+  breaklines=true,frame=single,rulecolor=\color{gray!50},backgroundcolor=\color{gray!4},
+  keywordstyle=\color{blue!60!black}\bfseries,commentstyle=\color{green!40!black}\itshape,
+  stringstyle=\color{red!60!black},showstringspaces=false,xleftmargin=4pt,xrightmargin=4pt,
+  aboveskip=0.6em,belowskip=0.6em}
+\lstset{style=code}
+\lstdefinelanguage{asm}{morekeywords={lb,lbu,lhu,addi,add,sub,srai,srli,slli,sll,xor,andi,
+  beqz,bne,j,neg,lod},morecomment=[l]{\#}}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{#1}}
+\newcommand{\Ar}{A_r}
+\newcommand{\Br}{B_r}
+
+\title{\Huge\bfseries Approximate multiplication inside a neural network,\\
+on a tiny CPU that cannot multiply\\[0.6em]
+\Large\mdseries Everything in this project, explained from zero}
+\author{Course project: AI Accelerator (based on S.~P.~Rajiv and R.~Kedia, DATE 2026)}
+\date{Results of 25 October and 3 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent Small chips inside watches, sensors and toys often have no multiplication circuit,
+because that circuit is big and uses power. Such a chip multiplies in software with a slow
+add-and-shift loop. The paper this project follows adds a single tiny instruction, \emph{LOD}
+(``where is the leading one?''), and uses it for \emph{approximate} multiplication: a product
+that is a little wrong but several times faster. We trained two neural networks (an MLP and
+LeNet-5) on two image datasets (MNIST digits and Fashion-MNIST clothes), ran every
+multiplication through eight multipliers (one exact, seven approximate), and then ran the same
+integer networks on a cycle-accurate simulation of the lowRISC Ibex RISC-V core with our LOD
+instruction added. Accuracy stays within \textbf{0.75 percentage points} of exact for every
+multiplier. On Ibex, RoBA-Dn1 runs a whole image \textbf{1.9--2.4$\times$ faster} than an equally
+optimised exact multiply, at roughly \textbf{half the energy}. An exact \emph{table of squares}
+is faster still (\textbf{3.0--3.6$\times$}), and feeding the network raw pixels while skipping the
+zeros gets the MNIST MLP to \textbf{10.5$\times$}. All 10{,}400 simulated inferences give exactly
+the same output, bit for bit, as a Python model of the same integer arithmetic.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\input{sections/01_story}
+\input{sections/02_basics}
+\input{sections/03_multipliers}
+\input{sections/04_networks}
+\input{sections/05_gpu}
+\input{sections/06_ibex}
+\input{sections/07_ibex_results}
+\input{sections/08_wrapup}
+\appendix
+\input{sections/09_appendix}
+
+\end{document}

@@ -1,0 +1,265 @@
+\section{Approximate multiplication: the eight multipliers}\label{sec:mult}
+
+\subsection{The trick behind RoBA}
+
+\textbf{RoBA} stands for \emph{Rounding-Based Approximate} multiplication. The idea:
+\begin{enumerate}
+  \item Round each number to a power of two: $a \to \Ar = 2^{p_a}$, $b \to \Br = 2^{p_b}$.
+        (LOD gives $p_a$ and $p_b$ in one cycle each.)
+  \item Multiplying by a power of two is a shift, so $\Ar\cdot b$, $a\cdot\Br$ and $\Ar\cdot\Br$ are all
+        cheap.
+  \item Use them to build an answer close to $a\cdot b$.
+\end{enumerate}
+
+Why is that possible? Write $a = \Ar + (a-\Ar)$ and $b = \Br + (b-\Br)$ and multiply out:
+\[
+  a\cdot b \;=\; \underbrace{\Ar\, b + a\,\Br - \Ar\Br}_{\text{all shifts: cheap}}
+  \;+\; \underbrace{(a-\Ar)(b-\Br)}_{\text{the hard leftover}}.
+\]
+RoBA keeps the cheap part and \emph{drops the leftover}. The leftover is the product of two
+small ``remainders'', so it is usually small compared with $a\cdot b$.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.42]
+  % a = 13 (x), b = 11 (y); Ar = Br = 8
+  \fill[roba!25] (0,0) rectangle (8,8);
+  \fill[roba!12] (8,0) rectangle (13,8);
+  \fill[roba!12] (0,8) rectangle (8,11);
+  \fill[twoit!45] (8,8) rectangle (13,11);
+  \draw[thick] (0,0) rectangle (13,11);
+  \draw (8,0) -- (8,11); \draw (0,8) -- (13,8);
+  \node at (4,4) {\large $8\times8=64$};
+  \node at (10.5,4) {$5\times 8$};
+  \node at (4,9.5) {$8\times 3$};
+  \node[font=\small] at (10.5,9.5) {$5\times3=15$};
+  \draw[decorate,decoration={brace,amplitude=5pt,mirror}] (0,-0.3) -- (8,-0.3) node[midway,below=5pt] {$\Ar=8$};
+  \draw[decorate,decoration={brace,amplitude=5pt,mirror}] (8,-0.3) -- (13,-0.3) node[midway,below=5pt] {$a-\Ar=5$};
+  \draw[decorate,decoration={brace,amplitude=5pt}] (-0.3,0) -- (-0.3,8) node[midway,left=5pt] {$\Br=8$};
+  \draw[decorate,decoration={brace,amplitude=5pt}] (-0.3,8) -- (-0.3,11) node[midway,left=5pt] {$3$};
+  \node[anchor=west,text width=6.3cm,font=\small] at (14.5,5.5) {%
+    The whole rectangle is $13\times 11 = 143$.\\[3pt]
+    RoBA-Dn1 keeps the three blue pieces:\\ $64 + 40 + 24 = 128$.\\[3pt]
+    It throws away the orange corner, $5\times 3 = 15$.\\[3pt]
+    So the answer is $143 - 15 = 128$, which is 10.5\% too small.};
+\end{tikzpicture}
+\caption{A product is the area of a rectangle. RoBA cuts the rectangle where the powers of two
+are and drops the small corner piece.}
+\label{fig:rect}
+\end{figure}
+
+\begin{example}[: RoBA-Dn1 on $13\times 11$]
+LOD(13) = 3 and LOD(11) = 3, so $\Ar = \Br = 8$.
+\[
+  \Ar b + a\Br - \Ar\Br = (11\ll 3) + (13\ll 3) - (1\ll 6) = 88 + 104 - 64 = 128.
+\]
+Only three shifts, one addition and one subtraction. The true answer is 143.
+\end{example}
+
+\subsection{Rounding down or to the nearest power of two}
+
+There are two ways to round to a power of two:
+\begin{itemize}
+  \item \textbf{Down (``Dn'')}: always the power of two just below (or equal): 13 $\to$ 8,
+        11 $\to$ 8. That is exactly \code{1 << LOD(x)}.
+  \item \textbf{Up-or-down (``UpDn'')}: the \emph{nearest} power of two. The rule is very cheap: look
+        at the bit right after the leading one. If it is 1, the number is at least $1.5\times$ its
+        lower power of two, so round up.
+        $13 = \texttt{1\underline{1}01}$: the next bit is 1, so $13\to 16$.
+        $11 = \texttt{1\underline{0}11}$: the next bit is 0, so $11\to 8$.
+\end{itemize}
+
+\begin{example}[: RoBA-UpDn on $13\times 11$]
+$\Ar = 16$ ($p_a=4$), $\Br = 8$ ($p_b=3$).
+\[
+  (11\ll 4) + (13\ll 3) - (1\ll 7) = 176 + 104 - 128 = 152.
+\]
+That is 6.3\% \emph{too big}. Here the dropped corner is $(13-16)(11-8) = (-3)(3) = -9$, a
+\emph{negative} piece, so dropping it makes the answer too large: $143-(-9) = 152$.
+\end{example}
+
+\begin{keyidea}
+Rounding \emph{down} always gives an answer that is too small (the dropped corner is never
+negative). Rounding to the \emph{nearest} power of two is sometimes too big and sometimes too small,
+so on average the errors cancel out. This difference matters for neural networks
+(Section~\ref{sec:whyok}).
+\end{keyidea}
+
+\subsection{Two-step versions: also estimate the corner}
+
+The dropped corner $(a-\Ar)(b-\Br)$ is itself a multiplication of two (smaller) numbers. So we can
+estimate it with RoBA \emph{again}, and add it back. That gives three more methods:
+
+\begin{itemize}
+  \item \textbf{RoBA-Dn2}: round down, then estimate the corner with Dn1.
+  \item \textbf{RoBA-UpDnDn}: round to nearest, then estimate the (signed) corner with Dn1.
+  \item \textbf{RoBA-(UpDn)2}: round to nearest, then estimate the corner with UpDn.
+\end{itemize}
+
+\begin{example}[: the two-step versions on $13\times 11$]
+\textbf{Dn2.} First step as Dn1: 128. The corner is $5\times 3$. Dn1 on $5\times 3$:
+LOD(5)=2, LOD(3)=1, so $(3\ll 2) + (5\ll 1) - (1\ll 3) = 12+10-8 = 14$ (true: 15).
+Answer: $128 + 14 = \mathbf{142}$ ($-0.7\%$).
+
+\textbf{UpDnDn.} First step as UpDn: 152. The corner is $(-3)\times 3$: the signs differ, so the
+corner is negative. Dn1 on $3\times 3$: $(3\ll1)+(3\ll1)-(1\ll2) = 6+6-4 = 8$ (true: 9).
+Answer: $152 - 8 = \mathbf{144}$ ($+0.7\%$).
+
+\textbf{(UpDn)2.} Same, but UpDn on $3\times 3$: $3=\texttt{11}$, the next bit is 1, so it rounds up
+to 4: $(3\ll2)+(3\ll2)-(1\ll4) = 12+12-16 = 8$. Answer: $152-8 = \mathbf{144}$.
+\end{example}
+
+The two-step versions are far more accurate, but each runs RoBA twice plus extra sign
+handling, so they cost more cycles.
+
+\subsection{The two older methods we compare against}
+
+\paragraph{Mitchell (1962).} Mitchell's method works with logarithms: $\log_2(a\cdot b) =
+\log_2 a + \log_2 b$, and it approximates $\log_2 a \approx p_a + (a-\Ar)/\Ar$. Turned into
+integer steps (as in our code):
+\[
+  m = (a-\Ar)\Br + (b-\Br)\Ar,\quad p = \Ar\Br,\qquad
+  \text{result} = \begin{cases} p + m & \text{if } m < p\\ 2m & \text{otherwise (a ``carry'')}.\end{cases}
+\]
+When $m<p$ this is exactly the same as RoBA-Dn1 ($p+m = \Ar b + a\Br - \Ar\Br$). The two differ only
+in the carry case.
+\begin{example}[: Mitchell]
+$13\times 11$: $m = 5\cdot 8 + 3\cdot 8 = 64$, $p=64$, so $m\ge p$ and the result is $2m=128$, the same
+as Dn1. $7\times 7$: $\Ar=\Br=4$, $m=3\cdot4+3\cdot4=24$, $p=16$, so the result is $2\cdot 24 = 48$
+(true: 49). Dn1 gives $16+24=40$ here.
+\end{example}
+(The paper's ``Mitchell'', following Babi\'c et al., has no carry and gives exactly the same
+products as RoBA-Dn1. Ours is the classic version with the carry.)
+
+\paragraph{DRUM6.} DRUM keeps only the 6 most important bits of each number, starting at the
+leading one, and forces the lowest kept bit to 1 (this makes the error unbiased on average). Then
+it multiplies the two small 6-bit numbers \emph{exactly} and shifts the result back. Numbers below
+64 are kept exact.
+\begin{example}[: DRUM6 on $200\times 150$]
+$200 = \texttt{110010|00}$: keep \texttt{110010}, set the last bit: \texttt{110011} $=51$; 2 bits
+were cut, so it stands for $51\times 4 = 204$.
+$150 = \texttt{100101|10}$: keep \texttt{100101} $=37$ (already ends in 1); it stands for
+$37\times 4 = 148$. Then $51\times 37 = 1887$ (a small exact multiply), shifted back by $2+2=4$:
+$1887\times 16 = 30192$. True: 30000, so $+0.64\%$.
+\end{example}
+DRUM6 is accurate, but on a multiplierless CPU the $6\times6$ ``small exact multiply'' is still a
+shift-and-add loop, which makes it slow (we will see it is even slower than exact).
+
+\subsection{All eight on two examples}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+ & \multicolumn{2}{c}{$13\times 11 = 143$} & \multicolumn{2}{c}{$200\times 150 = 30000$}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Multiplier & result & error & result & error\\
+\midrule
+Exact & 143 & 0 & 30000 & 0\\
+Mitchell & 128 & $-10.5\%$ & 28416 & $-5.28\%$\\
+DRUM6 & 143 & 0 (small numbers stay exact) & 30192 & $+0.64\%$\\
+RoBA-Dn1 & 128 & $-10.5\%$ & 28416 & $-5.28\%$\\
+RoBA-UpDn & 152 & $+6.3\%$ & 31232 & $+4.11\%$\\
+RoBA-Dn2 & 142 & $-0.7\%$ & 29952 & $-0.16\%$\\
+RoBA-UpDnDn & 144 & $+0.7\%$ & 30144 & $+0.48\%$\\
+RoBA-(UpDn)2 & 144 & $+0.7\%$ & 29952 & $-0.16\%$\\
+\bottomrule
+\end{tabular}
+\caption{Every value in this table was checked with the project's reference code
+(\file{roba/reference.py}).}
+\end{table}
+
+\paragraph{Negative numbers.} All methods work on the sizes (absolute values) of the numbers, and the
+sign is fixed at the end: $(-13)\times 11 \to 13\times 11 \approx 128 \to -128$. Two negatives give a
+positive. This is called the \emph{sign-magnitude} approach.
+
+\subsection{How wrong are they, on average?}\label{sec:errors}
+
+We multiplied 1 million random pairs of 8-bit numbers with each method and measured the error
+relative to the true product (\file{experiments/run.py}, stage \code{errors};
+\file{results/*/multiplier\_errors.csv}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{errors}
+\caption{Left: the average and the worst error of each multiplier (8-bit operands). Right: the
+average \emph{signed} error. Rounding down (Mitchell, Dn1, Dn2) is always too small, so the bar points
+left. UpDn, UpDnDn and (UpDn)2 are centred on zero.}
+\label{fig:errors}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Multiplier & average error & worst error & average signed error & exactly right\\
+\midrule
+Mitchell & 3.79\% & 11.1\% & $-3.79\%$ & 6.2\%\\
+DRUM6 & 1.30\% & 6.3\% & $+0.57\%$ & 14.0\%\\
+RoBA-Dn1 & 8.92\% & 24.8\% & $-8.92\%$ & 6.2\%\\
+RoBA-UpDn & 2.86\% & 11.1\% & $-0.01\%$ & 6.2\%\\
+RoBA-Dn2 & 0.83\% & 6.1\% & $-0.83\%$ & 26.2\%\\
+RoBA-UpDnDn & 0.24\% & 2.6\% & $-0.002\%$ & 39.7\%\\
+RoBA-(UpDn)2 & 0.07\% & 0.8\% & $-0.0002\%$ & 39.7\%\\
+\bottomrule
+\end{tabular}
+\caption{Error statistics over 1 million random pairs of 8-bit numbers. ``Exactly right'' is the
+share of pairs where the method gives the exact product (for example when a number is already a
+power of two).}
+\end{table}
+
+\begin{example}[: the worst case of Dn1]
+Dn1 is worst when both numbers are just below the next power of two, so the dropped corner is as
+big as possible. $255\times 255 = 65025$: $\Ar=\Br=128$, the corner is $127\times127 = 16129$, and
+Dn1 gives $65025-16129 = 48896$, which is $24.8\%$ too small.
+\end{example}
+
+The picture below shows the error for every pair $a,b$ from 1 to 63. Each little square is one
+multiplication; red means too small, blue means too big, white means (almost) exact. The thin lines
+are at the powers of two, where the pattern restarts.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{error_map}
+\caption{Error of $a\times b$ for $a,b = 1\dots63$. Dn1 is never too big (only red); its error grows
+towards the top-right of each square between powers of two. UpDn has red and blue, which cancel.
+(UpDn)2 is almost white everywhere.}
+\end{figure}
+
+\subsection{How the multipliers look in code}
+
+All eight exist three times, and tests check that the three agree on every product:
+\begin{itemize}
+  \item in PyTorch, for fast GPU experiments (\file{roba/multipliers.py});
+  \item in plain Python bit operations, as an independent reference (\file{roba/reference.py});
+  \item in C, for the Ibex CPU (\file{csrc/roba.c}, and the inline copy \file{csrc/roba\_core.h}).
+\end{itemize}
+
+Here is the C version of the two one-step RoBA methods (from \file{csrc/roba\_core.h}). Compare it
+with the formulas above:
+
+\begin{lstlisting}[language=C]
+/* Leading-one position, rounded up when the next bit is set (nearest power of two). */
+static inline uint32_t pos_updn(uint32_t x)
+{
+    uint32_t p = LOD(x);                       /* one LOD instruction            */
+    if (p > 0 && ((x >> (p - 1)) & 1u))        /* bit after the leading one = 1? */
+        p++;                                   /*   then round up                */
+    return p;
+}
+
+/* Ar*b + a*Br - Ar*Br, all as shifts: (b << pa) + (a << pb) - (1 << (pa+pb)) */
+static inline uint32_t roba1(uint32_t a, uint32_t b, uint32_t pa, uint32_t pb)
+{
+    return (b << pa) + (a << pb) - ((1u << pa) << pb);
+}
+
+static inline uint32_t roba_dn1_nz(uint32_t a, uint32_t b)  { return roba1(a, b, LOD(a), LOD(b)); }
+static inline uint32_t roba_updn_nz(uint32_t a, uint32_t b) { return roba1(a, b, pos_updn(a), pos_updn(b)); }
+\end{lstlisting}
+
+The suffix \code{\_nz} means ``non-zero'': the caller has already checked that neither number is 0
+(LOD of 0 has no meaningful answer, and anything times 0 is 0 anyway).
+\newpage

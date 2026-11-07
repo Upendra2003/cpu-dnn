@@ -1,0 +1,114 @@
+\section{Phase 1 results: accuracy on the GPU}\label{sec:gpu}
+
+\subsection{What was run}
+
+\file{experiments/run.py} runs four stages for each dataset on an NVIDIA L40 GPU:
+\begin{enumerate}
+  \item \textbf{errors}: the multiplier error statistics of Section~\ref{sec:errors}.
+  \item \textbf{train}: normal float32 training of both networks (MNIST: 15 epochs, Fashion-MNIST:
+        30 epochs; Adam, learning rate $10^{-3}$ with cosine decay, batch 128, seed 0).
+  \item \textbf{eval}: every trained network in four number formats (float, trunc, int8, int16) times eight
+        multipliers, on all 10{,}000 test pictures.
+  \item \textbf{finetune}: for int8 and int16, a few more epochs with each multiplier, then evaluate again.
+\end{enumerate}
+The results are in \file{results/mnist/} and \file{results/fashion/} (\file{eval\_*.csv},
+\file{finetune\_*.csv}, \file{multiplier\_errors.csv}).
+
+\subsection{Number formats: scaling is essential}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{domains}
+\caption{Test accuracy with the exact multiplier in four number formats. Cutting decimals to
+integers without a scale (``cut to int'') collapses to 10\%, which is guessing. int8 and int16 are as good
+as float32.}
+\label{fig:domains}
+\end{figure}
+
+\subsection{Accuracy with every multiplier}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{gpu_acc}
+\caption{Test accuracy (10{,}000 test pictures) for int8 networks with each multiplier, before (solid) and
+after (light) fine-tuning. The dashed line is the original float32 network. \textbf{Look at the
+vertical axis}: each panel spans only about one percentage point, so the bars look more different than they
+are.}
+\label{fig:gpuacc}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lcccccccc}
+\toprule
+ & \multicolumn{2}{c}{MNIST MLP} & \multicolumn{2}{c}{MNIST LeNet-5} & \multicolumn{2}{c}{Fashion MLP} &
+   \multicolumn{2}{c}{Fashion LeNet-5}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+ & int8 & +FT & int8 & +FT & int8 & +FT & int8 & +FT\\
+\midrule
+float32 & \multicolumn{2}{c}{98.42} & \multicolumn{2}{c}{99.20} & \multicolumn{2}{c}{89.79} & \multicolumn{2}{c}{90.99}\\
+\midrule
+Exact & 98.43 & 98.43 & 99.18 & 99.21 & 89.82 & 89.77 & 90.95 & 90.88\\
+Mitchell & 98.46 & 98.46 & 99.12 & 99.20 & 89.75 & 89.82 & 90.82 & 91.15\\
+DRUM6 & 98.43 & 98.44 & 99.17 & 99.20 & 89.69 & 89.77 & 90.92 & 90.97\\
+RoBA-Dn1 & 98.42 & 98.44 & 99.19 & 99.18 & 89.69 & 89.66 & \textbf{90.20} & 90.77\\
+RoBA-UpDn & 98.44 & 98.42 & 99.20 & 99.22 & 89.89 & 89.74 & 90.72 & 90.84\\
+RoBA-Dn2 & 98.44 & 98.51 & 99.20 & 99.21 & 89.74 & 89.71 & 90.91 & 91.01\\
+RoBA-UpDnDn & 98.43 & 98.44 & 99.19 & 99.18 & 89.83 & 89.75 & 91.07 & 90.95\\
+RoBA-(UpDn)2 & 98.44 & 98.47 & 99.21 & 99.19 & 89.77 & 89.73 & 90.98 & 90.97\\
+\bottomrule
+\end{tabular}
+\caption{Test accuracy in \% (int8). ``+FT'' = after fine-tuning with that multiplier. The biggest
+drop anywhere is RoBA-Dn1 on Fashion-MNIST LeNet-5: $90.95\to90.20$, i.e.\ $-0.75$ points, and
+fine-tuning brings it back to 90.77.}
+\label{tab:gpuacc}
+\end{table}
+
+\begin{careful}
+We trained with one random seed. Training the same network twice with different seeds usually changes
+accuracy by about 0.1 points, so differences smaller than that (most of this table) are noise, not a real
+effect. ``Mitchell + FT is the best on Fashion LeNet-5'' is \emph{not} a real finding.
+\end{careful}
+
+\subsection{Why can a 9\%-wrong multiplier keep 99\% of the accuracy?}\label{sec:whyok}
+
+RoBA-Dn1 is on average 8.9\% too small on every single multiplication, yet the networks barely notice.
+Three reasons:
+
+\paragraph{1. A consistent ``too small'' is like turning the volume down.} If every product in a sum is
+about 9\% too small, the whole sum is about 9\% too small. The \emph{largest} score stays the largest.
+\begin{example}[: shrinking all scores]
+Scores $(5.0, 4.0, 1.0)$, answer: class 0. Multiply all by $0.91$: $(4.55, 3.64, 0.91)$, answer: still
+class 0. It only goes wrong when two scores are nearly tied \emph{and} the bias (which is not shrunk)
+tips the balance, which is rare. This is also why the loss of Dn1 is \emph{lower} than exact on Fashion
+(0.376 vs 0.434 for the MLP): smaller scores make the network less over-confident when it is wrong.
+\end{example}
+
+\paragraph{2. Random errors cancel in a long sum.} A neuron in the MLP's first layer adds 784 products.
+Errors that are sometimes positive and sometimes negative (UpDn, DRUM6) largely cancel out.
+\begin{example}[: errors cancelling]
+Four products whose true value is 100 each come out as $106, 96, 103, 95$ (errors $+6\%, -4\%,
++3\%, -5\%$). Their sum is $106+96+103+95 = 400$: exactly the true sum. Each one is up to 6\% wrong,
+but together they are 0\% wrong. In general, the
+relative error of a sum of $n$ independent errors shrinks about like $1/\sqrt{n}$: for $n=784$, about 28
+times smaller.
+\end{example}
+
+\paragraph{3. Networks are robust by nature.} They are trained to recognise a shoe whether it is
+slightly brighter, shifted or noisy. A small error in the arithmetic looks to them like a bit of noise.
+
+\begin{keyidea}
+Accuracy is \textbf{not} the problem: every multiplier stays within 0.75 points of exact, and most within
+0.2 points. So the choice of multiplier should be made on \textbf{speed and energy}, which is what Phase~2
+measures on the real CPU.
+\end{keyidea}
+
+\subsection{What the old cost estimate said}
+
+Before measuring on Ibex, \file{roba/cost.py} estimated cycles by reading the cycles per multiply from
+Fig.~4 of the paper (e.g.\ 8-bit: exact 44, Dn1 19) and multiplying by the number of MACs. Those
+estimates are kept in the CSV files (\code{mult\_cycles}, \code{energy\_rel}) but are replaced by the
+real measurements below. The measurements turned out higher than the estimates, because a real program
+also spends time loading numbers, handling signs and looping, not only multiplying.
+\newpage

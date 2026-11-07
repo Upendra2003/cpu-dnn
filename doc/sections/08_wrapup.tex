@@ -1,0 +1,136 @@
+\section{Putting it all together}\label{sec:wrap}
+
+\subsection{The story of the numbers}
+
+Follow one Fashion-MNIST MLP picture through the whole project:
+
+\begin{center}
+\small
+\begin{tabular}{lrrl}
+\toprule
+Version & million cycles & vs.\ start & what changed\\
+\midrule
+Exact, one call per multiply (paper style) & 16.04 & 1.00$\times$ & starting point\\
+RoBA-Dn1, one call per multiply & 8.75 & 1.83$\times$ & LOD + approximate multiply\\
+Exact, fused loop & 13.49 & 1.19$\times$ & better loop, exact multiply\\
+RoBA-Dn1, fused loop & 7.05 & 2.28$\times$ & better loop + RoBA\\
+Table of squares & 3.87 & 4.14$\times$ & no multiply at all, exact\\
+Table of squares, raw pixels + skip & 2.70 & 5.94$\times$ & also skip the black background\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+And the accuracy of all of them on the full test set stays between 89.5\% and 89.8\%.
+
+\subsection{What we learned}
+
+\begin{enumerate}
+  \item \textbf{Approximate multiplication does not hurt these networks.} Every one of the seven
+        approximate multipliers stays within 0.75 points of exact at int8, most within 0.2 points, even
+        RoBA-Dn1, which is 9\% too small on average. Fine-tuning recovers most of the rest.
+  \item \textbf{The LOD instruction is essential.} With it, Dn1 costs 28 cycles per multiply at any size;
+        without it, 91 or more, which is slower than exact.
+  \item \textbf{Faster multiplies expose the rest of the loop.} Per multiply Dn1 is 3$\times$ faster, per
+        picture only 1.8$\times$, because the wrapper and the loop then dominate (Amdahl's law). Fusing the
+        multiply into the loop raises Dn1's advantage to 1.9--2.4$\times$.
+  \item \textbf{More accurate is not always better on this CPU.} The two-step RoBA methods and DRUM6 are
+        slower than exact for 8-bit numbers and use more energy. Only the one-step methods (Dn1, UpDn,
+        Mitchell) and Dn2 pay off.
+  \item \textbf{For int8, an exact table of squares wins.} It needs 1~KB and no new instruction, gives exact
+        products, and is 3.0--3.6$\times$ faster than exact (1.3--1.8$\times$ faster than Dn1).
+  \item \textbf{Zeros matter.} Feeding raw pixels (so the background is 0) and skipping zeros brings the MNIST
+        MLP to 10.5$\times$.
+  \item \textbf{Energy follows cycles.} LOD adds 4.5\% power, so Dn1 at about 2$\times$ the speed uses roughly
+        half the energy, and the table about 0.3.
+\end{enumerate}
+
+\subsection{Limits: what these results do not show}
+
+\begin{itemize}
+  \item \textbf{One training seed} per dataset: accuracy differences below about 0.1 points are noise.
+  \item \textbf{100 test pictures} on Ibex per configuration (the full 10{,}000 are covered by the bit-exact
+        Python model). The cycle counts vary very little from picture to picture, so 100 is enough for them.
+  \item \textbf{Energy is estimated}, not measured: cycles times relative power from the paper.
+  \item \textbf{One-cycle memory}: the Simple System's RAM is ideal. On a chip with flash wait states or a cache,
+        the table and the weight loads would cost more.
+  \item \textbf{int8 only on Ibex}: for int16 the table of squares no longer fits, and the sums need 64-bit
+        accumulation, which was left out.
+  \item \textbf{We did not measure a core with a hardware multiplier}; it would need fewer cycles, at more area
+        and power.
+  \item Our \textbf{Mitchell} is the classic one with the carry; the paper's Mitchell gives the same products as
+        RoBA-Dn1.
+\end{itemize}
+
+\subsection{What comes next}
+\begin{enumerate}
+  \item 3--5 training seeds per dataset, reported as mean $\pm$ standard deviation.
+  \item A harder dataset (CIFAR-10) with a small CNN.
+  \item Choosing the multiplier per layer: cheap where the network tolerates errors, accurate where it is
+        sensitive.
+  \item int16 networks on Ibex, where the table no longer fits and RoBA keeps its fixed cost.
+  \item The FPGA: the same Ibex + LOD design on a real board, measuring cycles and power on silicon.
+\end{enumerate}
+
+\subsection{Glossary}
+
+\begin{description}[style=nextline,leftmargin=1.2cm,font=\normalfont\bfseries]
+  \item[Accumulator (\code{acc})] The running sum inside a neuron while its products are added up.
+  \item[Activation] A value flowing between layers (the input of a neuron).
+  \item[ALU] Arithmetic logic unit: the part of the CPU that adds, shifts, compares, and now also does LOD.
+  \item[Amdahl's law] Speeding up one part of a job by $k$ only helps in proportion to that part's share of
+        the time.
+  \item[Approximate multiplier] A method that computes a product that is close to, but not always exactly,
+        the true product, in exchange for speed or energy.
+  \item[Bare metal] A program that runs directly on the CPU, with no operating system.
+  \item[Bias] The extra number a neuron adds after its sum of products.
+  \item[Bit, binary] A 0/1 digit; numbers written with place values 1, 2, 4, 8, \dots
+  \item[Checkpoint] A saved file with all the weights of a trained network.
+  \item[Clock cycle] One tick of the CPU's clock; the unit we measure speed in.
+  \item[Convolution] A layer that slides a small filter of weights over a picture.
+  \item[Custom-0] An opcode RISC-V reserves for non-standard instructions; LOD lives there.
+  \item[Cycle-accurate simulation] A simulation that reproduces the chip tick by tick, so its cycle counts
+        are exact.
+  \item[Decoder] The part of the CPU that works out what an instruction means.
+  \item[DRUM6] An approximate multiplier that keeps the top 6 bits of each number and multiplies those
+        exactly.
+  \item[Epoch] One pass over all training pictures.
+  \item[Fine-tuning] A few more training epochs, here with the approximate multiplier switched on.
+  \item[Fixed point] Representing a decimal as an integer with an agreed scale (here $2^{24}$).
+  \item[FPGA] A chip whose circuit can be reprogrammed; used to try out CPU designs for real.
+  \item[Fused MAC] Writing the multiplier directly inside the multiply-accumulate loop instead of calling it.
+  \item[Ibex] A small open-source RISC-V CPU from lowRISC.
+  \item[int8 / int16] Whole numbers stored in 8 or 16 bits ($\pm127$ or $\pm32767$ here).
+  \item[LeNet-5] A small convolutional network: two convolution layers and three fully connected layers.
+  \item[LOD] Leading-one detector: the instruction that returns the position of a number's highest 1 bit.
+  \item[Logit / score] A raw output value of the last layer; the largest one is the answer.
+  \item[Logit hash] A 32-bit fingerprint of the 10 scores, used to check them quickly.
+  \item[Loss] A number that measures how wrong the network is; training makes it small.
+  \item[M extension] The optional RISC-V instructions for multiplication and division; our core does not have
+        them.
+  \item[MAC] Multiply-accumulate: one product added to a running sum.
+  \item[Mitchell] A classic approximate multiplier based on logarithms.
+  \item[MLP] Multi-layer perceptron: a network of fully connected layers.
+  \item[MNIST, Fashion-MNIST] Datasets of $28\times28$ grey pictures: hand-written digits and clothes.
+  \item[Normalisation] Shifting and scaling the pixels to be centred around 0 ($(x-\text{mean})/\text{std}$).
+  \item[Polarization identity] $xw = ((x+w)^2 - x^2 - w^2)/2$: a product from three squares.
+  \item[Priority encoder] A circuit that outputs the position of the highest 1 among its inputs.
+  \item[Quantization] Turning decimal numbers into integers with a scale.
+  \item[Raw pixels] Feeding the picture without normalisation (the normalisation is folded into the first
+        layer), so black is 0.
+  \item[ReLU] The rule ``negative $\to$ 0, positive stays''.
+  \item[Register] One of the CPU's 32 small storage slots for numbers.
+  \item[RISC-V] An open instruction set; RV32I is its basic 32-bit integer version, C adds short
+        instructions.
+  \item[RoBA] Rounding-based approximate multiplication: round to powers of two, keep the cheap parts.
+        Dn = round down, UpDn = round to the nearest, the ``2'' versions repeat it on the leftover.
+  \item[Shift] Moving all bits left (multiply by 2) or right (divide by 2).
+  \item[Shift-and-add] The exact way to multiply without a multiplier: add shifted copies.
+  \item[Sign-magnitude] Storing a number as a sign bit plus its size.
+  \item[Square table] A 509-entry table of $v^2$ used by the polarization identity.
+  \item[Straight-through estimator] Training trick: use the approximate result going forward, pretend it
+        was exact going backward.
+  \item[Test accuracy] Share of unseen test pictures the network gets right.
+  \item[Verilator] A tool that turns a hardware description into a fast C++ cycle-accurate simulator.
+  \item[Zero skipping] Not doing the work for inputs that are 0.
+\end{description}
+\newpage

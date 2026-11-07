@@ -1,0 +1,504 @@
+\section{Phase 2 results: the networks on Ibex}\label{sec:ibexres}
+
+\subsection{One multiplication at a time}\label{sec:multbench}
+
+First, the simplest measurement (\file{hw/sw/mult\_bench.c}, the paper's ``MULT kernel''): call each
+routine 10{,}000 times on random unsigned numbers of 4, 8, 16 and 31 bits, and divide the cycle count by
+10{,}000. This includes the call, loading the two numbers and the loop, like a real program.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{mult_bench}
+\caption{Cycles per multiplication. Left: with the LOD instruction. Right: with LOD done in software.
+The exact shift-and-add (black) grows with the size of the numbers. RoBA-Dn1 (blue, solid) stays at 28
+cycles for any size, but only with the instruction: in software it costs 91--103 cycles.}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+ & \multicolumn{2}{c}{with LOD instruction} & \multicolumn{2}{c}{LOD in software}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Multiplier & 8-bit & 31-bit & 8-bit & 31-bit\\
+\midrule
+Exact (shift-and-add) & 84.1 & 279.6 & 84.1 & 279.6\\
+Mitchell & 33.5 & 34.0 & 96.5 & 109.0\\
+DRUM6 & 98.5 & 101.0 & 148.8 & 164.0\\
+RoBA-Dn1 & \textbf{28.0} & \textbf{28.0} & 91.0 & 103.0\\
+RoBA-UpDn & 42.9 & 43.0 & 112.4 & 124.5\\
+RoBA-Dn2 & 41.4 & 42.0 & 149.7 & 176.9\\
+RoBA-UpDnDn & 71.5 & 72.0 & 192.7 & 219.8\\
+RoBA-(UpDn)2 & 83.9 & 86.0 & 209.3 & 238.5\\
+\bottomrule
+\end{tabular}
+\caption{Cycles per multiplication (\file{results/ibex/mult\_bench.csv}). Exact needs no LOD, so its two
+columns are the same.}
+\end{table}
+
+\begin{keyidea}
+With LOD, Dn1 is $84/28 = \mathbf{3.0\times}$ faster than exact for 8-bit numbers and
+$280/28 = \mathbf{10\times}$ for 31-bit numbers. Without the instruction, it is \emph{slower} than exact.
+The new instruction is what makes approximate multiplication worth it.
+\end{keyidea}
+
+\subsection{Whole networks, one routine call per multiplication}
+
+Now the real thing: a whole picture through the network, written the way the paper does it. Every product
+calls a small wrapper, \code{mul\_s(a, w)}, which checks for zero, takes the absolute values, calls the
+multiplier routine and puts the sign back.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{ibex_call}
+\caption{Million cycles per picture (mean of the first 100 test pictures), one routine call per
+multiplication.}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Multiplier & MNIST MLP & MNIST LeNet-5 & Fashion MLP & Fashion LeNet-5\\
+\midrule
+Exact & 16.89 & 29.62 & 16.04 & 29.32\\
+Mitchell & 10.59 & 19.17 & 9.87 & 19.16\\
+DRUM6 & 22.61 & 34.23 & 22.94 & 35.08\\
+RoBA-Dn1 & \textbf{9.25} (1.83$\times$) & \textbf{17.73} (1.67$\times$) & \textbf{8.75} (1.83$\times$) & \textbf{17.59} (1.67$\times$)\\
+RoBA-UpDn & 11.91 & 21.44 & 11.96 & 21.79\\
+RoBA-Dn2 & 11.93 & 21.03 & 11.34 & 20.98\\
+RoBA-UpDnDn & 17.36 & 28.60 & 17.95 & 29.48\\
+RoBA-(UpDn)2 & 19.96 & 31.67 & 20.32 & 32.42\\
+\bottomrule
+\end{tabular}
+\caption{Million cycles per picture, one call per product (\file{results/ibex/dnn\_call\_summary.csv}).
+In brackets: how many times faster than exact.}
+\end{table}
+
+Two surprises:
+\begin{enumerate}
+  \item Dn1 is 3$\times$ faster per multiplication, but only \textbf{1.7--1.8$\times$} faster per picture.
+  \item DRUM6, UpDnDn and (UpDn)2 are \textbf{slower than exact}. Network numbers are only 7 bits plus a sign,
+        so the exact shift-and-add loop runs at most 7 rounds. That is cheap enough that methods doing
+        two rounds of RoBA, or a small exact multiply, cannot beat it.
+\end{enumerate}
+The next subsection explains the first surprise.
+
+\subsection{Where does the time go?}
+
+\file{hw/profile\_ibex.py} runs one picture with Ibex's \emph{instruction tracer} switched on. It writes one
+line for every instruction executed (about 1~GB of text per picture!), with the address of the instruction
+and how many cycles it took. Using the program's debug information, every address is mapped back to the C
+function and line it came from, and the cycles are added up per category. The traced total matches the CPU's
+cycle counter within 0.1\%.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{profile}
+\caption{Share of the time of one Fashion-MNIST picture, with one call per multiplication.}
+\label{fig:profile}
+\end{figure}
+
+For the exact MLP, the multiplier routine itself takes \textbf{64\%} of the time. Another 17\% is the
+sign-and-zero wrapper around it, and the rest is loading the numbers, the loop counter and adding up. For
+Dn1, the routine shrinks to \textbf{35\%}, and the wrapper and loop now cost more than the multiplication.
+
+\begin{example}[: Amdahl's law, the limit of speeding up one part]
+Say a job takes 100 seconds and 64 seconds of it are multiplication. Even if multiplication became
+\emph{free}, the other 36 seconds stay. The best possible speed-up is $100/36 = 2.8\times$.
+In general: if a part takes a share $f$ of the time and you make it $k$ times faster, the whole job becomes
+\[
+  \text{speed-up} = \frac{1}{(1-f) + f/k}.
+\]
+For Dn1: $f = 0.64$, $k = 3$: $1/(0.36 + 0.213) = 1.74\times$. Close to the measured 1.83$\times$. The lesson:
+after making the multiplier fast, the rest of the loop becomes the bottleneck.
+\end{example}
+
+\subsection{Writing the loop more cleverly: the fused MAC}\label{sec:fused}
+
+To shrink the ``rest'', we wrote the multiply-accumulate loop differently (default build of
+\file{hw/sw/dnn.c}, with the routines from \file{csrc/roba\_core.h}). We made the same three changes for
+\emph{every} multiplier, exact included, so the comparison stays fair.
+
+\paragraph{1. Inline the routine.} Instead of calling a function for every product (jump there, save
+registers, jump back), the multiplier's few instructions are copied directly into the loop. The zero check
+is done once per product (the old wrapper and the routine each checked).
+
+\paragraph{2. Store weights as sign and size.} Normally $-5$ is stored as \code{11111011} (``two's
+complement''), and getting its size needs a test and a negation. We store each weight as one byte with
+bit~7 = the sign and bits 0--6 = the size:
+\[
+  +5 \to \texttt{0\,0000101} = \texttt{0x05},\qquad -5 \to \texttt{1\,0000101} = \texttt{0x85}.
+\]
+Then the size is one instruction (\code{byte \& 127}) and the sign another (\code{byte >> 7}). This
+conversion is done once, when the program starts, outside the timed part (a real device would store the
+weights like this).
+
+\paragraph{The sign without a jump.} After multiplying the sizes, the result $r$ must be negated if the two
+signs differ. A jump (``if negative, negate'') costs extra cycles on Ibex when it is taken. Instead we use a
+trick: let $s = 0$ if the signs agree and $s = -1$ (all bits 1) if they differ. Then
+\[
+  (r \oplus s) - s = \begin{cases} r & s = 0\\ -r & s = -1\end{cases}
+\]
+because XOR with all ones flips every bit ($\sim r = -r-1$), and subtracting $-1$ adds 1.
+\begin{example}[: the branch-free sign]
+$r = 128$, $s = -1$: $128 \oplus (-1) = -129$, and $-129 - (-1) = -128$. Correct, with no jump.
+With $s=0$: $128\oplus 0 - 0 = 128$.
+\end{example}
+
+\paragraph{3. After ReLU, inputs are never negative.} Every layer except the first gets its input from a
+ReLU, so the input is $\ge 0$: no need to take its absolute value or look at its sign.
+
+\begin{lstlisting}[language=C]
+/* acc + a*w for an activation known to be >= 0 (after ReLU), from hw/sw/dnn.c */
+static inline int32_t mac_r(int32_t acc, int32_t a, uint8_t w)
+{
+    uint32_t ub = w & 0x7Fu;                    /* |w|                         */
+    if (a == 0 || ub == 0)                      /* one zero check              */
+        return acc;
+    int32_t r = (int32_t)MULT_NZ((uint32_t)a, ub);   /* e.g. roba_dn1_nz, inlined */
+    int32_t s = -(int32_t)((uint32_t)w >> 7);   /* -1 if w < 0, else 0         */
+    return acc + ((r ^ s) - s);                 /* add r or -r, no branch      */
+}
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{fused}
+\caption{Fashion-MNIST: one call per multiply (white circles) against fused into the loop (filled). Every
+multiplier gets faster; RoBA-Dn1 gains the most on LeNet-5.}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Multiplier (fused) & MNIST MLP & MNIST LeNet-5 & Fashion MLP & Fashion LeNet-5\\
+\midrule
+Exact & 13.91 & 24.04 & 13.49 & 22.95\\
+Mitchell & 8.61 (1.62$\times$) & 11.82 (2.03$\times$) & 8.14 (1.66$\times$) & 12.16 (1.89$\times$)\\
+DRUM6 & 15.87 & 26.01 & 15.45 & 27.18\\
+RoBA-Dn1 & \textbf{7.12 (1.95$\times$)} & \textbf{10.19 (2.36$\times$)} & \textbf{7.05 (1.91$\times$)} & \textbf{10.21 (2.25$\times$)}\\
+RoBA-UpDn & 10.13 & 15.42 & 9.73 & 15.70\\
+RoBA-Dn2 & 10.00 & 13.62 & 9.85 & 13.78\\
+RoBA-UpDnDn & 14.94 & 22.33 & 14.42 & 23.03\\
+RoBA-(UpDn)2 & 17.87 & 25.87 & 17.25 & 26.78\\
+\bottomrule
+\end{tabular}
+\caption{Million cycles per picture with the fused loop (\file{results/ibex/dnn\_summary.csv}); in brackets
+the speed-up over fused exact. Compared with the call version: exact 16.0 $\to$ 13.5 (Fashion MLP), Dn1
+8.75 $\to$ 7.05, and Dn1 on Fashion LeNet-5 17.6 $\to$ 10.2 ($1.72\times$).}
+\end{table}
+
+Here is what the compiler made of the fused Dn1 loop for the MLP's first layer: 26 instructions per product,
+and only 10 when the input is 0 (it jumps straight to label 2).
+\begin{lstlisting}[language=asm]
+      lb    a5,0(a0)      # load x
+      addi  a0,a0,1
+      j     1f
+1:    srai  a7,a5,31      # sign of x
+      xor   t3,a7,a5
+      lbu   a3,0(a1)      # load w (sign-magnitude byte)
+      sub   t3,t3,a7      # |x|
+      beqz  a5,2f         # x = 0: skip
+      andi  a5,a3,127     # |w|
+      beqz  a5,2f         # w = 0: skip
+      lod   a6,t3         # pa = LOD(|x|)      <- the new instruction
+      lod   t1,a5         # pb = LOD(|w|)      <- the new instruction
+      sll   a5,a5,a6      # |w| << pa
+      srli  a4,a3,7       # sign of w
+      sll   t3,t3,t1      # |x| << pb
+      sll   a6,t5,a6      # 1 << pa
+      neg   a4,a4
+      add   a5,a5,t3
+      sll   a6,a6,t1      # 2^(pa+pb)
+      xor   a4,a4,a7      # combined sign s
+      sub   a5,a5,a6      # Dn1 product r
+      xor   a5,a5,a4      # (r ^ s)
+      sub   a5,a5,a4      #   - s
+      add   a2,a2,a5      # acc += product
+2:    addi  a1,a1,1
+      bne   a1,t0,loop
+\end{lstlisting}
+
+\subsection{No multiplier at all: a table of squares}\label{sec:sqtab}
+
+There is an old trick (it was used by people multiplying with tables of squares before calculators). Since
+$(x+w)^2 = x^2 + 2xw + w^2$,
+\[
+  x\cdot w = \frac{(x+w)^2 - x^2 - w^2}{2}.
+\]
+A square can be \emph{looked up} in a table instead of computed. So a product becomes three lookups, two
+subtractions and a halving. This is called the \textbf{polarization identity}.
+
+\begin{example}[: products from squares]
+$3\times5$: $\big((3+5)^2 - 3^2 - 5^2\big)/2 = (64 - 9 - 25)/2 = 30/2 = 15$.\\
+$3\times(-5)$: $\big((-2)^2 - 9 - 25\big)/2 = (4-34)/2 = -15$. Negative numbers just work.
+\end{example}
+
+It gets much better for a whole neuron. Add up the identity over all inputs:
+\[
+  \sum_k x_k w_k = \frac{1}{2}\Big(\underbrace{\sum_k S(x_k+w_k)}_{\text{1 lookup per MAC}}
+  - \underbrace{\sum_k S(x_k)}_{\text{same for every neuron}}
+  - \underbrace{\sum_k S(w_k)}_{\text{fixed: computed in advance}}\Big),\qquad S(v) = v^2.
+\]
+\begin{itemize}
+  \item $\sum S(w_k)$ depends only on the weights, so it is computed once, before running (outside the
+        timed part, like the weights themselves).
+  \item $\sum S(x_k)$ depends only on the layer's input, which is the \emph{same} for all 256 neurons of the
+        MLP's first layer. It is computed once and shared.
+  \item So each MAC costs about \textbf{one table lookup and one addition}.
+\end{itemize}
+
+\begin{example}[: a two-input neuron]
+$x = (3, 2)$, $w = (5, -1)$. Exact: $15 - 2 = 13$.
+$\sum S(x+w) = S(8) + S(1) = 64 + 1 = 65$; $\sum S(x) = 9 + 4 = 13$; $\sum S(w) = 25 + 1 = 26$.
+$(65 - 13 - 26)/2 = 26/2 = 13$. Exact, with no multiplication. (The number before halving is always
+even, because it equals $2\sum x_kw_k$, so the halving is exact.)
+\end{example}
+
+\paragraph{The table.} Inputs and weights are int8 ($-127\dots127$), so $x+w$ is in $-254\dots254$: 509
+entries. The largest square, $254^2 = 64{,}516$, fits in 16 bits, so the table is $509\times 2 =
+1{,}018$ bytes, about \textbf{1~KB}. It is built at start-up without any multiplication, using
+$(n+1)^2 = n^2 + 2n + 1$: start at 0 and add $1, 3, 5, 7, \dots$ $\to 0, 1, 4, 9, 16, \dots$
+
+\paragraph{Convolutions.} In a convolution each output position sees a different $5\times5$ window of
+the input, so $\sum S(x)$ is different per position, but it is still the same for all filters at that
+position. The program computes all window sums once per layer with ``box sums'' (add 5 neighbours across,
+then 5 down) and shares them across the 6 (or 16) filters.
+
+The inner loop is now 10 instructions instead of 26, and none of them is LOD:
+\begin{lstlisting}[language=asm]
+      lb    a5,0(a4)      # load x
+      lb    a0,0(a3)      # load w
+      addi  a4,a4,1
+      addi  a3,a3,1
+      add   a5,a5,a0      # x + w
+      slli  a5,a5,1       # times 2 bytes per entry
+      add   a5,a5,a1      # address in the table
+      lhu   a5,0(a5)      # S[x + w]
+      add   a2,a2,a5      # d += S[x + w]
+      bne   s1,a4,loop
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{sqtab}
+\caption{Million cycles per picture and speed-up over fused exact. The table of squares is the fastest
+everywhere, and its products are exact.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{layers}
+\caption{Cycles per layer (Fashion-MNIST). In the MLP almost everything is the first layer
+($784\to256$, 85\% of the multiplications). In LeNet-5, conv2 is the largest part.}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+ & MNIST MLP & MNIST LeNet-5 & Fashion MLP & Fashion LeNet-5\\
+\midrule
+Exact, fused & 13.91 & 24.04 & 13.49 & 22.95\\
+RoBA-Dn1, fused & 7.12 (1.95$\times$) & 10.19 (2.36$\times$) & 7.05 (1.91$\times$) & 10.21 (2.25$\times$)\\
+Square table & \textbf{3.87 (3.59$\times$)} & \textbf{7.58 (3.17$\times$)} & \textbf{3.87 (3.49$\times$)} & \textbf{7.57 (3.03$\times$)}\\
+\bottomrule
+\end{tabular}
+\caption{Million cycles per picture. The table is 1.3--1.8$\times$ faster than fused Dn1, with exact
+products and no LOD.}
+\end{table}
+
+\begin{kid}
+Notice that the table method takes \emph{exactly} the same time (3.87 million cycles) for an MNIST
+digit and a Fashion-MNIST shoe. It does the same lookups no matter what the numbers are. The RoBA and
+exact loops skip zeros and their speed depends on the numbers, so their times differ a little between
+datasets.
+\end{kid}
+
+\begin{careful}
+The table trick depends on two things that are true here but not everywhere. (1) Ibex's memory answers in
+one cycle; with slow flash memory or a cache, every lookup could cost more. (2) The numbers are 8-bit. For
+16-bit numbers the table would need about 131{,}000 entries of 4 bytes each, roughly \textbf{512~KB}, too
+big for a small chip, while the LOD-based RoBA routines cost the same for any size.
+\end{careful}
+
+\paragraph{A tempting idea that does not work: approximate squares.} One could replace the table with
+RoBA-style \emph{approximate} squares, $\tilde S(x) = (|x| \ll (k+1)) - (1\ll 2k)$ with $k = \text{LOD}(|x|)$.
+This is a straight-line estimate of $x^2$ that is always a little too small. The problem is that the
+three squares are big numbers, and the product is the small difference between them, so small errors in
+the squares become large errors in the product:
+\begin{example}[: why approximate squares fail]
+$3\times4 = 12$. $\tilde S(7) = (7\ll3) - (1\ll4) = 56-16 = 40$ (true 49); $\tilde S(3) = 12-4 = 8$
+(true 9); $\tilde S(4) = 16$ (exact, a power of two).
+$(40 - 8 - 16)/2 = 8$ instead of 12: \textbf{33\% too small}, although no square was more than 18\% off.
+\end{example}
+We tested it on the GPU: the networks lost 6--15 accuracy points in 3 of the 4 cases, so it was rejected.
+The exact table is both exact and fastest.
+
+\subsection{Skipping zeros, and feeding raw pixels}\label{sec:zeroskip}
+
+Anything times zero is zero, so a zero input could be skipped entirely. How many zeros are there?
+\begin{itemize}
+  \item In \textbf{hidden layers}, many: ReLU turns every negative value into 0.
+  \item In the \textbf{input picture}, none! Remember that normalising turns black into $-0.424$ (MNIST),
+        not 0. Most of an MNIST picture is black background, all of it non-zero.
+\end{itemize}
+
+\paragraph{Raw pixels: folding the normalisation into the first layer.} The first layer computes
+$\sum_k w_k\,\frac{p_k - \text{mean}}{\text{std}} + b$. This can be rewritten as
+\[
+  \sum_k \underbrace{\frac{w_k}{\text{std}}}_{\text{new weight}}\, p_k
+  \;+\; \underbrace{\Big(b - \text{mean}\sum_k \frac{w_k}{\text{std}}\Big)}_{\text{new bias}}.
+\]
+Same result, but now the network reads the raw pixel $p_k$, and black is exactly 0.
+\begin{example}[: folding one weight]
+MNIST, $w = 0.6$, pixel $p = 0.5$. Original: $0.6\times(0.5-0.1307)/0.3081 = 0.6\times1.1986 = 0.719$.
+Folded: new weight $0.6/0.3081 = 1.947$, bias change $-0.1307\times1.947 = -0.254$;
+$1.947\times0.5 - 0.254 = 0.719$. The same.
+\end{example}
+The raw int8 input is $\text{round}(127\,p)$, computed from the original 8-bit pixel $k$ as
+$(254k + 255)\,\text{div}\,510 = \text{round}(127k/255)$. After this, \textbf{81\% of MNIST pixels and 51\%
+of Fashion-MNIST pixels are exactly 0}.
+
+\begin{careful}
+For LeNet-5 there is a detail at the border. conv1 pads the picture with zeros so that the output is still
+$28\times28$. With normalised inputs, a padded 0 means ``an average pixel''; with raw inputs it means
+``black''. So the new bias depends on how many of the filter's 25 taps fall on the real picture, and conv1
+gets one bias per output position (a $6\times28\times28$ map) instead of one per filter
+(\code{C0\_PER\_POSITION} in the code).
+\end{careful}
+
+\paragraph{Skipping (``+zs'').} The multiplier loops already skip zero products one at a time (the zero
+check). With \code{ZERO\_SKIP}, a fully connected layer first collects the non-zero inputs and their positions
+once, and then every neuron loops only over those. For the table method skipping needs more work per
+remaining term: a zero input adds $S(0+w) - S(0) - S(w) = 0$, so it can be dropped, but then the precomputed
+$\sum S(w)$ no longer matches, and the loop must use $S(x+w) - S(w)$: \emph{two} lookups per term.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{zeroskip}
+\caption{The ablation: each method with normalised or raw pixels, with or without skipping. The labels give
+the speed-up over exact with normalised input (the first bar).}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llrrrr}
+\toprule
+Method & Setting & MNIST MLP & MNIST LeNet-5 & Fashion MLP & Fashion LeNet-5\\
+\midrule
+\multirow{4}{*}{Exact} & normalised & 13.91 & 24.04 & 13.49 & 22.95\\
+ & + skip & 13.49 & 23.85 & 13.96 & 22.76\\
+ & raw & 5.45 & 17.81 & 7.75 & 19.73\\
+ & raw + skip & 3.18 & 17.64 & 6.82 & 19.60\\
+\midrule
+\multirow{4}{*}{RoBA-Dn1} & normalised & 7.12 & 10.19 & 7.05 & 10.21\\
+ & + skip & 6.92 & 9.94 & 7.00 & 10.16\\
+ & raw & 3.57 & 8.86 & 4.30 & 9.68\\
+ & raw + skip & 1.58 & 8.69 & 3.23 & 9.62\\
+\midrule
+\multirow{4}{*}{Square table} & normalised & 3.87 & 7.58 & 3.87 & 7.57\\
+ & + skip & 5.10 & 8.20 & 4.99 & 8.31\\
+ & raw & 3.87 & 7.57 & 3.64 & 7.62\\
+ & raw + skip & \textbf{1.33} & \textbf{7.38} & \textbf{2.70} & 7.93\\
+\bottomrule
+\end{tabular}
+\caption{Million cycles per picture (\file{results/ibex/zeroskip\_summary.csv}). Best per column in bold
+(Fashion LeNet-5: the table with raw pixels and no skip, 7.62, is about as fast as the normalised table).}
+\end{table}
+
+What this shows:
+\begin{itemize}
+  \item \textbf{Raw pixels are the big win.} Exact on the MNIST MLP drops from 13.9 to 5.5 million cycles just
+        by giving the existing zero check something to skip.
+  \item \textbf{The best MLP result:} table + raw + skip on MNIST, \textbf{1.33 million cycles, $10.5\times$ faster}
+        than exact with normalised input. On Fashion (fewer black pixels) it is $5.0\times$.
+  \item \textbf{Skipping without raw pixels does not help}, and it makes the table \emph{slower}
+        ($3.87\to4.99$ on Fashion), because each remaining term now needs two lookups.
+  \item \textbf{LeNet-5 hardly changes}: most of its work is conv2, whose input comes after ReLU and pooling
+        and is not affected by the raw pixels, and the convolution can only skip tap by tap.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{MNIST MLP} & \multicolumn{2}{c}{Fashion MLP}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+ & normalised & raw & normalised & raw\\
+\midrule
+Exact / table & 98.41 & 98.46 & 89.75 & 89.69\\
+RoBA-Dn1 & 98.36 & 98.42 & 89.53 & 89.53\\
+\bottomrule
+\end{tabular}
+\caption{Accuracy on all 10{,}000 test pictures (from the bit-exact Python model) with normalised and raw
+input: raw pixels cost no accuracy. Skipping never changes a result. (LeNet-5: MNIST 99.18/99.19, Fashion
+90.83/90.80 for exact.)}
+\end{table}
+
+\subsection{Energy}\label{sec:energy}
+
+Energy is power multiplied by time: $E = P\times T$. Time is proportional to cycles. For power we use the
+paper's synthesis results, relative to a core with a single-cycle hardware multiplier ($P = 1$):
+\begin{itemize}
+  \item Multiplierless core \emph{with} LOD: 17.1\% less power, so $P_{\text{LOD}} = 1 - 0.171 = 0.829$.
+  \item LOD itself adds 4.5\%, so the multiplierless core \emph{without} LOD has
+        $P_{\text{none}} = 0.829/1.045 = 0.793$.
+\end{itemize}
+Exact and the table of squares do not use LOD, so they run on the cheaper 0.793 core. Mitchell, DRUM6 and all
+RoBA methods need the LOD core (0.829).
+
+\begin{example}[: energy of one Fashion-MNIST MLP picture (fused)]
+\begin{tabular}{@{}lrl@{}}
+Exact: & $13.49 \times 0.793 = 10.70$ & (reference, 1.00)\\
+RoBA-Dn1: & $7.05 \times 0.829 = 5.84$ & $\Rightarrow 5.84/10.70 = \mathbf{0.55}$\\
+Square table: & $3.87 \times 0.793 = 3.07$ & $\Rightarrow \mathbf{0.29}$\\
+RoBA-(UpDn)2: & $17.25\times0.829 = 14.30$ & $\Rightarrow 1.34$ (more energy than exact!)
+\end{tabular}
+\end{example}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{energy}
+\caption{Energy per picture relative to exact (fused, Fashion-MNIST). Below the dashed line saves energy.}
+\end{figure}
+
+\begin{keyidea}
+Because LOD raises the power by 4.5\%, an approximate method has to be at least 4.5\% faster than exact
+just to break even. Dn1 is about 2$\times$ faster, so it needs only \textbf{0.44--0.55} of the energy.
+The two-step methods and DRUM6 are slower than exact and \emph{waste} energy. The table of squares needs
+\textbf{0.28--0.33}.
+\end{keyidea}
+
+\begin{careful}
+These energies are \emph{estimates}: measured cycles times the paper's relative power numbers. The real
+power also depends on what the program does (memory accesses use more than additions, for example). A
+real power measurement needs the FPGA or a chip.
+\end{careful}
+
+\subsection{How do we know the simulated chip computed the right thing?}
+
+\begin{itemize}
+  \item \textbf{All 10{,}400 different inferences} (100 pictures $\times$ 104 distinct configurations) gave
+        \textbf{exactly the same scores, bit for bit,} as the Python model of the same integer arithmetic
+        (\code{logits\_match\_ref = 1.0} in every row of the CSV files).
+  \item The 32 ``call'' configurations were run in two separate runs, from rebuilt programs, and gave
+        identical cycle counts and answers.
+  \item Ibex accuracy on these 100 pictures: MNIST 100\% for every configuration; Fashion 90--91\% (MLP)
+        and 85--88\% (LeNet-5). With 100 pictures one picture is one point, so these numbers move more than
+        the full-test numbers. The full-test accuracy comes from the bit-exact Python model.
+  \item The integer Ibex model agrees with the GPU's int8 model on 97--100\% of the 100 pictures. The small
+        difference is not an error: the GPU version rescales with decimal arithmetic, the integer version with
+        $M$ and a shift, so a value right at a rounding edge (like 6.5) can round the other way and, rarely,
+        flip an answer. Over the full test set the two agree within 0.05 points for exact and within about
+        0.3 points for RoBA-Dn1 (Fashion LeNet-5: 90.49\% integer vs 90.77\% GPU).
+\end{itemize}
+\newpage

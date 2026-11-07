@@ -1,0 +1,194 @@
+\section{The basics, from zero}\label{sec:basics}
+
+\subsection{Numbers inside a computer are bits}
+
+A computer stores every number as a row of \emph{bits}. A bit is a tiny switch that is either
+off (0) or on (1). Just as our everyday numbers use the place values 1, 10, 100, 1000 (each place
+worth ten times the one to its right), binary numbers use the place values 1, 2, 4, 8, 16, \dots
+(each place worth \emph{two} times the one to its right).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[box/.style={draw,minimum width=1.05cm,minimum height=0.8cm,font=\large\ttfamily}]
+  \foreach \v [count=\i] in {128,64,32,16,8,4,2,1} {
+    \node[font=\small,gray] at (\i*1.1,1.0) {\v};
+  }
+  \foreach \b [count=\i] in {0,0,0,0,1,1,0,1} {
+    \ifnum\b=1
+      \node[box,fill=roba!20] at (\i*1.1,0) {\b};
+    \else
+      \node[box] at (\i*1.1,0) {\b};
+    \fi
+  }
+  \node[anchor=west] at (9.4,0) {$= 8+4+1 = 13$};
+  \node[anchor=east,font=\small,gray] at (0.4,1.0) {place value};
+  \node[anchor=east,font=\small] at (0.4,0) {bits of 13};
+\end{tikzpicture}
+\caption{The number 13 as eight bits: \code{00001101}. The bits that are 1 sit under 8, 4 and 1,
+and $8+4+1=13$.}
+\end{figure}
+
+A few more examples:
+\[
+  11 = \texttt{1011} = 8+2+1,\qquad 100 = \texttt{1100100} = 64+32+4,\qquad
+  200 = \texttt{11001000} = 128+64+8.
+\]
+
+\paragraph{How many bits?} With 8 bits you can store $0$ to $255$; with one bit used for the sign,
+$-127$ to $127$ (that is the \textbf{int8} type used by our networks). With 16 bits you can go up
+to about $\pm 32{,}767$ (\textbf{int16}); with 32 bits up to about $\pm 2$ billion (\textbf{int32}).
+
+\subsection{Shifting: the cheapest way to double}
+
+If you write a 0 at the end of an everyday number, it becomes ten times bigger:
+$13 \to 130$. In binary, writing a 0 at the end makes the number \emph{two} times bigger. Moving
+all bits one place to the left is called a \textbf{left shift}, written \code{<<}.
+\[
+  13 = \texttt{1101}\quad\xrightarrow{\;<<1\;}\quad \texttt{11010} = 26,\qquad
+  13 \ll 3 = \texttt{1101000} = 104 = 13\times 8.
+\]
+Shifting left by $k$ places multiplies by $2^k$. Shifting \emph{right} (\code{>>}) divides by
+$2^k$ and throws away the remainder: $13 \gg 1 = \texttt{110} = 6$.
+
+\begin{keyidea}
+For a CPU, a shift costs \textbf{one clock cycle}, exactly like an addition. So multiplying by
+1, 2, 4, 8, 16, \dots{} (a \emph{power of two}) is basically free. Multiplying by any other
+number, like 11, is the hard part. All the tricks in this project are about turning hard
+multiplications into shifts and additions.
+\end{keyidea}
+
+\subsection{Multiplying with only additions and shifts}\label{sec:shiftadd}
+
+School multiplication works digit by digit. Binary multiplication works the same way, but every
+digit is 0 or 1, so each step is either ``add a shifted copy'' or ``add nothing''.
+
+\begin{example}[: $13\times 11$ by shift-and-add]
+$11 = \texttt{1011}$. Look at the bits of 11 from the right. Each time, double 13; when the bit is 1,
+add the current copy of 13 to the result.
+
+\begin{center}
+\begin{tabular}{cccccc}
+\toprule
+Step & bits of $b$ left & lowest bit & copy of $a$ & add? & result so far\\
+\midrule
+1 & \texttt{1011} & 1 & 13 & yes & 13\\
+2 & \texttt{101}  & 1 & 26 & yes & 39\\
+3 & \texttt{10}   & 0 & 52 & no  & 39\\
+4 & \texttt{1}    & 1 & 104 & yes & \textbf{143}\\
+\bottomrule
+\end{tabular}
+\end{center}
+Indeed $13\times 11 = 143$. It took 4 rounds because 11 has 4 bits. An 8-bit number needs up to 8
+rounds, a 16-bit number up to 16, a 31-bit number up to 31.
+\end{example}
+
+In C, the loop is only a few lines (this is Listing~1 of the paper, and the routine
+\code{roba\_shift\_add} in our \file{csrc/roba\_core.h}):
+
+\begin{lstlisting}[language=C]
+uint32_t roba_shift_add(uint32_t a, uint32_t b)
+{
+    uint32_t r = 0;
+    while (b) {           /* until no bits of b are left        */
+        if (b & 1u)       /* lowest bit of b is 1?              */
+            r += a;       /*   then add the current copy of a   */
+        a <<= 1;          /* double a                           */
+        b >>= 1;          /* drop the lowest bit of b           */
+    }
+    return r;
+}
+\end{lstlisting}
+
+Each round runs about 6 instructions (test, branch, maybe add, two shifts, loop back), so an
+exact 8-bit multiply costs tens of clock cycles, and it gets slower as numbers get bigger.
+Our measurements later (Section~\ref{sec:multbench}) show 84 cycles for an 8-bit exact multiply
+and 280 cycles for a 31-bit one.
+
+\subsection{What a CPU is, and what a ``cycle'' is}
+
+A \textbf{CPU} (processor) is the part of a chip that runs a program. A program is a long list of
+very simple \textbf{instructions}, such as ``add these two numbers'', ``shift this number left by 3'',
+``load a byte from memory'', ``if this is zero, jump over there''. The CPU keeps a few dozen
+numbers close at hand in \textbf{registers} (32 of them on RISC-V, named \code{a0}, \code{a1},
+\code{t0}, \dots).
+
+The CPU is driven by a \textbf{clock}: a signal that ticks millions of times per second. One tick is
+one \textbf{clock cycle}. A simple instruction like \code{add} takes one cycle; loading from memory
+or a taken jump may take two or three.
+
+\begin{example}[: from cycles to seconds]
+If the chip's clock runs at 50~MHz (50 million ticks per second, a typical speed for a small
+RISC-V core on an FPGA board), then one cycle lasts $1/50{,}000{,}000$~s $=20$~nanoseconds.
+Our exact-multiply MLP needs 13.5 million cycles per image, i.e.\ $13.5\times 10^6 \times 20\,
+\text{ns} = 0.27$~s per picture. With RoBA-Dn1 (7.05 million cycles) it is 0.14~s.
+\end{example}
+
+Because the clock speed depends on the chip, we always report \textbf{cycles}, not seconds.
+Fewer cycles means faster \emph{and} (at the same power) less energy.
+
+\subsection{RISC-V, Ibex, and why some chips have no multiplier}
+
+\textbf{RISC-V} is a free, open \emph{instruction set}: a published list of which instructions a CPU
+must understand. The base list, \textbf{RV32I}, has additions, shifts, logic, loads, stores and
+jumps, but \textbf{no multiplication}. Multiplication is an optional add-on called the
+\textbf{M extension}. Another add-on, \textbf{C}, adds short 16-bit versions of common
+instructions to make programs smaller. Our CPU is \textbf{RV32IC}: base + compressed, no M.
+
+\textbf{Ibex} is a small, real, open-source RISC-V CPU made by the company lowRISC. It is used in
+real chips (for example in security chips) and can be built with or without a multiplier.
+
+Why would anyone leave out the multiplier? A hardware multiplier is a big block of logic. The
+paper synthesised Ibex for a 65~nm chip process and found that the multiplierless core with
+the LOD instruction has \textbf{35.1\% less area}, a \textbf{10\% shorter critical path} (so it can
+be clocked faster) and \textbf{17.1\% less power} than the same core with a single-cycle
+multiplier. For a tiny battery-powered device, that is a lot.
+
+\begin{kid}
+A hardware multiplier is like a big, expensive kitchen machine. Many small kitchens don't
+have room for it, so the cook does the job by hand. Hand work is slow. This project is about
+finding a quick way of doing it by hand that is \emph{almost} as good as the machine.
+\end{kid}
+
+\subsection{The leading one, and the LOD instruction}\label{sec:lod}
+
+The \textbf{leading one} of a number is its highest bit that is 1. Its \emph{position} (counting
+from 0 at the right) tells you which power of two the number lies between:
+
+\begin{center}
+\begin{tabular}{rlcl}
+\toprule
+number & bits & leading-one position & so the number is between\\
+\midrule
+1 & \texttt{1} & 0 & $2^0=1$ and 2\\
+13 & \texttt{1101} & 3 & $2^3=8$ and 16\\
+11 & \texttt{1011} & 3 & 8 and 16\\
+100 & \texttt{1100100} & 6 & 64 and 128\\
+200 & \texttt{11001000} & 7 & 128 and 256\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{LOD} (``leading-one detector'') is the new instruction from the paper:
+\[
+  \texttt{lod rd, rs1}\qquad\Longrightarrow\qquad \texttt{rd} \gets \text{position of the leading 1 of } \texttt{rs1}.
+\]
+For example, if register \code{a1} holds 13, then \code{lod a0, a1} puts 3 into \code{a0}.
+Then \code{1 << 3} $=8$ is the largest power of two that is not bigger than 13.
+
+\paragraph{Why not do it in software?} Without the instruction, finding the leading one needs a
+loop or a sequence of tests and shifts. On our core, the compiler's software version
+(\code{\_\_clzsi2} in libgcc) makes RoBA-Dn1 cost \textbf{91 cycles} per multiply, which is slower
+than the exact 84 cycles. With the LOD instruction it costs \textbf{28 cycles}
+(Section~\ref{sec:multbench}). Without the new instruction, the whole idea does not pay off.
+
+\paragraph{Why is it cheap in hardware?} In hardware, LOD is a \emph{priority encoder}: a small
+circuit that looks at all 32 bits at once and outputs the position of the highest 1. It needs no
+memory and no clock cycles of its own. It fits inside the existing arithmetic unit and answers in one
+cycle, like an addition. The paper measured that it adds only \textbf{4.5\% power} to the
+multiplierless core. Section~\ref{sec:lodpatch} shows the exact lines we added to Ibex.
+
+\begin{keyidea}
+LOD answers ``roughly how big is this number?'' in one cycle. Knowing the nearest power of two
+of each number turns a multiplication into a few shifts and additions.
+\end{keyidea}
+\newpage

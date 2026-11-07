@@ -1,0 +1,44 @@
+[14:46:26] mult lod=1: 47s at 482 kHz
+[14:48:06] mult lod=0: 100s at 477 kHz
+[14:48:06] wrote results/ibex/mult_bench.csv
+[14:48:07] prepared mnist/mlp/exact: python reference accuracy 1.0000 on 100 images
+[14:48:08] prepared mnist/mlp/mitchell: python reference accuracy 1.0000 on 100 images
+[14:48:09] prepared mnist/mlp/drum6: python reference accuracy 1.0000 on 100 images
+[14:48:09] prepared mnist/mlp/roba_dn1: python reference accuracy 1.0000 on 100 images
+[14:48:10] prepared mnist/mlp/roba_updn: python reference accuracy 1.0000 on 100 images
+[14:48:10] prepared mnist/mlp/roba_dn2: python reference accuracy 1.0000 on 100 images
+[14:48:11] prepared mnist/mlp/roba_updndn: python reference accuracy 1.0000 on 100 images
+[14:48:11] prepared mnist/mlp/roba_updn2: python reference accuracy 1.0000 on 100 images
+[14:48:12] prepared mnist/lenet5/exact: python reference accuracy 1.0000 on 100 images
+[14:48:13] prepared mnist/lenet5/mitchell: python reference accuracy 1.0000 on 100 images
+[14:48:13] prepared mnist/lenet5/drum6: python reference accuracy 1.0000 on 100 images
+[14:48:13] prepared mnist/lenet5/roba_dn1: python reference accuracy 1.0000 on 100 images
+[14:48:14] prepared mnist/lenet5/roba_updn: python reference accuracy 1.0000 on 100 images
+[14:48:14] prepared mnist/lenet5/roba_dn2: python reference accuracy 1.0000 on 100 images
+[14:48:14] prepared mnist/lenet5/roba_updndn: python reference accuracy 1.0000 on 100 images
+[14:48:14] prepared mnist/lenet5/roba_updn2: python reference accuracy 1.0000 on 100 images
+[14:48:15] prepared fashion/mlp/exact: python reference accuracy 0.9100 on 100 images
+[14:48:16] prepared fashion/mlp/mitchell: python reference accuracy 0.9100 on 100 images
+[14:48:17] prepared fashion/mlp/drum6: python reference accuracy 0.9100 on 100 images
+[14:48:18] prepared fashion/mlp/roba_dn1: python reference accuracy 0.9100 on 100 images
+[14:48:18] prepared fashion/mlp/roba_updn: python reference accuracy 0.9100 on 100 images
+[14:48:19] prepared fashion/mlp/roba_dn2: python reference accuracy 0.9100 on 100 images
+[14:48:19] prepared fashion/mlp/roba_updndn: python reference accuracy 0.9100 on 100 images
+[14:48:19] prepared fashion/mlp/roba_updn2: python reference accuracy 0.9100 on 100 images
+[14:48:20] prepared fashion/lenet5/exact: python reference accuracy 0.8600 on 100 images
+[14:48:21] prepared fashion/lenet5/mitchell: python reference accuracy 0.8600 on 100 images
+[14:48:21] prepared fashion/lenet5/drum6: python reference accuracy 0.8600 on 100 images
+[14:48:21] prepared fashion/lenet5/roba_dn1: python reference accuracy 0.8600 on 100 images
+[14:48:22] prepared fashion/lenet5/roba_updn: python reference accuracy 0.8500 on 100 images
+[14:48:22] prepared fashion/lenet5/roba_dn2: python reference accuracy 0.8800 on 100 images
+[14:48:22] prepared fashion/lenet5/roba_updndn: python reference accuracy 0.8600 on 100 images
+[14:48:23] prepared fashion/lenet5/roba_updn2: python reference accuracy 0.8600 on 100 images
+[14:48:23] compiling 320 programs
+[14:48:27] running 320 simulations on 72 workers
+[15:09:04] 10/320 simulations done (1237s, last 140 kHz)
+[15:09:05] 20/320 simulations done (1238s, last 126 kHz)
+[15:16:25] 30/320 simulations done (1677s, last 142 kHz)
+[15:16:25] 40/320 simulations done (1677s, last 123 kHz)
+[15:16:25] 50/320 simulations done (1677s, last 118 kHz)
+[15:16:25] 60/320 simulations done (1677s, last 111 kHz)
+[15:16:25] 70/320 simulations done (1677s, last 115 kHz)

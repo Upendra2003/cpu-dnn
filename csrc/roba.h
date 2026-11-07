@@ -1,7 +1,7 @@
 /* Approximate multiplication routines (Rajiv & Kedia, DATE'26) for multiplierless RV32I cores.
  *
  * LOD(x) returns the bit position of the leading one of x (x != 0). On the Ibex core with the
- * custom LOD instruction, define ROBA_LOD_INSN and adjust the .insn encoding in roba.c to match
+ * custom LOD instruction, define ROBA_LOD_INSN and adjust the .insn encoding in roba.c and roba_core.h to match
  * the opcode/funct fields used in the RTL. Otherwise __builtin_clz is used (host builds; on plain
  * RV32I this becomes a slow libgcc routine, which is exactly the bottleneck LOD removes).
  *
@@ -39,7 +39,8 @@ int32_t roba_mul_s(enum roba_mult m, int32_t a, int32_t b);
 /* Approximate dot product with 64-bit accumulation (int8/int16 DNN layers). */
 int64_t roba_dot_s(enum roba_mult m, const int32_t *a, const int32_t *b, int n);
 
-/* Batch helper used by the Python tests. */
+/* Batch helpers used by the Python tests (the second uses the inline routines in roba_core.h). */
 void roba_batch_s(int m, const int32_t *a, const int32_t *b, int32_t *out, int n);
+void roba_core_batch_s(int m, const int32_t *a, const int32_t *b, int32_t *out, int n);
 
 #endif

@@ -1,0 +1,1407 @@
+[16:54:19] mult lod=1: 21s at 1061 kHz
+[16:55:06] mult lod=0: 47s at 1011 kHz
+[16:55:06] wrote results/ibex/mult_bench.csv
+[16:55:07] prepared mnist/mlp/exact: python reference accuracy 1.0000 on 100 images
+[16:55:08] prepared mnist/mlp/mitchell: python reference accuracy 1.0000 on 100 images
+[16:55:09] prepared mnist/mlp/drum6: python reference accuracy 1.0000 on 100 images
+[16:55:09] prepared mnist/mlp/roba_dn1: python reference accuracy 1.0000 on 100 images
+[16:55:10] prepared mnist/mlp/roba_updn: python reference accuracy 1.0000 on 100 images
+[16:55:10] prepared mnist/mlp/roba_dn2: python reference accuracy 1.0000 on 100 images
+[16:55:11] prepared mnist/mlp/roba_updndn: python reference accuracy 1.0000 on 100 images
+[16:55:11] prepared mnist/mlp/roba_updn2: python reference accuracy 1.0000 on 100 images
+[16:55:12] prepared mnist/mlp/sqtab: python reference accuracy 1.0000 on 100 images
+[16:55:12] prepared mnist/lenet5/exact: python reference accuracy 1.0000 on 100 images
+[16:55:13] prepared mnist/lenet5/mitchell: python reference accuracy 1.0000 on 100 images
+[16:55:14] prepared mnist/lenet5/drum6: python reference accuracy 1.0000 on 100 images
+[16:55:14] prepared mnist/lenet5/roba_dn1: python reference accuracy 1.0000 on 100 images
+[16:55:14] prepared mnist/lenet5/roba_updn: python reference accuracy 1.0000 on 100 images
+[16:55:14] prepared mnist/lenet5/roba_dn2: python reference accuracy 1.0000 on 100 images
+[16:55:15] prepared mnist/lenet5/roba_updndn: python reference accuracy 1.0000 on 100 images
+[16:55:15] prepared mnist/lenet5/roba_updn2: python reference accuracy 1.0000 on 100 images
+[16:55:15] prepared mnist/lenet5/sqtab: python reference accuracy 1.0000 on 100 images
+[16:55:16] prepared fashion/mlp/exact: python reference accuracy 0.9100 on 100 images
+[16:55:17] prepared fashion/mlp/mitchell: python reference accuracy 0.9100 on 100 images
+[16:55:17] prepared fashion/mlp/drum6: python reference accuracy 0.9100 on 100 images
+[16:55:18] prepared fashion/mlp/roba_dn1: python reference accuracy 0.9100 on 100 images
+[16:55:18] prepared fashion/mlp/roba_updn: python reference accuracy 0.9100 on 100 images
+[16:55:19] prepared fashion/mlp/roba_dn2: python reference accuracy 0.9100 on 100 images
+[16:55:19] prepared fashion/mlp/roba_updndn: python reference accuracy 0.9100 on 100 images
+[16:55:20] prepared fashion/mlp/roba_updn2: python reference accuracy 0.9100 on 100 images
+[16:55:20] prepared fashion/mlp/sqtab: python reference accuracy 0.9100 on 100 images
+[16:55:21] prepared fashion/lenet5/exact: python reference accuracy 0.8600 on 100 images
+[16:55:22] prepared fashion/lenet5/mitchell: python reference accuracy 0.8600 on 100 images
+[16:55:22] prepared fashion/lenet5/drum6: python reference accuracy 0.8600 on 100 images
+[16:55:22] prepared fashion/lenet5/roba_dn1: python reference accuracy 0.8600 on 100 images
+[16:55:22] prepared fashion/lenet5/roba_updn: python reference accuracy 0.8500 on 100 images
+[16:55:23] prepared fashion/lenet5/roba_dn2: python reference accuracy 0.8800 on 100 images
+[16:55:23] prepared fashion/lenet5/roba_updndn: python reference accuracy 0.8600 on 100 images
+[16:55:23] prepared fashion/lenet5/roba_updn2: python reference accuracy 0.8600 on 100 images
+[16:55:23] prepared fashion/lenet5/sqtab: python reference accuracy 0.8600 on 100 images
+[16:55:23] compiling 360 programs
+[16:55:33] running 360 simulations on 48 workers
+[16:56:51] 1/360 batches done (78s): mnist/mlp/roba_dn1/b00080 simulated in 78s at 968 kHz
+[16:56:51] 2/360 batches done (78s): mnist/mlp/roba_dn1/b00030 simulated in 78s at 966 kHz
+[16:56:51] 3/360 batches done (78s): mnist/mlp/roba_dn1/b00040 simulated in 78s at 965 kHz
+[16:56:52] 4/360 batches done (79s): mnist/mlp/roba_dn1/b00060 simulated in 79s at 954 kHz
+[16:56:53] 5/360 batches done (80s): mnist/mlp/roba_dn1/b00070 simulated in 80s at 947 kHz
+[16:56:54] 6/360 batches done (82s): mnist/mlp/roba_dn1/b00050 simulated in 82s at 924 kHz
+[16:56:56] 7/360 batches done (83s): mnist/mlp/roba_dn1/b00090 simulated in 83s at 913 kHz
+[16:56:57] 8/360 batches done (84s): mnist/mlp/roba_dn1/b00020 simulated in 84s at 903 kHz
+[16:57:05] 9/360 batches done (92s): mnist/mlp/roba_dn1/b00010 simulated in 92s at 818 kHz
+[16:57:05] 10/360 batches done (92s): mnist/mlp/mitchell/b00010 simulated in 92s at 977 kHz
+[16:57:06] 11/360 batches done (93s): mnist/mlp/mitchell/b00020 simulated in 93s at 976 kHz
+[16:57:06] 12/360 batches done (93s): mnist/mlp/mitchell/b00060 simulated in 93s at 973 kHz
+[16:57:07] 13/360 batches done (94s): mnist/mlp/mitchell/b00080 simulated in 94s at 959 kHz
+[16:57:08] 14/360 batches done (95s): mnist/mlp/roba_dn1/b00000 simulated in 95s at 796 kHz
+[16:57:08] 15/360 batches done (95s): mnist/mlp/mitchell/b00000 simulated in 95s at 953 kHz
+[16:57:09] 16/360 batches done (96s): mnist/mlp/mitchell/b00070 simulated in 96s at 936 kHz
+[16:57:10] 17/360 batches done (97s): mnist/mlp/mitchell/b00040 simulated in 97s at 935 kHz
+[16:57:11] 18/360 batches done (98s): mnist/mlp/mitchell/b00050 simulated in 98s at 920 kHz
+[16:57:17] 19/360 batches done (104s): mnist/mlp/mitchell/b00030 simulated in 104s at 871 kHz
+[16:57:20] 20/360 batches done (107s): mnist/mlp/roba_updn/b00020 simulated in 107s at 985 kHz
+[16:57:21] 21/360 batches done (108s): mnist/mlp/mitchell/b00090 simulated in 108s at 833 kHz
+[16:57:22] 22/360 batches done (109s): mnist/mlp/roba_updn/b00060 simulated in 109s at 962 kHz
+[16:57:24] 23/360 batches done (111s): mnist/mlp/roba_updn/b00070 simulated in 111s at 949 kHz
+[16:57:25] 24/360 batches done (112s): mnist/mlp/roba_updn/b00000 simulated in 112s at 945 kHz
+[16:57:25] 25/360 batches done (112s): mnist/mlp/roba_updn/b00040 simulated in 112s at 942 kHz
+[16:57:27] 26/360 batches done (114s): mnist/mlp/roba_updn/b00030 simulated in 114s at 928 kHz
+[16:57:29] 27/360 batches done (116s): mnist/mlp/roba_updn/b00010 simulated in 116s at 911 kHz
+[16:57:38] 28/360 batches done (125s): mnist/mlp/roba_updn/b00050 simulated in 125s at 845 kHz
+[16:57:51] 29/360 batches done (138s): mnist/mlp/exact/b00090 simulated in 138s at 1036 kHz
+[16:57:52] 30/360 batches done (139s): mnist/mlp/exact/b00070 simulated in 139s at 1032 kHz
+[16:57:52] 31/360 batches done (139s): mnist/mlp/exact/b00080 simulated in 139s at 1032 kHz
+[16:57:53] 32/360 batches done (140s): mnist/mlp/exact/b00020 simulated in 140s at 1025 kHz
+[16:57:53] 33/360 batches done (140s): mnist/mlp/exact/b00060 simulated in 140s at 1019 kHz
+[16:57:55] 34/360 batches done (142s): mnist/mlp/exact/b00000 simulated in 142s at 1011 kHz
+[16:57:55] 35/360 batches done (142s): mnist/mlp/exact/b00050 simulated in 142s at 1008 kHz
+[16:57:55] 36/360 batches done (142s): mnist/mlp/exact/b00030 simulated in 142s at 1008 kHz
+[16:57:57] 37/360 batches done (144s): mnist/mlp/exact/b00040 simulated in 144s at 998 kHz
+[16:57:57] 38/360 batches done (144s): mnist/mlp/exact/b00010 simulated in 144s at 993 kHz
+[16:58:09] 39/360 batches done (156s): mnist/mlp/drum6/b00030 simulated in 156s at 1047 kHz
+[16:58:10] 40/360 batches done (157s): mnist/mlp/drum6/b00000 simulated in 157s at 1038 kHz
+[16:58:11] 41/360 batches done (158s): mnist/mlp/drum6/b00060 simulated in 158s at 1031 kHz
+[16:58:13] 42/360 batches done (160s): mnist/mlp/drum6/b00080 simulated in 160s at 1019 kHz
+[16:58:13] 43/360 batches done (160s): mnist/mlp/drum6/b00020 simulated in 160s at 1017 kHz
+[16:58:14] 44/360 batches done (161s): mnist/mlp/drum6/b00090 simulated in 161s at 1012 kHz
+[16:58:15] 45/360 batches done (162s): mnist/mlp/drum6/b00010 simulated in 162s at 1006 kHz
+[16:58:16] 46/360 batches done (163s): mnist/mlp/drum6/b00070 simulated in 163s at 999 kHz
+[16:58:17] 47/360 batches done (164s): mnist/mlp/drum6/b00050 simulated in 164s at 992 kHz
+[16:58:17] 48/360 batches done (165s): mnist/mlp/drum6/b00040 simulated in 165s at 993 kHz
+[16:58:37] 49/360 batches done (184s): mnist/mlp/sqtab/b00020 simulated in 42s at 987 kHz
+[16:58:37] 50/360 batches done (184s): mnist/mlp/sqtab/b00030 simulated in 42s at 988 kHz
+[16:58:38] 51/360 batches done (185s): mnist/mlp/roba_dn2/b00020 simulated in 105s at 993 kHz
+[16:58:38] 52/360 batches done (185s): mnist/mlp/sqtab/b00010 simulated in 43s at 957 kHz
+[16:58:38] 53/360 batches done (185s): mnist/mlp/roba_updn/b00090 simulated in 107s at 982 kHz
+[16:58:40] 54/360 batches done (187s): mnist/mlp/roba_dn2/b00030 simulated in 106s at 988 kHz
+[16:58:41] 55/360 batches done (188s): mnist/mlp/sqtab/b00040 simulated in 44s at 944 kHz
+[16:58:41] 56/360 batches done (188s): mnist/mlp/sqtab/b00000 simulated in 48s at 873 kHz
+[16:58:42] 57/360 batches done (189s): mnist/mlp/roba_dn2/b00000 simulated in 111s at 942 kHz
+[16:58:43] 58/360 batches done (190s): mnist/mlp/roba_updn/b00080 simulated in 112s at 939 kHz
+[16:58:43] 59/360 batches done (190s): mnist/mlp/sqtab/b00050 simulated in 46s at 900 kHz
+[16:58:44] 60/360 batches done (191s): mnist/mlp/roba_dn2/b00050 simulated in 107s at 972 kHz
+[16:58:48] 61/360 batches done (195s): mnist/mlp/roba_dn2/b00040 simulated in 112s at 929 kHz
+[16:58:51] 62/360 batches done (198s): mnist/mlp/roba_dn2/b00010 simulated in 119s at 876 kHz
+[16:58:52] 63/360 batches done (199s): mnist/mlp/sqtab/b00060 simulated in 43s at 970 kHz
+[16:58:52] 64/360 batches done (199s): mnist/mlp/roba_dn2/b00070 simulated in 106s at 978 kHz
+[16:58:52] 65/360 batches done (199s): mnist/mlp/sqtab/b00070 simulated in 42s at 984 kHz
+[16:58:52] 66/360 batches done (199s): mnist/mlp/roba_dn2/b00090 simulated in 107s at 976 kHz
+[16:58:58] 67/360 batches done (206s): mnist/mlp/sqtab/b00090 simulated in 46s at 908 kHz
+[16:59:01] 68/360 batches done (208s): mnist/mlp/sqtab/b00080 simulated in 50s at 836 kHz
+[16:59:03] 69/360 batches done (210s): mnist/mlp/roba_dn2/b00080 simulated in 118s at 885 kHz
+[16:59:28] 70/360 batches done (235s): mnist/mlp/roba_dn2/b00060 simulated in 143s at 727 kHz
+[16:59:43] 71/360 batches done (250s): mnist/mlp/roba_updndn/b00000 simulated in 156s at 985 kHz
+[16:59:45] 72/360 batches done (252s): mnist/mlp/roba_updndn/b00020 simulated in 157s at 977 kHz
+[16:59:47] 73/360 batches done (254s): mnist/mlp/roba_updndn/b00050 simulated in 156s at 984 kHz
+[16:59:48] 74/360 batches done (255s): mnist/mlp/roba_updndn/b00030 simulated in 159s at 968 kHz
+[16:59:49] 75/360 batches done (256s): mnist/mlp/roba_updndn/b00010 simulated in 161s at 953 kHz
+[16:59:55] 76/360 batches done (262s): mnist/mlp/roba_updndn/b00060 simulated in 159s at 967 kHz
+[17:00:04] 77/360 batches done (271s): mnist/mlp/roba_updndn/b00090 simulated in 161s at 950 kHz
+[17:00:09] 78/360 batches done (276s): mnist/mlp/roba_updndn/b00070 simulated in 169s at 909 kHz
+[17:00:20] 79/360 batches done (287s): mnist/mlp/roba_updndn/b00040 simulated in 191s at 809 kHz
+[17:00:32] 80/360 batches done (299s): mnist/mlp/roba_updn2/b00000 simulated in 188s at 971 kHz
+[17:00:33] 81/360 batches done (300s): mnist/mlp/roba_updn2/b00010 simulated in 188s at 971 kHz
+[17:00:38] 82/360 batches done (305s): mnist/mlp/roba_updn2/b00020 simulated in 193s at 950 kHz
+[17:00:38] 83/360 batches done (306s): mnist/mlp/roba_updndn/b00080 simulated in 197s at 778 kHz
+[17:00:39] 84/360 batches done (306s): mnist/mlp/roba_updn2/b00030 simulated in 193s at 951 kHz
+[17:00:41] 85/360 batches done (308s): mnist/lenet5/mitchell/b00000 simulated in 123s at 969 kHz
+[17:00:42] 86/360 batches done (309s): mnist/mlp/roba_updn2/b00040 simulated in 193s at 950 kHz
+[17:00:45] 87/360 batches done (312s): mnist/lenet5/mitchell/b00020 simulated in 124s at 969 kHz
+[17:00:45] 88/360 batches done (312s): mnist/lenet5/mitchell/b00030 simulated in 124s at 954 kHz
+[17:00:47] 89/360 batches done (314s): mnist/mlp/roba_updn2/b00050 simulated in 189s at 966 kHz
+[17:00:48] 90/360 batches done (315s): mnist/lenet5/mitchell/b00040 simulated in 126s at 941 kHz
+[17:00:50] 91/360 batches done (317s): mnist/lenet5/mitchell/b00010 simulated in 130s at 925 kHz
+[17:00:51] 92/360 batches done (318s): mnist/lenet5/mitchell/b00050 simulated in 128s at 938 kHz
+[17:00:52] 93/360 batches done (319s): mnist/lenet5/mitchell/b00070 simulated in 128s at 930 kHz
+[17:00:52] 94/360 batches done (319s): mnist/lenet5/mitchell/b00080 simulated in 124s at 964 kHz
+[17:00:52] 95/360 batches done (319s): mnist/lenet5/mitchell/b00060 simulated in 129s at 931 kHz
+[17:00:58] 96/360 batches done (325s): mnist/lenet5/mitchell/b00090 simulated in 127s at 944 kHz
+[17:01:00] 97/360 batches done (327s): mnist/mlp/roba_updn2/b00060 simulated in 189s at 968 kHz
+[17:01:01] 98/360 batches done (328s): mnist/mlp/roba_updn2/b00090 simulated in 188s at 969 kHz
+[17:01:01] 99/360 batches done (328s): mnist/mlp/roba_updn2/b00080 simulated in 190s at 964 kHz
+[17:01:11] 100/360 batches done (338s): mnist/mlp/roba_updn2/b00070 simulated in 200s at 916 kHz
+[17:01:38] 101/360 batches done (365s): mnist/lenet5/roba_dn1/b00010 simulated in 109s at 947 kHz
+[17:01:40] 102/360 batches done (367s): mnist/lenet5/roba_dn1/b00030 simulated in 104s at 982 kHz
+[17:01:49] 103/360 batches done (376s): mnist/lenet5/roba_dn1/b00000 simulated in 121s at 846 kHz
+[17:01:50] 104/360 batches done (377s): mnist/lenet5/roba_dn1/b00020 simulated in 121s at 852 kHz
+[17:01:57] 105/360 batches done (384s): mnist/lenet5/roba_dn1/b00040 simulated in 114s at 903 kHz
+[17:02:05] 106/360 batches done (392s): mnist/lenet5/exact/b00000 simulated in 232s at 1037 kHz
+[17:02:07] 107/360 batches done (394s): mnist/lenet5/roba_dn1/b00050 simulated in 118s at 874 kHz
+[17:02:09] 108/360 batches done (396s): mnist/lenet5/roba_dn1/b00060 simulated in 109s at 954 kHz
+[17:02:09] 109/360 batches done (396s): mnist/lenet5/exact/b00030 simulated in 233s at 1025 kHz
+[17:02:09] 110/360 batches done (396s): mnist/lenet5/exact/b00020 simulated in 234s at 1035 kHz
+[17:02:17] 111/360 batches done (404s): mnist/lenet5/exact/b00050 simulated in 239s at 1015 kHz
+[17:02:17] 112/360 batches done (404s): mnist/lenet5/exact/b00040 simulated in 240s at 998 kHz
+[17:02:18] 113/360 batches done (405s): mnist/lenet5/roba_dn1/b00070 simulated in 106s at 970 kHz
+[17:02:23] 114/360 batches done (410s): mnist/lenet5/roba_dn1/b00090 simulated in 105s at 981 kHz
+[17:02:27] 115/360 batches done (414s): mnist/lenet5/exact/b00010 simulated in 254s at 959 kHz
+[17:02:28] 116/360 batches done (415s): mnist/lenet5/exact/b00080 simulated in 231s at 1049 kHz
+[17:02:31] 117/360 batches done (419s): mnist/lenet5/exact/b00060 simulated in 234s at 1039 kHz
+[17:02:33] 118/360 batches done (420s): mnist/lenet5/roba_dn1/b00080 simulated in 120s at 862 kHz
+[17:02:41] 119/360 batches done (428s): mnist/lenet5/exact/b00090 simulated in 243s at 995 kHz
+[17:02:53] 120/360 batches done (440s): mnist/lenet5/exact/b00070 simulated in 256s at 943 kHz
+[17:03:06] 121/360 batches done (453s): mnist/lenet5/drum6/b00020 simulated in 254s at 1034 kHz
+[17:03:09] 122/360 batches done (456s): mnist/lenet5/drum6/b00030 simulated in 256s at 1008 kHz
+[17:03:09] 123/360 batches done (456s): mnist/lenet5/drum6/b00010 simulated in 257s at 1022 kHz
+[17:03:10] 124/360 batches done (457s): mnist/lenet5/drum6/b00040 simulated in 251s at 1031 kHz
+[17:03:17] 125/360 batches done (464s): mnist/lenet5/roba_dn2/b00010 simulated in 145s at 955 kHz
+[17:03:17] 126/360 batches done (464s): mnist/lenet5/drum6/b00060 simulated in 254s at 1036 kHz
+[17:03:18] 127/360 batches done (465s): mnist/lenet5/roba_updn/b00000 simulated in 160s at 967 kHz
+[17:03:20] 128/360 batches done (467s): mnist/lenet5/roba_dn2/b00030 simulated in 142s at 957 kHz
+[17:03:21] 129/360 batches done (468s): mnist/lenet5/roba_updn/b00030 simulated in 160s at 963 kHz
+[17:03:21] 130/360 batches done (469s): mnist/lenet5/roba_updn/b00010 simulated in 162s at 966 kHz
+[17:03:22] 131/360 batches done (469s): mnist/lenet5/drum6/b00050 simulated in 262s at 1004 kHz
+[17:03:25] 132/360 batches done (472s): mnist/lenet5/roba_dn2/b00020 simulated in 152s at 906 kHz
+[17:03:25] 133/360 batches done (472s): mnist/lenet5/roba_dn2/b00040 simulated in 145s at 939 kHz
+[17:03:25] 134/360 batches done (472s): mnist/lenet5/roba_updn/b00040 simulated in 161s at 958 kHz
+[17:03:26] 135/360 batches done (473s): mnist/lenet5/roba_updn/b00020 simulated in 165s at 945 kHz
+[17:03:27] 136/360 batches done (474s): mnist/lenet5/roba_dn2/b00050 simulated in 145s at 951 kHz
+[17:03:28] 137/360 batches done (475s): mnist/lenet5/roba_dn2/b00060 simulated in 147s at 944 kHz
+[17:03:31] 138/360 batches done (478s): mnist/lenet5/roba_updn/b00070 simulated in 163s at 949 kHz
+[17:03:31] 139/360 batches done (478s): mnist/lenet5/roba_updn/b00080 simulated in 162s at 964 kHz
+[17:03:33] 140/360 batches done (480s): mnist/lenet5/roba_dn2/b00000 simulated in 161s at 846 kHz
+[17:03:33] 141/360 batches done (480s): mnist/lenet5/roba_dn2/b00070 simulated in 142s at 964 kHz
+[17:03:34] 142/360 batches done (481s): mnist/lenet5/roba_updn/b00060 simulated in 167s at 940 kHz
+[17:03:36] 143/360 batches done (483s): mnist/lenet5/roba_updn/b00050 simulated in 171s at 917 kHz
+[17:03:40] 144/360 batches done (487s): mnist/lenet5/drum6/b00070 simulated in 252s at 1035 kHz
+[17:03:43] 145/360 batches done (490s): mnist/lenet5/drum6/b00000 simulated in 291s at 891 kHz
+[17:03:44] 146/360 batches done (491s): mnist/lenet5/roba_updn/b00090 simulated in 173s at 900 kHz
+[17:03:58] 147/360 batches done (505s): mnist/lenet5/drum6/b00090 simulated in 253s at 1033 kHz
+[17:04:02] 148/360 batches done (509s): mnist/lenet5/roba_dn2/b00090 simulated in 142s at 967 kHz
+[17:04:03] 149/360 batches done (510s): mnist/lenet5/drum6/b00080 simulated in 260s at 1009 kHz
+[17:04:08] 150/360 batches done (515s): mnist/lenet5/roba_dn2/b00080 simulated in 150s at 917 kHz
+[17:04:31] 151/360 batches done (538s): mnist/lenet5/sqtab/b00010 simulated in 81s at 942 kHz
+[17:04:32] 152/360 batches done (539s): mnist/lenet5/sqtab/b00000 simulated in 83s at 921 kHz
+[17:04:38] 153/360 batches done (545s): mnist/lenet5/sqtab/b00030 simulated in 80s at 954 kHz
+[17:04:40] 154/360 batches done (547s): mnist/lenet5/sqtab/b00040 simulated in 82s at 940 kHz
+[17:04:41] 155/360 batches done (548s): mnist/lenet5/sqtab/b00050 simulated in 81s at 949 kHz
+[17:04:43] 156/360 batches done (550s): mnist/lenet5/sqtab/b00070 simulated in 81s at 945 kHz
+[17:04:44] 157/360 batches done (551s): mnist/lenet5/sqtab/b00080 simulated in 82s at 937 kHz
+[17:04:44] 158/360 batches done (552s): mnist/lenet5/sqtab/b00060 simulated in 83s at 921 kHz
+[17:04:46] 159/360 batches done (554s): mnist/lenet5/sqtab/b00090 simulated in 82s at 937 kHz
+[17:04:47] 160/360 batches done (554s): mnist/lenet5/sqtab/b00020 simulated in 90s at 850 kHz
+[17:05:10] 161/360 batches done (577s): fashion/mlp/mitchell/b00000 simulated in 94s at 915 kHz
+[17:05:12] 162/360 batches done (579s): fashion/mlp/mitchell/b00020 simulated in 89s at 965 kHz
+[17:05:28] 163/360 batches done (595s): fashion/mlp/mitchell/b00050 simulated in 86s at 992 kHz
+[17:05:29] 164/360 batches done (596s): fashion/mlp/mitchell/b00060 simulated in 86s at 994 kHz
+[17:05:29] 165/360 batches done (596s): fashion/mlp/mitchell/b00040 simulated in 91s at 940 kHz
+[17:05:34] 166/360 batches done (601s): fashion/mlp/mitchell/b00010 simulated in 114s at 753 kHz
+[17:05:35] 167/360 batches done (603s): fashion/mlp/mitchell/b00030 simulated in 112s at 771 kHz
+[17:05:36] 168/360 batches done (603s): fashion/mlp/mitchell/b00070 simulated in 88s at 976 kHz
+[17:05:36] 169/360 batches done (603s): fashion/mlp/exact/b00000 simulated in 131s at 1064 kHz
+[17:05:38] 170/360 batches done (605s): mnist/lenet5/roba_updndn/b00000 simulated in 230s at 972 kHz
+[17:05:39] 171/360 batches done (606s): fashion/mlp/exact/b00020 simulated in 132s at 1049 kHz
+[17:05:42] 172/360 batches done (609s): fashion/mlp/exact/b00010 simulated in 136s at 1019 kHz
+[17:05:42] 173/360 batches done (609s): fashion/mlp/exact/b00050 simulated in 131s at 1064 kHz
+[17:05:42] 174/360 batches done (609s): fashion/mlp/exact/b00030 simulated in 136s at 1034 kHz
+[17:05:45] 175/360 batches done (612s): fashion/mlp/exact/b00070 simulated in 131s at 1055 kHz
+[17:05:46] 176/360 batches done (613s): fashion/mlp/exact/b00040 simulated in 138s at 1006 kHz
+[17:05:48] 177/360 batches done (615s): fashion/mlp/exact/b00080 simulated in 135s at 1033 kHz
+[17:05:51] 178/360 batches done (618s): mnist/lenet5/roba_updndn/b00020 simulated in 233s at 966 kHz
+[17:05:52] 179/360 batches done (619s): fashion/mlp/exact/b00060 simulated in 141s at 991 kHz
+[17:05:53] 180/360 batches done (620s): fashion/mlp/exact/b00090 simulated in 140s at 997 kHz
+[17:05:56] 181/360 batches done (623s): mnist/lenet5/roba_updndn/b00070 simulated in 227s at 988 kHz
+[17:05:58] 182/360 batches done (625s): mnist/lenet5/roba_updndn/b00040 simulated in 231s at 963 kHz
+[17:06:00] 183/360 batches done (627s): mnist/lenet5/roba_updndn/b00030 simulated in 235s at 945 kHz
+[17:06:01] 184/360 batches done (628s): mnist/lenet5/roba_updndn/b00060 simulated in 232s at 976 kHz
+[17:06:03] 185/360 batches done (630s): mnist/lenet5/roba_updndn/b00010 simulated in 253s at 894 kHz
+[17:06:03] 186/360 batches done (630s): mnist/lenet5/roba_updndn/b00050 simulated in 234s at 964 kHz
+[17:06:07] 187/360 batches done (634s): mnist/lenet5/roba_updndn/b00090 simulated in 230s at 979 kHz
+[17:06:13] 188/360 batches done (640s): fashion/mlp/mitchell/b00090 simulated in 101s at 848 kHz
+[17:06:21] 189/360 batches done (648s): mnist/lenet5/roba_updndn/b00080 simulated in 244s at 922 kHz
+[17:06:23] 190/360 batches done (650s): fashion/mlp/mitchell/b00080 simulated in 112s at 766 kHz
+[17:06:44] 191/360 batches done (671s): fashion/mlp/roba_dn1/b00000 simulated in 75s at 997 kHz
+[17:06:44] 192/360 batches done (672s): mnist/lenet5/roba_updn2/b00000 simulated in 266s at 969 kHz
+[17:06:45] 193/360 batches done (672s): fashion/mlp/roba_dn1/b00020 simulated in 76s at 988 kHz
+[17:06:46] 194/360 batches done (673s): fashion/mlp/roba_dn1/b00010 simulated in 77s at 973 kHz
+[17:06:50] 195/360 batches done (677s): fashion/mlp/roba_dn1/b00030 simulated in 76s at 986 kHz
+[17:06:51] 196/360 batches done (678s): fashion/mlp/roba_dn1/b00040 simulated in 75s at 995 kHz
+[17:06:52] 197/360 batches done (679s): fashion/mlp/roba_dn1/b00060 simulated in 76s at 988 kHz
+[17:06:53] 198/360 batches done (680s): mnist/lenet5/roba_updn2/b00020 simulated in 266s at 982 kHz
+[17:06:55] 199/360 batches done (682s): fashion/mlp/roba_dn1/b00070 simulated in 77s at 974 kHz
+[17:06:57] 200/360 batches done (684s): mnist/lenet5/roba_updn2/b00030 simulated in 269s at 954 kHz
+[17:06:57] 201/360 batches done (684s): fashion/mlp/roba_dn1/b00050 simulated in 82s at 915 kHz
+[17:06:59] 202/360 batches done (686s): fashion/mlp/roba_dn1/b00090 simulated in 77s at 973 kHz
+[17:06:59] 203/360 batches done (686s): mnist/lenet5/roba_updn2/b00040 simulated in 267s at 961 kHz
+[17:07:05] 204/360 batches done (692s): fashion/mlp/roba_dn1/b00080 simulated in 87s at 863 kHz
+[17:07:12] 205/360 batches done (699s): fashion/mlp/drum6/b00010 simulated in 152s at 1043 kHz
+[17:07:15] 206/360 batches done (702s): mnist/lenet5/roba_updn2/b00010 simulated in 292s at 898 kHz
+[17:07:16] 207/360 batches done (703s): fashion/mlp/drum6/b00020 simulated in 155s at 1022 kHz
+[17:07:16] 208/360 batches done (703s): fashion/mlp/drum6/b00040 simulated in 152s at 1042 kHz
+[17:07:17] 209/360 batches done (704s): fashion/mlp/drum6/b00000 simulated in 159s at 1003 kHz
+[17:07:18] 210/360 batches done (705s): fashion/mlp/drum6/b00030 simulated in 156s at 1029 kHz
+[17:07:20] 211/360 batches done (707s): mnist/lenet5/roba_updn2/b00070 simulated in 267s at 972 kHz
+[17:07:20] 212/360 batches done (707s): mnist/lenet5/roba_updn2/b00060 simulated in 279s at 942 kHz
+[17:07:23] 213/360 batches done (710s): fashion/mlp/drum6/b00060 simulated in 156s at 1020 kHz
+[17:07:24] 214/360 batches done (711s): fashion/mlp/roba_updn/b00000 simulated in 102s at 999 kHz
+[17:07:28] 215/360 batches done (715s): fashion/mlp/roba_updn/b00020 simulated in 104s at 978 kHz
+[17:07:29] 216/360 batches done (716s): fashion/mlp/drum6/b00070 simulated in 162s at 976 kHz
+[17:07:32] 217/360 batches done (719s): fashion/mlp/roba_updn/b00040 simulated in 104s at 979 kHz
+[17:07:35] 218/360 batches done (722s): fashion/mlp/roba_updn/b00050 simulated in 104s at 976 kHz
+[17:07:35] 219/360 batches done (722s): mnist/lenet5/roba_updn2/b00080 simulated in 269s at 970 kHz
+[17:07:36] 220/360 batches done (723s): fashion/mlp/roba_updn/b00060 simulated in 104s at 977 kHz
+[17:07:36] 221/360 batches done (723s): fashion/mlp/drum6/b00050 simulated in 172s at 923 kHz
+[17:07:37] 222/360 batches done (724s): fashion/mlp/roba_updn/b00070 simulated in 104s at 973 kHz
+[17:07:38] 223/360 batches done (725s): mnist/lenet5/roba_updn2/b00090 simulated in 269s at 968 kHz
+[17:07:39] 224/360 batches done (726s): fashion/mlp/roba_updn/b00080 simulated in 103s at 985 kHz
+[17:07:40] 225/360 batches done (727s): fashion/mlp/roba_updn/b00010 simulated in 118s at 861 kHz
+[17:07:41] 226/360 batches done (728s): fashion/mlp/drum6/b00080 simulated in 151s at 1052 kHz
+[17:07:43] 227/360 batches done (730s): fashion/mlp/roba_updn/b00030 simulated in 117s at 870 kHz
+[17:07:45] 228/360 batches done (732s): fashion/mlp/drum6/b00090 simulated in 154s at 1035 kHz
+[17:07:47] 229/360 batches done (734s): fashion/mlp/roba_dn2/b00010 simulated in 106s at 971 kHz
+[17:07:48] 230/360 batches done (735s): fashion/mlp/roba_dn2/b00000 simulated in 108s at 951 kHz
+[17:07:48] 231/360 batches done (735s): fashion/mlp/roba_dn2/b00030 simulated in 105s at 982 kHz
+[17:07:51] 232/360 batches done (738s): fashion/mlp/roba_updn/b00090 simulated in 113s at 900 kHz
+[17:07:54] 233/360 batches done (741s): fashion/mlp/roba_dn2/b00040 simulated in 107s at 963 kHz
+[17:07:55] 234/360 batches done (742s): fashion/mlp/roba_dn2/b00020 simulated in 112s at 916 kHz
+[17:07:57] 235/360 batches done (744s): fashion/mlp/roba_dn2/b00050 simulated in 104s at 986 kHz
+[17:07:59] 236/360 batches done (746s): mnist/lenet5/roba_updn2/b00050 simulated in 326s at 803 kHz
+[17:08:06] 237/360 batches done (753s): fashion/mlp/sqtab/b00000 simulated in 43s at 967 kHz
+[17:08:07] 238/360 batches done (754s): fashion/mlp/sqtab/b00010 simulated in 43s at 956 kHz
+[17:08:11] 239/360 batches done (758s): fashion/mlp/sqtab/b00020 simulated in 43s at 977 kHz
+[17:08:12] 240/360 batches done (759s): fashion/mlp/roba_dn2/b00060 simulated in 111s at 927 kHz
+[17:08:14] 241/360 batches done (761s): fashion/mlp/sqtab/b00040 simulated in 42s at 988 kHz
+[17:08:17] 242/360 batches done (764s): fashion/mlp/sqtab/b00060 simulated in 42s at 985 kHz
+[17:08:18] 243/360 batches done (765s): fashion/mlp/sqtab/b00030 simulated in 49s at 854 kHz
+[17:08:18] 244/360 batches done (766s): fashion/mlp/sqtab/b00080 simulated in 42s at 987 kHz
+[17:08:19] 245/360 batches done (766s): fashion/mlp/roba_dn2/b00070 simulated in 116s at 886 kHz
+[17:08:19] 246/360 batches done (766s): fashion/mlp/sqtab/b00070 simulated in 43s at 972 kHz
+[17:08:19] 247/360 batches done (766s): fashion/mlp/sqtab/b00050 simulated in 44s at 938 kHz
+[17:08:20] 248/360 batches done (767s): fashion/mlp/sqtab/b00090 simulated in 43s at 971 kHz
+[17:08:30] 249/360 batches done (777s): fashion/mlp/roba_dn2/b00090 simulated in 106s at 973 kHz
+[17:08:43] 250/360 batches done (790s): fashion/mlp/roba_dn2/b00080 simulated in 119s at 861 kHz
+[17:09:21] 251/360 batches done (828s): fashion/mlp/roba_updndn/b00000 simulated in 156s at 955 kHz
+[17:09:24] 252/360 batches done (831s): fashion/mlp/roba_updndn/b00010 simulated in 158s at 941 kHz
+[17:09:26] 253/360 batches done (833s): fashion/mlp/roba_updndn/b00040 simulated in 153s at 967 kHz
+[17:09:26] 254/360 batches done (833s): fashion/mlp/roba_updndn/b00050 simulated in 153s at 971 kHz
+[17:09:29] 255/360 batches done (836s): fashion/mlp/roba_updndn/b00060 simulated in 154s at 965 kHz
+[17:09:31] 256/360 batches done (838s): fashion/mlp/roba_updndn/b00070 simulated in 154s at 958 kHz
+[17:09:33] 257/360 batches done (840s): fashion/mlp/roba_updndn/b00030 simulated in 162s at 921 kHz
+[17:09:33] 258/360 batches done (840s): fashion/mlp/roba_updndn/b00090 simulated in 155s at 960 kHz
+[17:09:34] 259/360 batches done (841s): fashion/mlp/roba_updndn/b00080 simulated in 157s at 948 kHz
+[17:09:45] 260/360 batches done (852s): fashion/mlp/roba_updndn/b00020 simulated in 174s at 851 kHz
+[17:10:01] 261/360 batches done (868s): fashion/mlp/roba_updn2/b00000 simulated in 182s at 972 kHz
+[17:10:05] 262/360 batches done (872s): fashion/lenet5/mitchell/b00000 simulated in 132s at 941 kHz
+[17:10:07] 263/360 batches done (874s): fashion/mlp/roba_updn2/b00010 simulated in 182s at 971 kHz
+[17:10:10] 264/360 batches done (877s): fashion/lenet5/mitchell/b00030 simulated in 131s at 950 kHz
+[17:10:12] 265/360 batches done (879s): fashion/lenet5/mitchell/b00010 simulated in 137s at 892 kHz
+[17:10:14] 266/360 batches done (881s): fashion/mlp/roba_updn2/b00040 simulated in 179s at 988 kHz
+[17:10:14] 267/360 batches done (881s): fashion/mlp/roba_updn2/b00020 simulated in 183s at 968 kHz
+[17:10:18] 268/360 batches done (885s): fashion/mlp/roba_updn2/b00050 simulated in 182s at 970 kHz
+[17:10:19] 269/360 batches done (886s): fashion/lenet5/mitchell/b00050 simulated in 132s at 929 kHz
+[17:10:20] 270/360 batches done (887s): fashion/mlp/roba_updn2/b00070 simulated in 182s at 969 kHz
+[17:10:20] 271/360 batches done (887s): fashion/lenet5/mitchell/b00060 simulated in 129s at 957 kHz
+[17:10:20] 272/360 batches done (887s): fashion/lenet5/mitchell/b00040 simulated in 135s at 904 kHz
+[17:10:21] 273/360 batches done (888s): fashion/lenet5/mitchell/b00080 simulated in 127s at 967 kHz
+[17:10:21] 274/360 batches done (888s): fashion/mlp/roba_updn2/b00080 simulated in 181s at 978 kHz
+[17:10:21] 275/360 batches done (888s): fashion/lenet5/mitchell/b00070 simulated in 129s at 940 kHz
+[17:10:22] 276/360 batches done (889s): fashion/mlp/roba_updn2/b00030 simulated in 187s at 950 kHz
+[17:10:23] 277/360 batches done (891s): fashion/mlp/roba_updn2/b00090 simulated in 184s at 962 kHz
+[17:10:26] 278/360 batches done (893s): fashion/lenet5/mitchell/b00090 simulated in 128s at 957 kHz
+[17:10:27] 279/360 batches done (894s): fashion/lenet5/mitchell/b00020 simulated in 149s at 823 kHz
+[17:10:51] 280/360 batches done (918s): fashion/mlp/roba_updn2/b00060 simulated in 214s at 827 kHz
+[17:11:13] 281/360 batches done (940s): fashion/lenet5/roba_dn1/b00010 simulated in 107s at 963 kHz
+[17:11:15] 282/360 batches done (942s): fashion/lenet5/roba_dn1/b00000 simulated in 109s at 954 kHz
+[17:11:18] 283/360 batches done (945s): fashion/lenet5/roba_dn1/b00020 simulated in 109s at 945 kHz
+[17:11:19] 284/360 batches done (946s): fashion/lenet5/roba_dn1/b00030 simulated in 107s at 972 kHz
+[17:11:20] 285/360 batches done (947s): fashion/lenet5/roba_dn1/b00050 simulated in 107s at 966 kHz
+[17:11:22] 286/360 batches done (949s): fashion/lenet5/exact/b00010 simulated in 223s at 1034 kHz
+[17:11:22] 287/360 batches done (949s): fashion/lenet5/roba_dn1/b00060 simulated in 108s at 963 kHz
+[17:11:23] 288/360 batches done (950s): fashion/lenet5/exact/b00000 simulated in 225s at 1037 kHz
+[17:11:26] 289/360 batches done (953s): fashion/lenet5/exact/b00040 simulated in 223s at 1024 kHz
+[17:11:29] 290/360 batches done (956s): fashion/lenet5/exact/b00030 simulated in 228s at 1030 kHz
+[17:11:30] 291/360 batches done (957s): fashion/lenet5/roba_dn1/b00070 simulated in 105s at 977 kHz
+[17:11:31] 292/360 batches done (958s): fashion/lenet5/exact/b00070 simulated in 223s at 1018 kHz
+[17:11:32] 293/360 batches done (959s): fashion/lenet5/exact/b00060 simulated in 225s at 1034 kHz
+[17:11:33] 294/360 batches done (960s): fashion/lenet5/exact/b00080 simulated in 225s at 1024 kHz
+[17:11:35] 295/360 batches done (963s): fashion/lenet5/exact/b00090 simulated in 225s at 1027 kHz
+[17:11:38] 296/360 batches done (965s): fashion/lenet5/exact/b00050 simulated in 233s at 987 kHz
+[17:11:41] 297/360 batches done (968s): fashion/lenet5/roba_dn1/b00040 simulated in 128s at 801 kHz
+[17:11:49] 298/360 batches done (976s): fashion/lenet5/roba_dn1/b00080 simulated in 108s at 956 kHz
+[17:11:54] 299/360 batches done (981s): fashion/lenet5/roba_dn1/b00090 simulated in 109s at 951 kHz
+[17:12:19] 300/360 batches done (1006s): fashion/lenet5/exact/b00020 simulated in 279s at 828 kHz
+[17:12:44] 301/360 batches done (1031s): fashion/lenet5/drum6/b00000 simulated in 266s at 1036 kHz
+[17:12:45] 302/360 batches done (1032s): fashion/lenet5/roba_dn2/b00010 simulated in 144s at 964 kHz
+[17:12:47] 303/360 batches done (1034s): fashion/lenet5/drum6/b00010 simulated in 268s at 1015 kHz
+[17:12:48] 304/360 batches done (1035s): fashion/lenet5/roba_dn2/b00040 simulated in 145s at 952 kHz
+[17:12:49] 305/360 batches done (1036s): fashion/lenet5/roba_dn2/b00020 simulated in 147s at 946 kHz
+[17:12:50] 306/360 batches done (1038s): fashion/lenet5/roba_dn2/b00050 simulated in 145s at 953 kHz
+[17:12:51] 307/360 batches done (1038s): fashion/lenet5/roba_dn2/b00000 simulated in 150s at 937 kHz
+[17:12:52] 308/360 batches done (1039s): fashion/lenet5/drum6/b00030 simulated in 273s at 1018 kHz
+[17:12:53] 309/360 batches done (1040s): fashion/lenet5/drum6/b00050 simulated in 273s at 996 kHz
+[17:12:53] 310/360 batches done (1040s): fashion/lenet5/roba_dn2/b00060 simulated in 146s at 957 kHz
+[17:12:55] 311/360 batches done (1042s): fashion/lenet5/drum6/b00040 simulated in 276s at 979 kHz
+[17:12:55] 312/360 batches done (1042s): fashion/lenet5/roba_updn/b00000 simulated in 168s at 951 kHz
+[17:12:56] 313/360 batches done (1043s): fashion/lenet5/roba_updn/b00040 simulated in 161s at 973 kHz
+[17:12:56] 314/360 batches done (1043s): fashion/lenet5/drum6/b00020 simulated in 278s at 984 kHz
+[17:12:58] 315/360 batches done (1045s): fashion/lenet5/drum6/b00060 simulated in 268s at 1028 kHz
+[17:12:59] 316/360 batches done (1046s): fashion/lenet5/roba_dn2/b00030 simulated in 156s at 905 kHz
+[17:13:03] 317/360 batches done (1050s): fashion/lenet5/drum6/b00070 simulated in 260s at 1036 kHz
+[17:13:03] 318/360 batches done (1050s): fashion/lenet5/roba_updn/b00050 simulated in 165s at 955 kHz
+[17:13:04] 319/360 batches done (1051s): fashion/lenet5/roba_updn/b00030 simulated in 169s at 949 kHz
+[17:13:04] 320/360 batches done (1051s): fashion/lenet5/roba_updn/b00090 simulated in 164s at 966 kHz
+[17:13:05] 321/360 batches done (1052s): fashion/lenet5/roba_updn/b00080 simulated in 165s at 961 kHz
+[17:13:09] 322/360 batches done (1056s): fashion/lenet5/roba_updn/b00070 simulated in 169s at 919 kHz
+[17:13:10] 323/360 batches done (1057s): fashion/lenet5/roba_updn/b00060 simulated in 170s at 936 kHz
+[17:13:12] 324/360 batches done (1059s): fashion/lenet5/roba_dn2/b00070 simulated in 142s at 967 kHz
+[17:13:21] 325/360 batches done (1068s): fashion/lenet5/roba_updn/b00020 simulated in 189s at 838 kHz
+[17:13:37] 326/360 batches done (1085s): fashion/lenet5/roba_dn2/b00080 simulated in 145s at 962 kHz
+[17:13:41] 327/360 batches done (1088s): fashion/lenet5/roba_updn/b00010 simulated in 211s at 749 kHz
+[17:13:42] 328/360 batches done (1089s): fashion/lenet5/roba_dn2/b00090 simulated in 147s at 942 kHz
+[17:13:48] 329/360 batches done (1095s): fashion/lenet5/drum6/b00080 simulated in 267s at 1021 kHz
+[17:14:05] 330/360 batches done (1112s): fashion/lenet5/drum6/b00090 simulated in 281s at 971 kHz
+[17:14:09] 331/360 batches done (1116s): fashion/lenet5/sqtab/b00020 simulated in 81s at 952 kHz
+[17:14:09] 332/360 batches done (1116s): fashion/lenet5/sqtab/b00010 simulated in 81s at 948 kHz
+[17:14:10] 333/360 batches done (1118s): fashion/lenet5/sqtab/b00030 simulated in 80s at 958 kHz
+[17:14:11] 334/360 batches done (1118s): fashion/lenet5/sqtab/b00040 simulated in 80s at 956 kHz
+[17:14:12] 335/360 batches done (1119s): fashion/lenet5/sqtab/b00000 simulated in 85s at 901 kHz
+[17:14:13] 336/360 batches done (1120s): fashion/lenet5/sqtab/b00050 simulated in 81s at 947 kHz
+[17:14:14] 337/360 batches done (1121s): fashion/lenet5/sqtab/b00070 simulated in 81s at 950 kHz
+[17:14:15] 338/360 batches done (1122s): fashion/lenet5/sqtab/b00080 simulated in 81s at 951 kHz
+[17:14:16] 339/360 batches done (1123s): fashion/lenet5/sqtab/b00090 simulated in 81s at 945 kHz
+[17:14:16] 340/360 batches done (1123s): fashion/lenet5/sqtab/b00060 simulated in 83s at 921 kHz
+[17:15:15] 341/360 batches done (1182s): fashion/lenet5/roba_updndn/b00010 simulated in 236s at 978 kHz
+[17:15:15] 342/360 batches done (1182s): fashion/lenet5/roba_updndn/b00040 simulated in 233s at 980 kHz
+[17:15:16] 343/360 batches done (1184s): fashion/lenet5/roba_updndn/b00000 simulated in 238s at 984 kHz
+[17:15:19] 344/360 batches done (1186s): fashion/lenet5/roba_updndn/b00020 simulated in 239s at 969 kHz
+[17:15:19] 345/360 batches done (1186s): fashion/lenet5/roba_updndn/b00050 simulated in 236s at 974 kHz
+[17:15:22] 346/360 batches done (1189s): fashion/lenet5/roba_updndn/b00030 simulated in 240s at 983 kHz
+[17:15:23] 347/360 batches done (1191s): fashion/lenet5/roba_updndn/b00070 simulated in 235s at 968 kHz
+[17:15:27] 348/360 batches done (1194s): fashion/lenet5/roba_updndn/b00090 simulated in 236s at 982 kHz
+[17:15:30] 349/360 batches done (1197s): fashion/lenet5/roba_updndn/b00080 simulated in 240s at 963 kHz
+[17:15:34] 350/360 batches done (1201s): fashion/lenet5/roba_updndn/b00060 simulated in 248s at 942 kHz
+[17:16:08] 351/360 batches done (1235s): fashion/lenet5/roba_updn2/b00010 simulated in 275s at 974 kHz
+[17:16:10] 352/360 batches done (1237s): fashion/lenet5/roba_updn2/b00000 simulated in 278s at 981 kHz
+[17:16:12] 353/360 batches done (1239s): fashion/lenet5/roba_updn2/b00020 simulated in 277s at 973 kHz
+[17:16:16] 354/360 batches done (1243s): fashion/lenet5/roba_updn2/b00030 simulated in 278s at 988 kHz
+[17:16:23] 355/360 batches done (1250s): fashion/lenet5/roba_updn2/b00050 simulated in 274s at 971 kHz
+[17:16:30] 356/360 batches done (1257s): fashion/lenet5/roba_updn2/b00060 simulated in 276s at 984 kHz
+[17:16:36] 357/360 batches done (1263s): fashion/lenet5/roba_updn2/b00040 simulated in 295s at 903 kHz
+[17:16:50] 358/360 batches done (1277s): fashion/lenet5/roba_updn2/b00070 simulated in 271s at 974 kHz
+[17:17:17] 359/360 batches done (1304s): fashion/lenet5/roba_updn2/b00090 simulated in 272s at 990 kHz
+[17:17:19] 360/360 batches done (1306s): fashion/lenet5/roba_updn2/b00080 simulated in 275s at 980 kHz
+[17:17:19] wrote results/ibex/dnn_images.csv
+[17:17:19] mnist   mlp    exact              ibex acc 1.000 | logits match 1.000 |  13.91 M cycles/image
+[17:17:19] mnist   mlp    mitchell           ibex acc 1.000 | logits match 1.000 |   8.61 M cycles/image
+[17:17:19] mnist   mlp    drum6              ibex acc 1.000 | logits match 1.000 |  15.87 M cycles/image
+[17:17:19] mnist   mlp    roba_dn1           ibex acc 1.000 | logits match 1.000 |   7.12 M cycles/image
+[17:17:19] mnist   mlp    roba_updn          ibex acc 1.000 | logits match 1.000 |  10.13 M cycles/image
+[17:17:19] mnist   mlp    roba_dn2           ibex acc 1.000 | logits match 1.000 |  10.00 M cycles/image
+[17:17:19] mnist   mlp    roba_updndn        ibex acc 1.000 | logits match 1.000 |  14.94 M cycles/image
+[17:17:19] mnist   mlp    roba_updn2         ibex acc 1.000 | logits match 1.000 |  17.87 M cycles/image
+[17:17:19] mnist   mlp    sqtab              ibex acc 1.000 | logits match 1.000 |   3.87 M cycles/image
+[17:17:19] mnist   lenet5 exact              ibex acc 1.000 | logits match 1.000 |  24.04 M cycles/image
+[17:17:19] mnist   lenet5 mitchell           ibex acc 1.000 | logits match 1.000 |  11.82 M cycles/image
+[17:17:19] mnist   lenet5 drum6              ibex acc 1.000 | logits match 1.000 |  26.01 M cycles/image
+[17:17:19] mnist   lenet5 roba_dn1           ibex acc 1.000 | logits match 1.000 |  10.19 M cycles/image
+[17:17:19] mnist   lenet5 roba_updn          ibex acc 1.000 | logits match 1.000 |  15.42 M cycles/image
+[17:17:19] mnist   lenet5 roba_dn2           ibex acc 1.000 | logits match 1.000 |  13.62 M cycles/image
+[17:17:19] mnist   lenet5 roba_updndn        ibex acc 1.000 | logits match 1.000 |  22.33 M cycles/image
+[17:17:19] mnist   lenet5 roba_updn2         ibex acc 1.000 | logits match 1.000 |  25.87 M cycles/image
+[17:17:19] mnist   lenet5 sqtab              ibex acc 1.000 | logits match 1.000 |   7.58 M cycles/image
+[17:17:19] fashion mlp    exact              ibex acc 0.910 | logits match 1.000 |  13.49 M cycles/image
+[17:17:19] fashion mlp    mitchell           ibex acc 0.910 | logits match 1.000 |   8.14 M cycles/image
+[17:17:19] fashion mlp    drum6              ibex acc 0.910 | logits match 1.000 |  15.45 M cycles/image
+[17:17:19] fashion mlp    roba_dn1           ibex acc 0.910 | logits match 1.000 |   7.05 M cycles/image
+[17:17:19] fashion mlp    roba_updn          ibex acc 0.910 | logits match 1.000 |   9.73 M cycles/image
+[17:17:19] fashion mlp    roba_dn2           ibex acc 0.910 | logits match 1.000 |   9.85 M cycles/image
+[17:17:19] fashion mlp    roba_updndn        ibex acc 0.910 | logits match 1.000 |  14.42 M cycles/image
+[17:17:19] fashion mlp    roba_updn2         ibex acc 0.910 | logits match 1.000 |  17.25 M cycles/image
+[17:17:19] fashion mlp    sqtab              ibex acc 0.910 | logits match 1.000 |   3.87 M cycles/image
+[17:17:19] fashion lenet5 exact              ibex acc 0.860 | logits match 1.000 |  22.95 M cycles/image
+[17:17:19] fashion lenet5 mitchell           ibex acc 0.860 | logits match 1.000 |  12.16 M cycles/image
+[17:17:19] fashion lenet5 drum6              ibex acc 0.860 | logits match 1.000 |  27.18 M cycles/image
+[17:17:19] fashion lenet5 roba_dn1           ibex acc 0.860 | logits match 1.000 |  10.21 M cycles/image
+[17:17:19] fashion lenet5 roba_updn          ibex acc 0.850 | logits match 1.000 |  15.70 M cycles/image
+[17:17:19] fashion lenet5 roba_dn2           ibex acc 0.880 | logits match 1.000 |  13.78 M cycles/image
+[17:17:19] fashion lenet5 roba_updndn        ibex acc 0.860 | logits match 1.000 |  23.03 M cycles/image
+[17:17:19] fashion lenet5 roba_updn2         ibex acc 0.860 | logits match 1.000 |  26.78 M cycles/image
+[17:17:19] fashion lenet5 sqtab              ibex acc 0.860 | logits match 1.000 |   7.57 M cycles/image
+[17:17:19] wrote results/ibex/dnn_summary.csv
+[17:17:20] prepared mnist/mlp/exact+call: python reference accuracy 1.0000 on 100 images
+[17:17:21] prepared mnist/mlp/mitchell+call: python reference accuracy 1.0000 on 100 images
+[17:17:21] prepared mnist/mlp/drum6+call: python reference accuracy 1.0000 on 100 images
+[17:17:22] prepared mnist/mlp/roba_dn1+call: python reference accuracy 1.0000 on 100 images
+[17:17:22] prepared mnist/mlp/roba_updn+call: python reference accuracy 1.0000 on 100 images
+[17:17:23] prepared mnist/mlp/roba_dn2+call: python reference accuracy 1.0000 on 100 images
+[17:17:23] prepared mnist/mlp/roba_updndn+call: python reference accuracy 1.0000 on 100 images
+[17:17:24] prepared mnist/mlp/roba_updn2+call: python reference accuracy 1.0000 on 100 images
+[17:17:24] prepared mnist/lenet5/exact+call: python reference accuracy 1.0000 on 100 images
+[17:17:25] prepared mnist/lenet5/mitchell+call: python reference accuracy 1.0000 on 100 images
+[17:17:25] prepared mnist/lenet5/drum6+call: python reference accuracy 1.0000 on 100 images
+[17:17:26] prepared mnist/lenet5/roba_dn1+call: python reference accuracy 1.0000 on 100 images
+[17:17:26] prepared mnist/lenet5/roba_updn+call: python reference accuracy 1.0000 on 100 images
+[17:17:26] prepared mnist/lenet5/roba_dn2+call: python reference accuracy 1.0000 on 100 images
+[17:17:26] prepared mnist/lenet5/roba_updndn+call: python reference accuracy 1.0000 on 100 images
+[17:17:27] prepared mnist/lenet5/roba_updn2+call: python reference accuracy 1.0000 on 100 images
+[17:17:28] prepared fashion/mlp/exact+call: python reference accuracy 0.9100 on 100 images
+[17:17:29] prepared fashion/mlp/mitchell+call: python reference accuracy 0.9100 on 100 images
+[17:17:29] prepared fashion/mlp/drum6+call: python reference accuracy 0.9100 on 100 images
+[17:17:30] prepared fashion/mlp/roba_dn1+call: python reference accuracy 0.9100 on 100 images
+[17:17:30] prepared fashion/mlp/roba_updn+call: python reference accuracy 0.9100 on 100 images
+[17:17:31] prepared fashion/mlp/roba_dn2+call: python reference accuracy 0.9100 on 100 images
+[17:17:31] prepared fashion/mlp/roba_updndn+call: python reference accuracy 0.9100 on 100 images
+[17:17:32] prepared fashion/mlp/roba_updn2+call: python reference accuracy 0.9100 on 100 images
+[17:17:32] prepared fashion/lenet5/exact+call: python reference accuracy 0.8600 on 100 images
+[17:17:33] prepared fashion/lenet5/mitchell+call: python reference accuracy 0.8600 on 100 images
+[17:17:34] prepared fashion/lenet5/drum6+call: python reference accuracy 0.8600 on 100 images
+[17:17:34] prepared fashion/lenet5/roba_dn1+call: python reference accuracy 0.8600 on 100 images
+[17:17:34] prepared fashion/lenet5/roba_updn+call: python reference accuracy 0.8500 on 100 images
+[17:17:34] prepared fashion/lenet5/roba_dn2+call: python reference accuracy 0.8800 on 100 images
+[17:17:35] prepared fashion/lenet5/roba_updndn+call: python reference accuracy 0.8600 on 100 images
+[17:17:35] prepared fashion/lenet5/roba_updn2+call: python reference accuracy 0.8600 on 100 images
+[17:17:35] compiling 320 programs
+[17:17:43] running 320 simulations on 48 workers
+[17:19:15] 1/320 batches done (92s): mnist/mlp/roba_dn1+call/b00010 simulated in 92s at 1007 kHz
+[17:19:15] 2/320 batches done (92s): mnist/mlp/roba_dn1+call/b00020 simulated in 92s at 1003 kHz
+[17:19:17] 3/320 batches done (94s): mnist/mlp/roba_dn1+call/b00080 simulated in 94s at 980 kHz
+[17:19:17] 4/320 batches done (95s): mnist/mlp/roba_dn1+call/b00040 simulated in 95s at 979 kHz
+[17:19:18] 5/320 batches done (95s): mnist/mlp/roba_dn1+call/b00000 simulated in 95s at 971 kHz
+[17:19:18] 6/320 batches done (96s): mnist/mlp/roba_dn1+call/b00070 simulated in 96s at 967 kHz
+[17:19:18] 7/320 batches done (96s): mnist/mlp/roba_dn1+call/b00060 simulated in 96s at 966 kHz
+[17:19:20] 8/320 batches done (97s): mnist/mlp/roba_dn1+call/b00090 simulated in 97s at 952 kHz
+[17:19:27] 9/320 batches done (105s): mnist/mlp/mitchell+call/b00090 simulated in 105s at 1011 kHz
+[17:19:27] 10/320 batches done (105s): mnist/mlp/mitchell+call/b00070 simulated in 105s at 1010 kHz
+[17:19:28] 11/320 batches done (106s): mnist/mlp/mitchell+call/b00050 simulated in 106s at 1004 kHz
+[17:19:29] 12/320 batches done (106s): mnist/mlp/mitchell+call/b00060 simulated in 106s at 1000 kHz
+[17:19:30] 13/320 batches done (107s): mnist/mlp/mitchell+call/b00010 simulated in 107s at 991 kHz
+[17:19:32] 14/320 batches done (109s): mnist/mlp/mitchell+call/b00000 simulated in 109s at 972 kHz
+[17:19:32] 15/320 batches done (109s): mnist/mlp/mitchell+call/b00030 simulated in 109s at 970 kHz
+[17:19:33] 16/320 batches done (110s): mnist/mlp/mitchell+call/b00020 simulated in 110s at 964 kHz
+[17:19:34] 17/320 batches done (111s): mnist/mlp/roba_dn1+call/b00050 simulated in 111s at 831 kHz
+[17:19:35] 18/320 batches done (112s): mnist/mlp/roba_dn1+call/b00030 simulated in 112s at 828 kHz
+[17:19:39] 19/320 batches done (117s): mnist/mlp/roba_updn+call/b00020 simulated in 117s at 1023 kHz
+[17:19:40] 20/320 batches done (117s): mnist/mlp/roba_updn+call/b00070 simulated in 117s at 1016 kHz
+[17:19:43] 21/320 batches done (120s): mnist/mlp/roba_updn+call/b00010 simulated in 120s at 995 kHz
+[17:19:43] 22/320 batches done (121s): mnist/mlp/roba_updn+call/b00000 simulated in 121s at 987 kHz
+[17:19:44] 23/320 batches done (121s): mnist/mlp/roba_updn+call/b00050 simulated in 121s at 986 kHz
+[17:19:45] 24/320 batches done (122s): mnist/mlp/roba_updn+call/b00060 simulated in 122s at 976 kHz
+[17:19:46] 25/320 batches done (124s): mnist/mlp/mitchell+call/b00040 simulated in 124s at 858 kHz
+[17:19:47] 26/320 batches done (124s): mnist/mlp/roba_updn+call/b00040 simulated in 124s at 963 kHz
+[17:19:50] 27/320 batches done (127s): mnist/mlp/roba_updn+call/b00030 simulated in 127s at 939 kHz
+[17:19:54] 28/320 batches done (132s): mnist/mlp/mitchell+call/b00080 simulated in 132s at 804 kHz
+[17:20:21] 29/320 batches done (159s): mnist/mlp/exact+call/b00020 simulated in 159s at 1066 kHz
+[17:20:23] 30/320 batches done (160s): mnist/mlp/exact+call/b00040 simulated in 160s at 1058 kHz
+[17:20:23] 31/320 batches done (161s): mnist/mlp/exact+call/b00060 simulated in 161s at 1052 kHz
+[17:20:23] 32/320 batches done (161s): mnist/mlp/exact+call/b00080 simulated in 161s at 1050 kHz
+[17:20:24] 33/320 batches done (161s): mnist/mlp/exact+call/b00030 simulated in 161s at 1052 kHz
+[17:20:24] 34/320 batches done (161s): mnist/mlp/exact+call/b00090 simulated in 161s at 1045 kHz
+[17:20:26] 35/320 batches done (163s): mnist/mlp/exact+call/b00010 simulated in 163s at 1036 kHz
+[17:20:27] 36/320 batches done (164s): mnist/mlp/exact+call/b00070 simulated in 164s at 1026 kHz
+[17:20:28] 37/320 batches done (166s): mnist/mlp/exact+call/b00000 simulated in 166s at 1021 kHz
+[17:20:29] 38/320 batches done (166s): mnist/mlp/exact+call/b00050 simulated in 166s at 1015 kHz
+[17:21:11] 39/320 batches done (209s): mnist/mlp/roba_updn+call/b00080 simulated in 117s at 1020 kHz
+[17:21:15] 40/320 batches done (212s): mnist/mlp/roba_updn+call/b00090 simulated in 120s at 994 kHz
+[17:21:15] 41/320 batches done (213s): mnist/mlp/roba_dn2+call/b00030 simulated in 117s at 1022 kHz
+[17:21:17] 42/320 batches done (214s): mnist/mlp/roba_dn2+call/b00000 simulated in 120s at 997 kHz
+[17:21:17] 43/320 batches done (214s): mnist/mlp/drum6+call/b00090 simulated in 214s at 1054 kHz
+[17:21:17] 44/320 batches done (214s): mnist/mlp/drum6+call/b00060 simulated in 214s at 1056 kHz
+[17:21:19] 45/320 batches done (217s): mnist/mlp/roba_dn2+call/b00050 simulated in 119s at 999 kHz
+[17:21:21] 46/320 batches done (219s): mnist/mlp/drum6+call/b00040 simulated in 219s at 1035 kHz
+[17:21:22] 47/320 batches done (219s): mnist/mlp/drum6+call/b00050 simulated in 219s at 1032 kHz
+[17:21:22] 48/320 batches done (219s): mnist/mlp/drum6+call/b00020 simulated in 219s at 1034 kHz
+[17:21:22] 49/320 batches done (219s): mnist/mlp/drum6+call/b00030 simulated in 219s at 1032 kHz
+[17:21:22] 50/320 batches done (219s): mnist/mlp/roba_dn2+call/b00020 simulated in 124s at 964 kHz
+[17:21:22] 51/320 batches done (219s): mnist/mlp/drum6+call/b00070 simulated in 219s at 1030 kHz
+[17:21:22] 52/320 batches done (219s): mnist/mlp/drum6+call/b00010 simulated in 219s at 1031 kHz
+[17:21:24] 53/320 batches done (222s): mnist/mlp/roba_dn2+call/b00010 simulated in 127s at 941 kHz
+[17:21:25] 54/320 batches done (222s): mnist/mlp/drum6+call/b00000 simulated in 222s at 1019 kHz
+[17:21:26] 55/320 batches done (224s): mnist/mlp/roba_dn2+call/b00090 simulated in 118s at 1014 kHz
+[17:21:27] 56/320 batches done (224s): mnist/mlp/roba_dn2+call/b00070 simulated in 119s at 999 kHz
+[17:21:28] 57/320 batches done (225s): mnist/mlp/roba_dn2+call/b00080 simulated in 119s at 999 kHz
+[17:21:28] 58/320 batches done (225s): mnist/mlp/drum6+call/b00080 simulated in 225s at 1005 kHz
+[17:21:35] 59/320 batches done (232s): mnist/mlp/roba_dn2+call/b00060 simulated in 128s at 935 kHz
+[17:21:37] 60/320 batches done (234s): mnist/mlp/roba_dn2+call/b00040 simulated in 139s at 863 kHz
+[17:22:23] 61/320 batches done (280s): mnist/mlp/roba_updndn+call/b00000 simulated in 173s at 1003 kHz
+[17:22:27] 62/320 batches done (285s): mnist/mlp/roba_updndn+call/b00010 simulated in 176s at 988 kHz
+[17:22:29] 63/320 batches done (286s): mnist/mlp/roba_updndn+call/b00030 simulated in 176s at 987 kHz
+[17:22:33] 64/320 batches done (291s): mnist/mlp/roba_updndn+call/b00070 simulated in 173s at 1003 kHz
+[17:22:35] 65/320 batches done (292s): mnist/mlp/roba_updndn+call/b00020 simulated in 183s at 951 kHz
+[17:22:37] 66/320 batches done (294s): mnist/mlp/roba_updndn+call/b00080 simulated in 174s at 997 kHz
+[17:22:40] 67/320 batches done (297s): mnist/mlp/roba_updndn+call/b00040 simulated in 186s at 935 kHz
+[17:22:40] 68/320 batches done (298s): mnist/mlp/roba_updndn+call/b00060 simulated in 181s at 961 kHz
+[17:22:54] 69/320 batches done (312s): mnist/mlp/roba_updndn+call/b00090 simulated in 191s at 910 kHz
+[17:23:04] 70/320 batches done (321s): mnist/mlp/roba_updn2+call/b00010 simulated in 199s at 1003 kHz
+[17:23:05] 71/320 batches done (323s): mnist/mlp/roba_updn2+call/b00030 simulated in 199s at 1006 kHz
+[17:23:08] 72/320 batches done (326s): mnist/mlp/roba_updndn+call/b00050 simulated in 214s at 813 kHz
+[17:23:09] 73/320 batches done (327s): mnist/mlp/roba_updn2+call/b00000 simulated in 206s at 970 kHz
+[17:23:12] 74/320 batches done (329s): mnist/mlp/roba_updn2+call/b00020 simulated in 205s at 974 kHz
+[17:23:14] 75/320 batches done (332s): mnist/mlp/roba_updn2+call/b00040 simulated in 205s at 977 kHz
+[17:23:16] 76/320 batches done (333s): mnist/mlp/roba_updn2+call/b00050 simulated in 202s at 990 kHz
+[17:23:43] 77/320 batches done (360s): mnist/mlp/roba_updn2+call/b00090 simulated in 200s at 999 kHz
+[17:23:45] 78/320 batches done (362s): mnist/mlp/roba_updn2+call/b00070 simulated in 202s at 988 kHz
+[17:23:45] 79/320 batches done (363s): mnist/mlp/roba_updn2+call/b00080 simulated in 202s at 988 kHz
+[17:24:28] 80/320 batches done (406s): mnist/mlp/roba_updn2+call/b00060 simulated in 247s at 809 kHz
+[17:24:28] 81/320 batches done (406s): mnist/lenet5/mitchell+call/b00000 simulated in 191s at 998 kHz
+[17:24:30] 82/320 batches done (407s): mnist/lenet5/mitchell+call/b00050 simulated in 188s at 1024 kHz
+[17:24:31] 83/320 batches done (409s): mnist/lenet5/mitchell+call/b00030 simulated in 190s at 1004 kHz
+[17:24:31] 84/320 batches done (409s): mnist/lenet5/mitchell+call/b00040 simulated in 190s at 1006 kHz
+[17:24:32] 85/320 batches done (409s): mnist/lenet5/mitchell+call/b00010 simulated in 195s at 987 kHz
+[17:24:32] 86/320 batches done (409s): mnist/lenet5/mitchell+call/b00080 simulated in 190s at 1011 kHz
+[17:24:33] 87/320 batches done (410s): mnist/lenet5/mitchell+call/b00070 simulated in 191s at 1004 kHz
+[17:24:34] 88/320 batches done (411s): mnist/lenet5/mitchell+call/b00060 simulated in 192s at 1003 kHz
+[17:24:36] 89/320 batches done (414s): mnist/lenet5/mitchell+call/b00020 simulated in 197s at 976 kHz
+[17:24:56] 90/320 batches done (433s): mnist/lenet5/mitchell+call/b00090 simulated in 213s at 900 kHz
+[17:25:02] 91/320 batches done (439s): mnist/lenet5/exact+call/b00000 simulated in 278s at 1060 kHz
+[17:25:09] 92/320 batches done (446s): mnist/lenet5/exact+call/b00020 simulated in 283s at 1050 kHz
+[17:25:09] 93/320 batches done (447s): mnist/lenet5/exact+call/b00030 simulated in 282s at 1039 kHz
+[17:25:12] 94/320 batches done (450s): mnist/lenet5/exact+call/b00050 simulated in 283s at 1052 kHz
+[17:25:16] 95/320 batches done (454s): mnist/lenet5/exact+call/b00010 simulated in 292s at 1020 kHz
+[17:25:28] 96/320 batches done (465s): mnist/lenet5/roba_dn1+call/b00000 simulated in 179s at 987 kHz
+[17:25:29] 97/320 batches done (466s): mnist/lenet5/exact+call/b00040 simulated in 300s at 978 kHz
+[17:25:30] 98/320 batches done (468s): mnist/lenet5/roba_dn1+call/b00010 simulated in 177s at 1006 kHz
+[17:25:33] 99/320 batches done (470s): mnist/lenet5/roba_dn1+call/b00020 simulated in 178s at 999 kHz
+[17:25:37] 100/320 batches done (474s): mnist/lenet5/roba_dn1+call/b00050 simulated in 177s at 1008 kHz
+[17:25:38] 101/320 batches done (475s): mnist/lenet5/roba_dn1+call/b00040 simulated in 178s at 993 kHz
+[17:25:51] 102/320 batches done (488s): mnist/lenet5/roba_dn1+call/b00060 simulated in 176s at 1011 kHz
+[17:25:58] 103/320 batches done (496s): mnist/lenet5/exact+call/b00080 simulated in 283s at 1050 kHz
+[17:25:59] 104/320 batches done (496s): mnist/lenet5/exact+call/b00090 simulated in 282s at 1052 kHz
+[17:26:01] 105/320 batches done (498s): mnist/lenet5/exact+call/b00070 simulated in 286s at 1035 kHz
+[17:26:03] 106/320 batches done (501s): mnist/lenet5/roba_dn1+call/b00080 simulated in 178s at 1000 kHz
+[17:26:04] 107/320 batches done (502s): mnist/lenet5/roba_dn1+call/b00090 simulated in 176s at 1009 kHz
+[17:26:05] 108/320 batches done (502s): mnist/lenet5/exact+call/b00060 simulated in 293s at 1018 kHz
+[17:26:10] 109/320 batches done (508s): mnist/lenet5/roba_dn1+call/b00030 simulated in 214s at 826 kHz
+[17:26:16] 110/320 batches done (513s): mnist/lenet5/roba_dn1+call/b00070 simulated in 192s at 923 kHz
+[17:26:42] 111/320 batches done (539s): mnist/lenet5/roba_updn+call/b00000 simulated in 213s at 1003 kHz
+[17:26:46] 112/320 batches done (544s): mnist/lenet5/roba_updn+call/b00010 simulated in 215s at 1005 kHz
+[17:26:47] 113/320 batches done (544s): mnist/lenet5/roba_updn+call/b00030 simulated in 211s at 1007 kHz
+[17:26:48] 114/320 batches done (546s): mnist/lenet5/roba_updn+call/b00020 simulated in 214s at 1007 kHz
+[17:26:54] 115/320 batches done (551s): mnist/lenet5/drum6+call/b00030 simulated in 327s at 1031 kHz
+[17:26:57] 116/320 batches done (555s): mnist/lenet5/drum6+call/b00020 simulated in 331s at 1038 kHz
+[17:27:00] 117/320 batches done (557s): mnist/lenet5/drum6+call/b00040 simulated in 332s at 1016 kHz
+[17:27:02] 118/320 batches done (559s): mnist/lenet5/drum6+call/b00010 simulated in 337s at 1026 kHz
+[17:27:06] 119/320 batches done (563s): mnist/lenet5/drum6+call/b00050 simulated in 338s at 1022 kHz
+[17:27:06] 120/320 batches done (564s): mnist/lenet5/drum6+call/b00070 simulated in 329s at 1039 kHz
+[17:27:07] 121/320 batches done (564s): mnist/lenet5/drum6+call/b00060 simulated in 332s at 1043 kHz
+[17:27:16] 122/320 batches done (574s): mnist/lenet5/drum6+call/b00000 simulated in 352s at 964 kHz
+[17:27:19] 123/320 batches done (576s): mnist/lenet5/roba_updn+call/b00060 simulated in 213s at 1012 kHz
+[17:27:20] 124/320 batches done (577s): mnist/lenet5/roba_updn+call/b00050 simulated in 215s at 1004 kHz
+[17:27:35] 125/320 batches done (592s): mnist/lenet5/roba_updn+call/b00040 simulated in 232s at 920 kHz
+[17:28:00] 126/320 batches done (617s): mnist/lenet5/roba_dn2+call/b00040 simulated in 207s at 1008 kHz
+[17:28:00] 127/320 batches done (618s): mnist/lenet5/roba_dn2+call/b00030 simulated in 208s at 1002 kHz
+[17:28:01] 128/320 batches done (618s): mnist/lenet5/drum6+call/b00080 simulated in 338s at 1018 kHz
+[17:28:01] 129/320 batches done (618s): mnist/lenet5/roba_updn+call/b00080 simulated in 212s at 1011 kHz
+[17:28:01] 130/320 batches done (619s): mnist/lenet5/roba_updn+call/b00090 simulated in 212s at 1014 kHz
+[17:28:02] 131/320 batches done (619s): mnist/lenet5/drum6+call/b00090 simulated in 334s at 1028 kHz
+[17:28:02] 132/320 batches done (620s): mnist/lenet5/roba_dn2+call/b00000 simulated in 211s at 991 kHz
+[17:28:03] 133/320 batches done (621s): mnist/lenet5/roba_dn2+call/b00020 simulated in 211s at 1000 kHz
+[17:28:05] 134/320 batches done (622s): mnist/lenet5/roba_dn2+call/b00010 simulated in 214s at 989 kHz
+[17:28:06] 135/320 batches done (624s): mnist/lenet5/roba_dn2+call/b00060 simulated in 210s at 1008 kHz
+[17:28:20] 136/320 batches done (637s): mnist/lenet5/roba_updn+call/b00070 simulated in 232s at 924 kHz
+[17:28:26] 137/320 batches done (644s): mnist/lenet5/roba_dn2+call/b00050 simulated in 232s at 910 kHz
+[17:28:28] 138/320 batches done (646s): mnist/lenet5/roba_dn2+call/b00070 simulated in 213s at 987 kHz
+[17:28:32] 139/320 batches done (649s): mnist/lenet5/roba_dn2+call/b00080 simulated in 210s at 1004 kHz
+[17:28:40] 140/320 batches done (657s): mnist/lenet5/roba_dn2+call/b00090 simulated in 211s at 999 kHz
+[17:28:57] 141/320 batches done (674s): fashion/mlp/mitchell+call/b00010 simulated in 97s at 1017 kHz
+[17:28:57] 142/320 batches done (675s): fashion/mlp/mitchell+call/b00000 simulated in 99s at 1002 kHz
+[17:29:13] 143/320 batches done (691s): fashion/mlp/mitchell+call/b00020 simulated in 98s at 1001 kHz
+[17:29:20] 144/320 batches done (697s): fashion/mlp/exact+call/b00010 simulated in 151s at 1057 kHz
+[17:29:25] 145/320 batches done (702s): fashion/mlp/exact+call/b00020 simulated in 151s at 1061 kHz
+[17:29:26] 146/320 batches done (703s): fashion/mlp/exact+call/b00000 simulated in 159s at 1015 kHz
+[17:29:35] 147/320 batches done (712s): fashion/mlp/exact+call/b00050 simulated in 153s at 1047 kHz
+[17:29:35] 148/320 batches done (713s): fashion/mlp/exact+call/b00030 simulated in 158s at 1024 kHz
+[17:29:38] 149/320 batches done (716s): fashion/mlp/exact+call/b00070 simulated in 152s at 1050 kHz
+[17:29:39] 150/320 batches done (716s): fashion/mlp/exact+call/b00060 simulated in 153s at 1050 kHz
+[17:29:39] 151/320 batches done (716s): fashion/mlp/mitchell+call/b00080 simulated in 97s at 1017 kHz
+[17:29:39] 152/320 batches done (716s): fashion/mlp/mitchell+call/b00060 simulated in 98s at 1006 kHz
+[17:29:40] 153/320 batches done (717s): fashion/mlp/mitchell+call/b00040 simulated in 99s at 992 kHz
+[17:29:41] 154/320 batches done (719s): fashion/mlp/mitchell+call/b00070 simulated in 100s at 986 kHz
+[17:29:45] 155/320 batches done (722s): fashion/mlp/mitchell+call/b00090 simulated in 102s at 965 kHz
+[17:29:47] 156/320 batches done (724s): fashion/mlp/mitchell+call/b00030 simulated in 107s at 927 kHz
+[17:29:48] 157/320 batches done (725s): fashion/mlp/exact+call/b00080 simulated in 161s at 996 kHz
+[17:29:49] 158/320 batches done (726s): fashion/mlp/exact+call/b00090 simulated in 152s at 1053 kHz
+[17:29:49] 159/320 batches done (726s): fashion/mlp/exact+call/b00040 simulated in 169s at 944 kHz
+[17:29:55] 160/320 batches done (732s): mnist/lenet5/roba_updndn+call/b00000 simulated in 286s at 995 kHz
+[17:30:02] 161/320 batches done (739s): fashion/mlp/mitchell+call/b00050 simulated in 121s at 813 kHz
+[17:30:02] 162/320 batches done (740s): mnist/lenet5/roba_updndn+call/b00010 simulated in 290s at 992 kHz
+[17:30:11] 163/320 batches done (748s): mnist/lenet5/roba_updndn+call/b00030 simulated in 283s at 999 kHz
+[17:30:17] 164/320 batches done (754s): mnist/lenet5/roba_updndn+call/b00040 simulated in 288s at 983 kHz
+[17:30:21] 165/320 batches done (758s): mnist/lenet5/roba_updndn+call/b00060 simulated in 288s at 1001 kHz
+[17:30:25] 166/320 batches done (763s): mnist/lenet5/roba_updndn+call/b00070 simulated in 289s at 990 kHz
+[17:30:29] 167/320 batches done (767s): mnist/lenet5/roba_updndn+call/b00080 simulated in 292s at 983 kHz
+[17:30:30] 168/320 batches done (767s): mnist/lenet5/roba_updndn+call/b00050 simulated in 300s at 960 kHz
+[17:30:36] 169/320 batches done (773s): mnist/lenet5/roba_updndn+call/b00090 simulated in 286s at 1004 kHz
+[17:30:40] 170/320 batches done (778s): mnist/lenet5/roba_updndn+call/b00020 simulated in 324s at 888 kHz
+[17:30:41] 171/320 batches done (778s): fashion/mlp/roba_dn1+call/b00000 simulated in 88s at 1000 kHz
+[17:30:50] 172/320 batches done (787s): fashion/mlp/roba_dn1+call/b00010 simulated in 90s at 972 kHz
+[17:30:52] 173/320 batches done (789s): fashion/mlp/roba_dn1+call/b00020 simulated in 87s at 1007 kHz
+[17:31:01] 174/320 batches done (799s): fashion/mlp/roba_dn1+call/b00040 simulated in 87s at 1007 kHz
+[17:31:06] 175/320 batches done (803s): fashion/mlp/roba_dn1+call/b00050 simulated in 91s at 966 kHz
+[17:31:06] 176/320 batches done (804s): fashion/mlp/roba_dn1+call/b00060 simulated in 88s at 999 kHz
+[17:31:07] 177/320 batches done (804s): fashion/mlp/roba_dn1+call/b00080 simulated in 88s at 992 kHz
+[17:31:09] 178/320 batches done (807s): fashion/mlp/roba_dn1+call/b00070 simulated in 91s at 964 kHz
+[17:31:10] 179/320 batches done (808s): fashion/mlp/roba_dn1+call/b00090 simulated in 91s at 959 kHz
+[17:31:12] 180/320 batches done (810s): fashion/mlp/roba_dn1+call/b00030 simulated in 106s at 827 kHz
+[17:31:15] 181/320 batches done (812s): mnist/lenet5/roba_updn2+call/b00030 simulated in 312s at 1003 kHz
+[17:31:18] 182/320 batches done (816s): mnist/lenet5/roba_updn2+call/b00020 simulated in 318s at 1003 kHz
+[17:31:22] 183/320 batches done (820s): mnist/lenet5/roba_updn2+call/b00050 simulated in 318s at 1004 kHz
+[17:31:29] 184/320 batches done (826s): mnist/lenet5/roba_updn2+call/b00040 simulated in 325s at 966 kHz
+[17:31:31] 185/320 batches done (828s): mnist/lenet5/roba_updn2+call/b00060 simulated in 321s at 997 kHz
+[17:31:35] 186/320 batches done (833s): mnist/lenet5/roba_updn2+call/b00000 simulated in 337s at 933 kHz
+[17:31:35] 187/320 batches done (833s): mnist/lenet5/roba_updn2+call/b00070 simulated in 319s at 990 kHz
+[17:31:42] 188/320 batches done (839s): fashion/mlp/roba_updn+call/b00010 simulated in 120s at 990 kHz
+[17:31:43] 189/320 batches done (840s): mnist/lenet5/roba_updn2+call/b00010 simulated in 344s at 929 kHz
+[17:31:43] 190/320 batches done (840s): fashion/mlp/drum6+call/b00010 simulated in 218s at 1054 kHz
+[17:31:44] 191/320 batches done (841s): fashion/mlp/roba_updn+call/b00000 simulated in 124s at 973 kHz
+[17:31:45] 192/320 batches done (842s): fashion/mlp/drum6+call/b00000 simulated in 222s at 1037 kHz
+[17:31:46] 193/320 batches done (843s): fashion/mlp/roba_updn+call/b00020 simulated in 121s at 987 kHz
+[17:31:46] 194/320 batches done (843s): fashion/mlp/roba_updn+call/b00040 simulated in 118s at 1008 kHz
+[17:31:47] 195/320 batches done (844s): fashion/mlp/drum6+call/b00020 simulated in 220s at 1042 kHz
+[17:31:48] 196/320 batches done (845s): fashion/mlp/roba_updn+call/b00030 simulated in 121s at 998 kHz
+[17:31:48] 197/320 batches done (845s): fashion/mlp/roba_updn+call/b00050 simulated in 119s at 1001 kHz
+[17:31:51] 198/320 batches done (848s): fashion/mlp/roba_updn+call/b00070 simulated in 116s at 1029 kHz
+[17:31:57] 199/320 batches done (855s): fashion/mlp/roba_updn+call/b00060 simulated in 128s at 935 kHz
+[17:31:59] 200/320 batches done (857s): fashion/mlp/roba_updn+call/b00080 simulated in 117s at 1019 kHz
+[17:32:00] 201/320 batches done (857s): fashion/mlp/drum6+call/b00030 simulated in 220s at 1054 kHz
+[17:32:04] 202/320 batches done (861s): fashion/mlp/drum6+call/b00040 simulated in 218s at 1056 kHz
+[17:32:06] 203/320 batches done (864s): fashion/mlp/roba_dn2+call/b00000 simulated in 115s at 987 kHz
+[17:32:07] 204/320 batches done (865s): fashion/mlp/drum6+call/b00050 simulated in 219s at 1036 kHz
+[17:32:09] 205/320 batches done (866s): fashion/mlp/drum6+call/b00060 simulated in 217s at 1060 kHz
+[17:32:09] 206/320 batches done (867s): fashion/mlp/roba_dn2+call/b00010 simulated in 112s at 1008 kHz
+[17:32:13] 207/320 batches done (871s): fashion/mlp/roba_updn+call/b00090 simulated in 131s at 919 kHz
+[17:32:13] 208/320 batches done (871s): mnist/lenet5/roba_updn2+call/b00080 simulated in 331s at 959 kHz
+[17:32:20] 209/320 batches done (877s): fashion/mlp/roba_dn2+call/b00020 simulated in 119s at 956 kHz
+[17:32:20] 210/320 batches done (878s): fashion/mlp/roba_dn2+call/b00030 simulated in 115s at 994 kHz
+[17:32:24] 211/320 batches done (881s): fashion/mlp/roba_dn2+call/b00040 simulated in 115s at 988 kHz
+[17:32:32] 212/320 batches done (890s): fashion/mlp/roba_dn2+call/b00050 simulated in 122s at 926 kHz
+[17:32:34] 213/320 batches done (891s): fashion/mlp/roba_dn2+call/b00080 simulated in 113s at 1008 kHz
+[17:32:34] 214/320 batches done (892s): fashion/mlp/drum6+call/b00070 simulated in 234s at 970 kHz
+[17:32:35] 215/320 batches done (893s): fashion/mlp/roba_dn2+call/b00070 simulated in 115s at 981 kHz
+[17:32:37] 216/320 batches done (894s): fashion/mlp/drum6+call/b00080 simulated in 220s at 1048 kHz
+[17:32:39] 217/320 batches done (896s): mnist/lenet5/roba_updn2+call/b00090 simulated in 353s at 900 kHz
+[17:32:43] 218/320 batches done (900s): fashion/mlp/roba_dn2+call/b00060 simulated in 127s at 895 kHz
+[17:32:45] 219/320 batches done (903s): fashion/mlp/roba_dn2+call/b00090 simulated in 116s at 981 kHz
+[17:32:51] 220/320 batches done (908s): fashion/mlp/drum6+call/b00090 simulated in 233s at 983 kHz
+[17:33:53] 221/320 batches done (970s): fashion/mlp/roba_updndn+call/b00000 simulated in 181s at 999 kHz
+[17:34:03] 222/320 batches done (980s): fashion/mlp/roba_updndn+call/b00040 simulated in 176s at 1012 kHz
+[17:34:08] 223/320 batches done (985s): fashion/mlp/roba_updndn+call/b00020 simulated in 182s at 984 kHz
+[17:34:09] 224/320 batches done (986s): fashion/mlp/roba_updndn+call/b00060 simulated in 178s at 1011 kHz
+[17:34:10] 225/320 batches done (988s): fashion/mlp/roba_updndn+call/b00030 simulated in 184s at 988 kHz
+[17:34:12] 226/320 batches done (990s): fashion/mlp/roba_updndn+call/b00050 simulated in 183s at 975 kHz
+[17:34:17] 227/320 batches done (995s): fashion/mlp/roba_updndn+call/b00080 simulated in 182s at 985 kHz
+[17:34:20] 228/320 batches done (997s): fashion/mlp/roba_updndn+call/b00090 simulated in 182s at 995 kHz
+[17:34:22] 229/320 batches done (999s): fashion/mlp/roba_updndn+call/b00010 simulated in 200s at 891 kHz
+[17:34:34] 230/320 batches done (1011s): fashion/mlp/roba_updndn+call/b00070 simulated in 202s at 887 kHz
+[17:34:46] 231/320 batches done (1023s): fashion/mlp/roba_updn2+call/b00000 simulated in 203s at 1009 kHz
+[17:34:51] 232/320 batches done (1029s): fashion/mlp/roba_updn2+call/b00010 simulated in 202s at 997 kHz
+[17:34:54] 233/320 batches done (1031s): fashion/mlp/roba_updn2+call/b00020 simulated in 203s at 996 kHz
+[17:35:02] 234/320 batches done (1040s): fashion/mlp/roba_updn2+call/b00030 simulated in 207s at 997 kHz
+[17:35:05] 235/320 batches done (1042s): fashion/mlp/roba_updn2+call/b00070 simulated in 202s at 998 kHz
+[17:35:05] 236/320 batches done (1042s): fashion/mlp/roba_updn2+call/b00060 simulated in 203s at 1008 kHz
+[17:35:07] 237/320 batches done (1044s): fashion/mlp/roba_updn2+call/b00040 simulated in 211s at 954 kHz
+[17:35:11] 238/320 batches done (1048s): fashion/mlp/roba_updn2+call/b00090 simulated in 206s at 994 kHz
+[17:35:16] 239/320 batches done (1054s): fashion/lenet5/mitchell+call/b00010 simulated in 189s at 1012 kHz
+[17:35:18] 240/320 batches done (1055s): fashion/mlp/roba_updn2+call/b00080 simulated in 214s at 950 kHz
+[17:35:19] 241/320 batches done (1057s): fashion/lenet5/mitchell+call/b00020 simulated in 191s at 1006 kHz
+[17:35:20] 242/320 batches done (1057s): fashion/lenet5/mitchell+call/b00000 simulated in 193s at 998 kHz
+[17:35:21] 243/320 batches done (1058s): fashion/lenet5/mitchell+call/b00030 simulated in 191s at 1014 kHz
+[17:35:22] 244/320 batches done (1060s): fashion/lenet5/mitchell+call/b00040 simulated in 189s at 1006 kHz
+[17:35:23] 245/320 batches done (1060s): fashion/lenet5/mitchell+call/b00050 simulated in 189s at 1009 kHz
+[17:35:30] 246/320 batches done (1068s): fashion/lenet5/mitchell+call/b00060 simulated in 191s at 1013 kHz
+[17:35:31] 247/320 batches done (1068s): fashion/lenet5/mitchell+call/b00070 simulated in 191s at 995 kHz
+[17:35:32] 248/320 batches done (1070s): fashion/mlp/roba_updn2+call/b00050 simulated in 231s at 873 kHz
+[17:35:34] 249/320 batches done (1072s): fashion/lenet5/mitchell+call/b00080 simulated in 190s at 1007 kHz
+[17:35:45] 250/320 batches done (1082s): fashion/lenet5/mitchell+call/b00090 simulated in 193s at 995 kHz
+[17:36:22] 251/320 batches done (1120s): fashion/lenet5/exact+call/b00010 simulated in 276s at 1058 kHz
+[17:36:27] 252/320 batches done (1124s): fashion/lenet5/exact+call/b00000 simulated in 281s at 1055 kHz
+[17:36:28] 253/320 batches done (1125s): fashion/lenet5/exact+call/b00040 simulated in 280s at 1037 kHz
+[17:36:30] 254/320 batches done (1127s): fashion/lenet5/exact+call/b00030 simulated in 282s at 1060 kHz
+[17:36:35] 255/320 batches done (1132s): fashion/lenet5/exact+call/b00020 simulated in 288s at 1017 kHz
+[17:36:38] 256/320 batches done (1135s): fashion/lenet5/exact+call/b00070 simulated in 278s at 1037 kHz
+[17:36:39] 257/320 batches done (1136s): fashion/lenet5/exact+call/b00060 simulated in 281s at 1051 kHz
+[17:36:40] 258/320 batches done (1138s): fashion/lenet5/exact+call/b00050 simulated in 289s at 1009 kHz
+[17:36:42] 259/320 batches done (1139s): fashion/lenet5/exact+call/b00090 simulated in 278s at 1055 kHz
+[17:36:51] 260/320 batches done (1148s): fashion/lenet5/exact+call/b00080 simulated in 291s at 1005 kHz
+[17:37:01] 261/320 batches done (1158s): fashion/lenet5/roba_dn1+call/b00010 simulated in 172s at 1018 kHz
+[17:37:03] 262/320 batches done (1160s): fashion/lenet5/roba_dn1+call/b00020 simulated in 173s at 1020 kHz
+[17:37:08] 263/320 batches done (1165s): fashion/lenet5/roba_dn1+call/b00000 simulated in 180s at 985 kHz
+[17:37:09] 264/320 batches done (1167s): fashion/lenet5/roba_dn1+call/b00040 simulated in 172s at 1016 kHz
+[17:37:12] 265/320 batches done (1170s): fashion/lenet5/roba_dn1+call/b00050 simulated in 172s at 1019 kHz
+[17:37:17] 266/320 batches done (1175s): fashion/lenet5/roba_dn1+call/b00060 simulated in 175s at 1009 kHz
+[17:37:27] 267/320 batches done (1184s): fashion/lenet5/roba_dn1+call/b00070 simulated in 173s at 1011 kHz
+[17:37:47] 268/320 batches done (1204s): fashion/lenet5/roba_dn1+call/b00080 simulated in 181s at 969 kHz
+[17:37:48] 269/320 batches done (1206s): fashion/lenet5/roba_dn1+call/b00090 simulated in 177s at 994 kHz
+[17:38:12] 270/320 batches done (1230s): fashion/lenet5/roba_dn1+call/b00030 simulated in 240s at 741 kHz
+[17:38:14] 271/320 batches done (1231s): fashion/lenet5/drum6+call/b00010 simulated in 339s at 1032 kHz
+[17:38:20] 272/320 batches done (1237s): fashion/lenet5/drum6+call/b00020 simulated in 345s at 1020 kHz
+[17:38:21] 273/320 batches done (1238s): fashion/lenet5/drum6+call/b00040 simulated in 342s at 1013 kHz
+[17:38:26] 274/320 batches done (1243s): fashion/lenet5/drum6+call/b00070 simulated in 335s at 1025 kHz
+[17:38:30] 275/320 batches done (1248s): fashion/lenet5/drum6+call/b00030 simulated in 353s at 1016 kHz
+[17:38:33] 276/320 batches done (1251s): fashion/lenet5/roba_updn+call/b00000 simulated in 219s at 1002 kHz
+[17:38:34] 277/320 batches done (1251s): fashion/lenet5/drum6+call/b00000 simulated in 360s at 990 kHz
+[17:38:35] 278/320 batches done (1252s): fashion/lenet5/roba_updn+call/b00010 simulated in 212s at 1024 kHz
+[17:38:41] 279/320 batches done (1259s): fashion/lenet5/roba_updn+call/b00020 simulated in 216s at 1008 kHz
+[17:38:42] 280/320 batches done (1259s): fashion/lenet5/roba_updn+call/b00040 simulated in 215s at 1006 kHz
+[17:38:45] 281/320 batches done (1262s): fashion/lenet5/drum6+call/b00050 simulated in 362s at 956 kHz
+[17:38:45] 282/320 batches done (1263s): fashion/lenet5/roba_updn+call/b00050 simulated in 214s at 1012 kHz
+[17:38:46] 283/320 batches done (1264s): fashion/lenet5/roba_updn+call/b00030 simulated in 221s at 1002 kHz
+[17:38:50] 284/320 batches done (1268s): fashion/lenet5/roba_updn+call/b00060 simulated in 214s at 1027 kHz
+[17:38:51] 285/320 batches done (1269s): fashion/lenet5/roba_dn2+call/b00000 simulated in 211s at 1006 kHz
+[17:38:53] 286/320 batches done (1271s): fashion/lenet5/roba_dn2+call/b00010 simulated in 211s at 994 kHz
+[17:38:54] 287/320 batches done (1271s): fashion/lenet5/roba_updn+call/b00080 simulated in 214s at 1016 kHz
+[17:38:54] 288/320 batches done (1271s): fashion/lenet5/roba_updn+call/b00070 simulated in 216s at 996 kHz
+[17:38:56] 289/320 batches done (1273s): fashion/lenet5/roba_dn2+call/b00020 simulated in 213s at 986 kHz
+[17:39:01] 290/320 batches done (1278s): fashion/lenet5/roba_dn2+call/b00040 simulated in 210s at 994 kHz
+[17:39:04] 291/320 batches done (1281s): fashion/lenet5/roba_dn2+call/b00060 simulated in 210s at 1009 kHz
+[17:39:04] 292/320 batches done (1281s): fashion/lenet5/roba_dn2+call/b00030 simulated in 214s at 997 kHz
+[17:39:05] 293/320 batches done (1282s): fashion/lenet5/drum6+call/b00060 simulated in 379s at 935 kHz
+[17:39:08] 294/320 batches done (1285s): fashion/lenet5/roba_updn+call/b00090 simulated in 228s at 957 kHz
+[17:39:10] 295/320 batches done (1287s): fashion/lenet5/roba_dn2+call/b00070 simulated in 205s at 1011 kHz
+[17:39:15] 296/320 batches done (1292s): fashion/lenet5/roba_dn2+call/b00050 simulated in 222s at 939 kHz
+[17:39:34] 297/320 batches done (1312s): fashion/lenet5/drum6+call/b00080 simulated in 341s at 1030 kHz
+[17:39:46] 298/320 batches done (1323s): fashion/lenet5/drum6+call/b00090 simulated in 343s at 1023 kHz
+[17:39:49] 299/320 batches done (1327s): fashion/lenet5/roba_dn2+call/b00080 simulated in 207s at 1015 kHz
+[17:39:57] 300/320 batches done (1334s): fashion/lenet5/roba_dn2+call/b00090 simulated in 210s at 999 kHz
+[17:41:21] 301/320 batches done (1419s): fashion/lenet5/roba_updndn+call/b00010 simulated in 292s at 1006 kHz
+[17:41:28] 302/320 batches done (1425s): fashion/lenet5/roba_updndn+call/b00040 simulated in 289s at 1008 kHz
+[17:41:31] 303/320 batches done (1429s): fashion/lenet5/roba_updndn+call/b00020 simulated in 296s at 995 kHz
+[17:41:32] 304/320 batches done (1429s): fashion/lenet5/roba_updndn+call/b00050 simulated in 291s at 1004 kHz
+[17:41:36] 305/320 batches done (1434s): fashion/lenet5/roba_updndn+call/b00030 simulated in 299s at 1008 kHz
+[17:41:43] 306/320 batches done (1440s): fashion/lenet5/roba_updndn+call/b00070 simulated in 292s at 994 kHz
+[17:41:43] 307/320 batches done (1440s): fashion/lenet5/roba_updndn+call/b00000 simulated in 315s at 947 kHz
+[17:41:51] 308/320 batches done (1449s): fashion/lenet5/roba_updndn+call/b00060 simulated in 310s at 963 kHz
+[17:41:57] 309/320 batches done (1454s): fashion/lenet5/roba_updndn+call/b00080 simulated in 296s at 995 kHz
+[17:41:59] 310/320 batches done (1457s): fashion/lenet5/roba_updndn+call/b00090 simulated in 297s at 996 kHz
+[17:42:30] 311/320 batches done (1487s): fashion/lenet5/roba_updn2+call/b00010 simulated in 320s at 1008 kHz
+[17:42:34] 312/320 batches done (1491s): fashion/lenet5/roba_updn2+call/b00000 simulated in 326s at 1008 kHz
+[17:42:44] 313/320 batches done (1501s): fashion/lenet5/roba_updn2+call/b00040 simulated in 317s at 1011 kHz
+[17:42:49] 314/320 batches done (1507s): fashion/lenet5/roba_updn2+call/b00020 simulated in 337s at 963 kHz
+[17:43:01] 315/320 batches done (1519s): fashion/lenet5/roba_updn2+call/b00030 simulated in 344s at 964 kHz
+[17:43:27] 316/320 batches done (1544s): fashion/lenet5/roba_updn2+call/b00050 simulated in 340s at 944 kHz
+[17:43:27] 317/320 batches done (1544s): fashion/lenet5/roba_updn2+call/b00070 simulated in 315s at 1011 kHz
+[17:43:30] 318/320 batches done (1548s): fashion/lenet5/roba_updn2+call/b00060 simulated in 342s at 959 kHz
+[17:43:34] 319/320 batches done (1552s): fashion/lenet5/roba_updn2+call/b00080 simulated in 321s at 1012 kHz
+[17:43:46] 320/320 batches done (1563s): fashion/lenet5/roba_updn2+call/b00090 simulated in 326s at 996 kHz
+[17:43:46] wrote results/ibex/dnn_call_images.csv
+[17:43:46] mnist   mlp    exact+call         ibex acc 1.000 | logits match 1.000 |  16.89 M cycles/image
+[17:43:46] mnist   mlp    mitchell+call      ibex acc 1.000 | logits match 1.000 |  10.59 M cycles/image
+[17:43:46] mnist   mlp    drum6+call         ibex acc 1.000 | logits match 1.000 |  22.61 M cycles/image
+[17:43:46] mnist   mlp    roba_dn1+call      ibex acc 1.000 | logits match 1.000 |   9.25 M cycles/image
+[17:43:46] mnist   mlp    roba_updn+call     ibex acc 1.000 | logits match 1.000 |  11.91 M cycles/image
+[17:43:46] mnist   mlp    roba_dn2+call      ibex acc 1.000 | logits match 1.000 |  11.93 M cycles/image
+[17:43:46] mnist   mlp    roba_updndn+call   ibex acc 1.000 | logits match 1.000 |  17.36 M cycles/image
+[17:43:46] mnist   mlp    roba_updn2+call    ibex acc 1.000 | logits match 1.000 |  19.96 M cycles/image
+[17:43:46] mnist   lenet5 exact+call         ibex acc 1.000 | logits match 1.000 |  29.62 M cycles/image
+[17:43:46] mnist   lenet5 mitchell+call      ibex acc 1.000 | logits match 1.000 |  19.17 M cycles/image
+[17:43:46] mnist   lenet5 drum6+call         ibex acc 1.000 | logits match 1.000 |  34.23 M cycles/image
+[17:43:46] mnist   lenet5 roba_dn1+call      ibex acc 1.000 | logits match 1.000 |  17.73 M cycles/image
+[17:43:46] mnist   lenet5 roba_updn+call     ibex acc 1.000 | logits match 1.000 |  21.44 M cycles/image
+[17:43:46] mnist   lenet5 roba_dn2+call      ibex acc 1.000 | logits match 1.000 |  21.03 M cycles/image
+[17:43:46] mnist   lenet5 roba_updndn+call   ibex acc 1.000 | logits match 1.000 |  28.60 M cycles/image
+[17:43:46] mnist   lenet5 roba_updn2+call    ibex acc 1.000 | logits match 1.000 |  31.67 M cycles/image
+[17:43:46] fashion mlp    exact+call         ibex acc 0.910 | logits match 1.000 |  16.04 M cycles/image
+[17:43:46] fashion mlp    mitchell+call      ibex acc 0.910 | logits match 1.000 |   9.87 M cycles/image
+[17:43:46] fashion mlp    drum6+call         ibex acc 0.910 | logits match 1.000 |  22.94 M cycles/image
+[17:43:46] fashion mlp    roba_dn1+call      ibex acc 0.910 | logits match 1.000 |   8.75 M cycles/image
+[17:43:46] fashion mlp    roba_updn+call     ibex acc 0.910 | logits match 1.000 |  11.96 M cycles/image
+[17:43:46] fashion mlp    roba_dn2+call      ibex acc 0.910 | logits match 1.000 |  11.34 M cycles/image
+[17:43:46] fashion mlp    roba_updndn+call   ibex acc 0.910 | logits match 1.000 |  17.95 M cycles/image
+[17:43:46] fashion mlp    roba_updn2+call    ibex acc 0.910 | logits match 1.000 |  20.32 M cycles/image
+[17:43:46] fashion lenet5 exact+call         ibex acc 0.860 | logits match 1.000 |  29.32 M cycles/image
+[17:43:46] fashion lenet5 mitchell+call      ibex acc 0.860 | logits match 1.000 |  19.16 M cycles/image
+[17:43:46] fashion lenet5 drum6+call         ibex acc 0.860 | logits match 1.000 |  35.08 M cycles/image
+[17:43:46] fashion lenet5 roba_dn1+call      ibex acc 0.860 | logits match 1.000 |  17.59 M cycles/image
+[17:43:46] fashion lenet5 roba_updn+call     ibex acc 0.850 | logits match 1.000 |  21.79 M cycles/image
+[17:43:46] fashion lenet5 roba_dn2+call      ibex acc 0.880 | logits match 1.000 |  20.98 M cycles/image
+[17:43:46] fashion lenet5 roba_updndn+call   ibex acc 0.860 | logits match 1.000 |  29.48 M cycles/image
+[17:43:46] fashion lenet5 roba_updn2+call    ibex acc 0.860 | logits match 1.000 |  32.42 M cycles/image
+[17:43:46] wrote results/ibex/dnn_call_summary.csv
+[17:43:47] prepared mnist/mlp/exact: python reference accuracy 1.0000 on 100 images, 0.9841 on the full test set
+[17:43:48] prepared mnist/mlp/exact+zs: python reference accuracy 1.0000 on 100 images, 0.9841 on the full test set
+[17:43:48] prepared mnist/mlp/exact+raw: python reference accuracy 1.0000 on 100 images, 0.9846 on the full test set
+[17:43:48] prepared mnist/mlp/exact+zs+raw: python reference accuracy 1.0000 on 100 images, 0.9846 on the full test set
+[17:43:49] prepared mnist/mlp/roba_dn1: python reference accuracy 1.0000 on 100 images, 0.9836 on the full test set
+[17:43:50] prepared mnist/mlp/roba_dn1+zs: python reference accuracy 1.0000 on 100 images, 0.9836 on the full test set
+[17:43:50] prepared mnist/mlp/roba_dn1+raw: python reference accuracy 1.0000 on 100 images, 0.9842 on the full test set
+[17:43:51] prepared mnist/mlp/roba_dn1+zs+raw: python reference accuracy 1.0000 on 100 images, 0.9842 on the full test set
+[17:43:51] prepared mnist/mlp/sqtab: python reference accuracy 1.0000 on 100 images, 0.9841 on the full test set
+[17:43:52] prepared mnist/mlp/sqtab+zs: python reference accuracy 1.0000 on 100 images, 0.9841 on the full test set
+[17:43:52] prepared mnist/mlp/sqtab+raw: python reference accuracy 1.0000 on 100 images, 0.9846 on the full test set
+[17:43:52] prepared mnist/mlp/sqtab+zs+raw: python reference accuracy 1.0000 on 100 images, 0.9846 on the full test set
+[17:43:54] prepared mnist/lenet5/exact: python reference accuracy 1.0000 on 100 images, 0.9918 on the full test set
+[17:43:55] prepared mnist/lenet5/exact+zs: python reference accuracy 1.0000 on 100 images, 0.9918 on the full test set
+[17:43:57] prepared mnist/lenet5/exact+raw: python reference accuracy 1.0000 on 100 images, 0.9919 on the full test set
+[17:43:57] prepared mnist/lenet5/exact+zs+raw: python reference accuracy 1.0000 on 100 images, 0.9919 on the full test set
+[17:44:03] prepared mnist/lenet5/roba_dn1: python reference accuracy 1.0000 on 100 images, 0.9916 on the full test set
+[17:44:04] prepared mnist/lenet5/roba_dn1+zs: python reference accuracy 1.0000 on 100 images, 0.9916 on the full test set
+[17:44:10] prepared mnist/lenet5/roba_dn1+raw: python reference accuracy 1.0000 on 100 images, 0.9912 on the full test set
+[17:44:10] prepared mnist/lenet5/roba_dn1+zs+raw: python reference accuracy 1.0000 on 100 images, 0.9912 on the full test set
+[17:44:10] prepared mnist/lenet5/sqtab: python reference accuracy 1.0000 on 100 images, 0.9918 on the full test set
+[17:44:11] prepared mnist/lenet5/sqtab+zs: python reference accuracy 1.0000 on 100 images, 0.9918 on the full test set
+[17:44:11] prepared mnist/lenet5/sqtab+raw: python reference accuracy 1.0000 on 100 images, 0.9919 on the full test set
+[17:44:11] prepared mnist/lenet5/sqtab+zs+raw: python reference accuracy 1.0000 on 100 images, 0.9919 on the full test set
+[17:44:12] prepared fashion/mlp/exact: python reference accuracy 0.9100 on 100 images, 0.8975 on the full test set
+[17:44:12] prepared fashion/mlp/exact+zs: python reference accuracy 0.9100 on 100 images, 0.8975 on the full test set
+[17:44:13] prepared fashion/mlp/exact+raw: python reference accuracy 0.9100 on 100 images, 0.8969 on the full test set
+[17:44:13] prepared fashion/mlp/exact+zs+raw: python reference accuracy 0.9100 on 100 images, 0.8969 on the full test set
+[17:44:14] prepared fashion/mlp/roba_dn1: python reference accuracy 0.9100 on 100 images, 0.8953 on the full test set
+[17:44:15] prepared fashion/mlp/roba_dn1+zs: python reference accuracy 0.9100 on 100 images, 0.8953 on the full test set
+[17:44:15] prepared fashion/mlp/roba_dn1+raw: python reference accuracy 0.9000 on 100 images, 0.8953 on the full test set
+[17:44:16] prepared fashion/mlp/roba_dn1+zs+raw: python reference accuracy 0.9000 on 100 images, 0.8953 on the full test set
+[17:44:16] prepared fashion/mlp/sqtab: python reference accuracy 0.9100 on 100 images, 0.8975 on the full test set
+[17:44:17] prepared fashion/mlp/sqtab+zs: python reference accuracy 0.9100 on 100 images, 0.8975 on the full test set
+[17:44:17] prepared fashion/mlp/sqtab+raw: python reference accuracy 0.9100 on 100 images, 0.8969 on the full test set
+[17:44:18] prepared fashion/mlp/sqtab+zs+raw: python reference accuracy 0.9100 on 100 images, 0.8969 on the full test set
+[17:44:19] prepared fashion/lenet5/exact: python reference accuracy 0.8600 on 100 images, 0.9083 on the full test set
+[17:44:20] prepared fashion/lenet5/exact+zs: python reference accuracy 0.8600 on 100 images, 0.9083 on the full test set
+[17:44:22] prepared fashion/lenet5/exact+raw: python reference accuracy 0.8600 on 100 images, 0.9080 on the full test set
+[17:44:22] prepared fashion/lenet5/exact+zs+raw: python reference accuracy 0.8600 on 100 images, 0.9080 on the full test set
+[17:44:28] prepared fashion/lenet5/roba_dn1: python reference accuracy 0.8600 on 100 images, 0.9049 on the full test set
+[17:44:28] prepared fashion/lenet5/roba_dn1+zs: python reference accuracy 0.8600 on 100 images, 0.9049 on the full test set
+[17:44:35] prepared fashion/lenet5/roba_dn1+raw: python reference accuracy 0.8600 on 100 images, 0.9049 on the full test set
+[17:44:35] prepared fashion/lenet5/roba_dn1+zs+raw: python reference accuracy 0.8600 on 100 images, 0.9049 on the full test set
+[17:44:35] prepared fashion/lenet5/sqtab: python reference accuracy 0.8600 on 100 images, 0.9083 on the full test set
+[17:44:35] prepared fashion/lenet5/sqtab+zs: python reference accuracy 0.8600 on 100 images, 0.9083 on the full test set
+[17:44:36] prepared fashion/lenet5/sqtab+raw: python reference accuracy 0.8600 on 100 images, 0.9080 on the full test set
+[17:44:36] prepared fashion/lenet5/sqtab+zs+raw: python reference accuracy 0.8600 on 100 images, 0.9080 on the full test set
+[17:44:36] compiling 480 programs
+[17:44:48] running 480 simulations on 48 workers
+[17:45:20] 1/480 batches done (33s): mnist/mlp/exact+zs+raw/b00040 simulated in 33s at 1026 kHz
+[17:45:21] 2/480 batches done (33s): mnist/mlp/exact+zs+raw/b00030 simulated in 33s at 1032 kHz
+[17:45:23] 3/480 batches done (35s): mnist/mlp/exact+zs+raw/b00010 simulated in 35s at 1037 kHz
+[17:45:23] 4/480 batches done (36s): mnist/mlp/exact+zs+raw/b00050 simulated in 36s at 1025 kHz
+[17:45:25] 5/480 batches done (37s): mnist/mlp/exact+zs+raw/b00080 simulated in 37s at 1008 kHz
+[17:45:25] 6/480 batches done (37s): mnist/mlp/exact+zs+raw/b00020 simulated in 37s at 984 kHz
+[17:45:26] 7/480 batches done (38s): mnist/mlp/exact+zs+raw/b00070 simulated in 38s at 955 kHz
+[17:45:27] 8/480 batches done (39s): mnist/mlp/exact+zs+raw/b00000 simulated in 39s at 897 kHz
+[17:45:27] 9/480 batches done (39s): mnist/mlp/exact+zs+raw/b00060 simulated in 39s at 932 kHz
+[17:45:27] 10/480 batches done (40s): mnist/mlp/exact+zs+raw/b00090 simulated in 40s at 924 kHz
+[17:45:46] 11/480 batches done (59s): mnist/mlp/exact+raw/b00040 simulated in 59s at 967 kHz
+[17:45:47] 12/480 batches done (59s): mnist/mlp/exact+raw/b00080 simulated in 59s at 1010 kHz
+[17:45:47] 13/480 batches done (59s): mnist/mlp/exact+raw/b00000 simulated in 59s at 983 kHz
+[17:45:47] 14/480 batches done (59s): mnist/mlp/exact+raw/b00090 simulated in 59s at 1001 kHz
+[17:45:48] 15/480 batches done (60s): mnist/mlp/exact+raw/b00010 simulated in 60s at 986 kHz
+[17:45:48] 16/480 batches done (60s): mnist/mlp/exact+raw/b00070 simulated in 60s at 981 kHz
+[17:45:48] 17/480 batches done (61s): mnist/mlp/exact+raw/b00050 simulated in 61s at 973 kHz
+[17:45:49] 18/480 batches done (61s): mnist/mlp/exact+raw/b00030 simulated in 61s at 938 kHz
+[17:45:51] 19/480 batches done (63s): mnist/mlp/exact+raw/b00060 simulated in 63s at 940 kHz
+[17:46:04] 20/480 batches done (77s): mnist/mlp/exact+raw/b00020 simulated in 77s at 769 kHz
+[17:46:05] 21/480 batches done (77s): mnist/mlp/roba_dn1/b00030 simulated in 77s at 981 kHz
+[17:46:05] 22/480 batches done (77s): mnist/mlp/roba_dn1/b00020 simulated in 77s at 975 kHz
+[17:46:05] 23/480 batches done (77s): mnist/mlp/roba_dn1/b00040 simulated in 77s at 975 kHz
+[17:46:06] 24/480 batches done (78s): mnist/mlp/roba_dn1/b00010 simulated in 78s at 962 kHz
+[17:46:08] 25/480 batches done (80s): mnist/mlp/roba_dn1/b00000 simulated in 80s at 940 kHz
+[17:46:09] 26/480 batches done (81s): mnist/mlp/roba_dn1/b00070 simulated in 81s at 928 kHz
+[17:46:19] 27/480 batches done (92s): mnist/mlp/roba_dn1/b00060 simulated in 92s at 823 kHz
+[17:46:24] 28/480 batches done (96s): mnist/mlp/roba_dn1/b00050 simulated in 96s at 785 kHz
+[17:46:26] 29/480 batches done (99s): mnist/mlp/roba_dn1+zs+raw/b00010 simulated in 20s at 991 kHz
+[17:46:27] 30/480 batches done (99s): mnist/mlp/roba_dn1+zs+raw/b00000 simulated in 22s at 910 kHz
+[17:46:28] 31/480 batches done (100s): mnist/mlp/roba_dn1+raw/b00010 simulated in 41s at 980 kHz
+[17:46:28] 32/480 batches done (100s): mnist/mlp/roba_dn1+raw/b00000 simulated in 41s at 962 kHz
+[17:46:28] 33/480 batches done (101s): mnist/mlp/roba_dn1+raw/b00030 simulated in 40s at 978 kHz
+[17:46:28] 34/480 batches done (101s): mnist/mlp/roba_dn1+zs+raw/b00030 simulated in 20s at 978 kHz
+[17:46:29] 35/480 batches done (101s): mnist/mlp/roba_dn1+raw/b00020 simulated in 41s at 972 kHz
+[17:46:31] 36/480 batches done (103s): mnist/mlp/roba_dn1+raw/b00040 simulated in 43s at 925 kHz
+[17:46:32] 37/480 batches done (104s): mnist/mlp/roba_dn1+raw/b00060 simulated in 41s at 966 kHz
+[17:46:33] 38/480 batches done (105s): mnist/mlp/roba_dn1+raw/b00050 simulated in 44s at 913 kHz
+[17:46:36] 39/480 batches done (109s): mnist/mlp/roba_dn1/b00080 simulated in 76s at 991 kHz
+[17:46:37] 40/480 batches done (109s): mnist/mlp/roba_dn1/b00090 simulated in 76s at 993 kHz
+[17:46:38] 41/480 batches done (111s): mnist/mlp/roba_dn1+zs/b00010 simulated in 75s at 977 kHz
+[17:46:39] 42/480 batches done (111s): mnist/mlp/roba_dn1+zs/b00020 simulated in 74s at 990 kHz
+[17:46:39] 43/480 batches done (111s): mnist/mlp/roba_dn1+zs+raw/b00040 simulated in 20s at 947 kHz
+[17:46:39] 44/480 batches done (112s): mnist/mlp/roba_dn1+zs/b00030 simulated in 75s at 983 kHz
+[17:46:40] 45/480 batches done (112s): mnist/mlp/roba_dn1+zs/b00000 simulated in 77s at 954 kHz
+[17:46:43] 46/480 batches done (116s): mnist/mlp/roba_dn1+zs/b00040 simulated in 77s at 951 kHz
+[17:46:44] 47/480 batches done (117s): mnist/mlp/roba_dn1+zs+raw/b00050 simulated in 21s at 977 kHz
+[17:46:45] 48/480 batches done (118s): mnist/mlp/roba_dn1+raw/b00080 simulated in 41s at 988 kHz
+[17:46:47] 49/480 batches done (120s): mnist/mlp/roba_dn1+zs+raw/b00060 simulated in 21s at 979 kHz
+[17:46:47] 50/480 batches done (120s): mnist/mlp/roba_dn1+zs/b00060 simulated in 80s at 914 kHz
+[17:46:47] 51/480 batches done (120s): mnist/mlp/roba_dn1+raw/b00090 simulated in 42s at 948 kHz
+[17:46:47] 52/480 batches done (120s): mnist/mlp/roba_dn1+raw/b00070 simulated in 43s at 930 kHz
+[17:46:48] 53/480 batches done (120s): mnist/mlp/roba_dn1+zs+raw/b00070 simulated in 21s at 949 kHz
+[17:46:48] 54/480 batches done (121s): mnist/mlp/roba_dn1+zs+raw/b00090 simulated in 20s at 994 kHz
+[17:46:49] 55/480 batches done (121s): mnist/mlp/roba_dn1+zs+raw/b00080 simulated in 21s at 976 kHz
+[17:46:49] 56/480 batches done (122s): mnist/mlp/roba_dn1+zs+raw/b00020 simulated in 41s at 489 kHz
+[17:46:59] 57/480 batches done (131s): mnist/mlp/roba_dn1+zs/b00070 simulated in 91s at 802 kHz
+[17:47:01] 58/480 batches done (133s): mnist/mlp/roba_dn1+zs/b00080 simulated in 74s at 986 kHz
+[17:47:02] 59/480 batches done (135s): mnist/mlp/exact/b00060 simulated in 135s at 1062 kHz
+[17:47:03] 60/480 batches done (135s): mnist/mlp/exact+zs/b00060 simulated in 135s at 1028 kHz
+[17:47:03] 61/480 batches done (135s): mnist/mlp/exact+zs/b00000 simulated in 135s at 1028 kHz
+[17:47:03] 62/480 batches done (135s): mnist/mlp/roba_dn1+zs/b00050 simulated in 96s at 763 kHz
+[17:47:04] 63/480 batches done (136s): mnist/mlp/exact/b00090 simulated in 136s at 1050 kHz
+[17:47:04] 64/480 batches done (137s): mnist/mlp/exact/b00010 simulated in 137s at 1049 kHz
+[17:47:04] 65/480 batches done (137s): mnist/mlp/exact/b00040 simulated in 137s at 1052 kHz
+[17:47:05] 66/480 batches done (137s): mnist/mlp/exact/b00080 simulated in 137s at 1044 kHz
+[17:47:05] 67/480 batches done (137s): mnist/mlp/exact+zs/b00080 simulated in 137s at 1013 kHz
+[17:47:05] 68/480 batches done (138s): mnist/mlp/exact+zs/b00040 simulated in 138s at 1014 kHz
+[17:47:07] 69/480 batches done (139s): mnist/mlp/exact+zs/b00050 simulated in 139s at 999 kHz
+[17:47:07] 70/480 batches done (139s): mnist/mlp/exact+zs/b00070 simulated in 139s at 995 kHz
+[17:47:08] 71/480 batches done (140s): mnist/mlp/exact+zs/b00010 simulated in 140s at 992 kHz
+[17:47:08] 72/480 batches done (140s): mnist/mlp/exact/b00020 simulated in 140s at 1022 kHz
+[17:47:09] 73/480 batches done (141s): mnist/mlp/exact/b00050 simulated in 141s at 1015 kHz
+[17:47:10] 74/480 batches done (143s): mnist/mlp/exact+zs/b00020 simulated in 143s at 976 kHz
+[17:47:11] 75/480 batches done (143s): mnist/mlp/exact/b00030 simulated in 143s at 1001 kHz
+[17:47:11] 76/480 batches done (143s): mnist/mlp/exact+zs/b00030 simulated in 143s at 971 kHz
+[17:47:11] 77/480 batches done (144s): mnist/mlp/sqtab/b00020 simulated in 43s at 977 kHz
+[17:47:12] 78/480 batches done (144s): mnist/mlp/exact+zs/b00090 simulated in 144s at 960 kHz
+[17:47:14] 79/480 batches done (146s): mnist/mlp/sqtab/b00030 simulated in 43s at 968 kHz
+[17:47:14] 80/480 batches done (146s): mnist/mlp/sqtab/b00000 simulated in 45s at 916 kHz
+[17:47:16] 81/480 batches done (149s): mnist/mlp/sqtab/b00050 simulated in 44s at 954 kHz
+[17:47:17] 82/480 batches done (150s): mnist/mlp/roba_dn1+zs/b00090 simulated in 91s at 809 kHz
+[17:47:17] 83/480 batches done (150s): mnist/mlp/sqtab/b00040 simulated in 45s at 918 kHz
+[17:47:17] 84/480 batches done (150s): mnist/mlp/exact/b00070 simulated in 150s at 954 kHz
+[17:47:18] 85/480 batches done (150s): mnist/mlp/sqtab/b00060 simulated in 42s at 995 kHz
+[17:47:18] 86/480 batches done (150s): mnist/mlp/exact/b00000 simulated in 150s at 953 kHz
+[17:47:19] 87/480 batches done (152s): mnist/mlp/sqtab/b00070 simulated in 42s at 982 kHz
+[17:47:19] 88/480 batches done (152s): mnist/mlp/sqtab/b00010 simulated in 51s at 818 kHz
+[17:47:20] 89/480 batches done (153s): mnist/mlp/sqtab+zs+raw/b00000 simulated in 17s at 950 kHz
+[17:47:21] 90/480 batches done (153s): mnist/mlp/sqtab/b00090 simulated in 42s at 986 kHz
+[17:47:21] 91/480 batches done (153s): mnist/mlp/sqtab+zs+raw/b00020 simulated in 17s at 969 kHz
+[17:47:21] 92/480 batches done (154s): mnist/mlp/sqtab+zs+raw/b00010 simulated in 17s at 955 kHz
+[17:47:22] 93/480 batches done (154s): mnist/mlp/sqtab/b00080 simulated in 43s at 961 kHz
+[17:47:22] 94/480 batches done (154s): mnist/mlp/sqtab+zs+raw/b00040 simulated in 17s at 896 kHz
+[17:47:22] 95/480 batches done (154s): mnist/mlp/sqtab+zs+raw/b00050 simulated in 17s at 976 kHz
+[17:47:23] 96/480 batches done (155s): mnist/mlp/sqtab+zs+raw/b00030 simulated in 18s at 857 kHz
+[17:47:25] 97/480 batches done (158s): mnist/mlp/sqtab+zs+raw/b00060 simulated in 18s at 891 kHz
+[17:47:26] 98/480 batches done (158s): mnist/mlp/sqtab+zs+raw/b00070 simulated in 19s at 882 kHz
+[17:47:26] 99/480 batches done (158s): mnist/mlp/sqtab+zs+raw/b00080 simulated in 18s at 918 kHz
+[17:47:27] 100/480 batches done (159s): mnist/mlp/sqtab+zs+raw/b00090 simulated in 19s at 877 kHz
+[17:47:31] 101/480 batches done (163s): mnist/mlp/sqtab+raw/b00010 simulated in 42s at 986 kHz
+[17:47:31] 102/480 batches done (163s): mnist/mlp/sqtab+raw/b00020 simulated in 42s at 984 kHz
+[17:47:31] 103/480 batches done (164s): mnist/mlp/sqtab+raw/b00000 simulated in 43s at 958 kHz
+[17:47:34] 104/480 batches done (166s): mnist/mlp/sqtab+zs/b00000 simulated in 55s at 980 kHz
+[17:47:34] 105/480 batches done (166s): mnist/mlp/sqtab+zs/b00010 simulated in 55s at 987 kHz
+[17:47:38] 106/480 batches done (170s): mnist/mlp/sqtab+zs/b00020 simulated in 58s at 936 kHz
+[17:47:39] 107/480 batches done (172s): mnist/mlp/sqtab+zs/b00030 simulated in 56s at 962 kHz
+[17:47:42] 108/480 batches done (174s): mnist/mlp/sqtab+zs/b00060 simulated in 55s at 981 kHz
+[17:47:43] 109/480 batches done (175s): mnist/mlp/sqtab+zs/b00050 simulated in 58s at 936 kHz
+[17:47:43] 110/480 batches done (175s): mnist/mlp/sqtab+zs/b00080 simulated in 56s at 969 kHz
+[17:47:43] 111/480 batches done (175s): mnist/mlp/sqtab+raw/b00040 simulated in 44s at 941 kHz
+[17:47:43] 112/480 batches done (176s): mnist/mlp/sqtab+zs/b00070 simulated in 56s at 958 kHz
+[17:47:45] 113/480 batches done (177s): mnist/mlp/sqtab+zs/b00090 simulated in 57s at 939 kHz
+[17:47:45] 114/480 batches done (177s): mnist/mlp/sqtab+raw/b00090 simulated in 42s at 994 kHz
+[17:47:45] 115/480 batches done (178s): mnist/mlp/sqtab+raw/b00050 simulated in 45s at 930 kHz
+[17:47:46] 116/480 batches done (178s): mnist/mlp/sqtab+raw/b00070 simulated in 43s at 971 kHz
+[17:47:56] 117/480 batches done (188s): mnist/mlp/sqtab+raw/b00060 simulated in 53s at 780 kHz
+[17:47:56] 118/480 batches done (188s): mnist/mlp/sqtab+raw/b00080 simulated in 53s at 785 kHz
+[17:48:08] 119/480 batches done (200s): mnist/mlp/sqtab+raw/b00030 simulated in 79s at 529 kHz
+[17:48:15] 120/480 batches done (208s): mnist/mlp/sqtab+zs/b00040 simulated in 91s at 595 kHz
+[17:49:29] 121/480 batches done (282s): mnist/lenet5/roba_dn1/b00000 simulated in 105s at 981 kHz
+[17:49:31] 122/480 batches done (283s): mnist/lenet5/roba_dn1/b00010 simulated in 106s at 977 kHz
+[17:49:32] 123/480 batches done (284s): mnist/lenet5/roba_dn1/b00030 simulated in 106s at 966 kHz
+[17:49:39] 124/480 batches done (291s): mnist/lenet5/roba_dn1/b00020 simulated in 114s at 910 kHz
+[17:49:40] 125/480 batches done (293s): mnist/lenet5/roba_dn1/b00040 simulated in 105s at 981 kHz
+[17:49:45] 126/480 batches done (297s): mnist/lenet5/roba_dn1/b00050 simulated in 109s at 951 kHz
+[17:50:01] 127/480 batches done (313s): mnist/lenet5/roba_dn1/b00070 simulated in 105s at 977 kHz
+[17:50:13] 128/480 batches done (326s): mnist/lenet5/exact+raw/b00000 simulated in 172s at 1033 kHz
+[17:50:18] 129/480 batches done (330s): mnist/lenet5/exact+raw/b00010 simulated in 176s at 1027 kHz
+[17:50:20] 130/480 batches done (333s): mnist/lenet5/exact+raw/b00030 simulated in 177s at 992 kHz
+[17:50:22] 131/480 batches done (334s): mnist/lenet5/exact+raw/b00040 simulated in 176s at 996 kHz
+[17:50:23] 132/480 batches done (335s): mnist/lenet5/exact+raw/b00050 simulated in 177s at 1020 kHz
+[17:50:24] 133/480 batches done (337s): mnist/lenet5/roba_dn1/b00060 simulated in 136s at 760 kHz
+[17:50:24] 134/480 batches done (337s): mnist/lenet5/exact+raw/b00060 simulated in 178s at 1017 kHz
+[17:50:26] 135/480 batches done (338s): mnist/lenet5/exact+zs+raw/b00000 simulated in 174s at 1009 kHz
+[17:50:27] 136/480 batches done (340s): mnist/lenet5/exact+raw/b00080 simulated in 177s at 1022 kHz
+[17:50:29] 137/480 batches done (341s): mnist/lenet5/exact+raw/b00090 simulated in 177s at 1016 kHz
+[17:50:29] 138/480 batches done (341s): mnist/lenet5/exact+zs+raw/b00030 simulated in 171s at 1016 kHz
+[17:50:29] 139/480 batches done (341s): mnist/lenet5/exact+zs+raw/b00020 simulated in 175s at 1021 kHz
+[17:50:31] 140/480 batches done (343s): mnist/lenet5/exact+zs+raw/b00010 simulated in 177s at 1015 kHz
+[17:50:31] 141/480 batches done (343s): mnist/lenet5/exact+raw/b00020 simulated in 189s at 955 kHz
+[17:50:32] 142/480 batches done (344s): mnist/lenet5/exact+zs+raw/b00040 simulated in 172s at 1010 kHz
+[17:50:37] 143/480 batches done (349s): mnist/lenet5/exact+zs+raw/b00070 simulated in 174s at 1021 kHz
+[17:50:37] 144/480 batches done (349s): mnist/lenet5/exact+zs+raw/b00090 simulated in 174s at 1029 kHz
+[17:50:37] 145/480 batches done (350s): mnist/lenet5/exact+zs+raw/b00050 simulated in 175s at 1023 kHz
+[17:50:38] 146/480 batches done (351s): mnist/lenet5/exact+zs+raw/b00060 simulated in 176s at 1024 kHz
+[17:51:00] 147/480 batches done (372s): mnist/lenet5/exact+zs+raw/b00080 simulated in 197s at 909 kHz
+[17:51:00] 148/480 batches done (373s): mnist/lenet5/exact/b00030 simulated in 229s at 1042 kHz
+[17:51:01] 149/480 batches done (373s): mnist/lenet5/exact/b00000 simulated in 232s at 1035 kHz
+[17:51:02] 150/480 batches done (374s): mnist/lenet5/exact+raw/b00070 simulated in 215s at 833 kHz
+[17:51:04] 151/480 batches done (376s): mnist/lenet5/exact/b00010 simulated in 234s at 1040 kHz
+[17:51:04] 152/480 batches done (377s): mnist/lenet5/exact/b00020 simulated in 234s at 1039 kHz
+[17:51:05] 153/480 batches done (377s): mnist/lenet5/exact+zs/b00030 simulated in 227s at 1045 kHz
+[17:51:05] 154/480 batches done (377s): mnist/lenet5/exact/b00070 simulated in 231s at 1044 kHz
+[17:51:05] 155/480 batches done (378s): mnist/lenet5/exact/b00060 simulated in 232s at 1051 kHz
+[17:51:06] 156/480 batches done (378s): mnist/lenet5/exact/b00050 simulated in 234s at 1039 kHz
+[17:51:08] 157/480 batches done (381s): mnist/lenet5/exact/b00080 simulated in 232s at 1044 kHz
+[17:51:10] 158/480 batches done (382s): mnist/lenet5/exact+zs/b00040 simulated in 231s at 1031 kHz
+[17:51:10] 159/480 batches done (382s): mnist/lenet5/exact+zs/b00070 simulated in 229s at 1046 kHz
+[17:51:10] 160/480 batches done (383s): mnist/lenet5/exact+zs/b00020 simulated in 232s at 1036 kHz
+[17:51:11] 161/480 batches done (383s): mnist/lenet5/exact/b00090 simulated in 233s at 1037 kHz
+[17:51:12] 162/480 batches done (384s): mnist/lenet5/exact/b00040 simulated in 240s at 996 kHz
+[17:51:13] 163/480 batches done (385s): mnist/lenet5/exact+zs/b00050 simulated in 233s at 1033 kHz
+[17:51:13] 164/480 batches done (385s): mnist/lenet5/exact+zs/b00010 simulated in 235s at 1026 kHz
+[17:51:13] 165/480 batches done (386s): mnist/lenet5/exact+zs/b00000 simulated in 236s at 1010 kHz
+[17:51:15] 166/480 batches done (387s): mnist/lenet5/roba_dn1/b00080 simulated in 106s at 980 kHz
+[17:51:15] 167/480 batches done (387s): mnist/lenet5/exact+zs/b00090 simulated in 234s at 1027 kHz
+[17:51:22] 168/480 batches done (394s): mnist/lenet5/exact+zs/b00060 simulated in 241s at 1001 kHz
+[17:51:24] 169/480 batches done (397s): mnist/lenet5/roba_dn1+zs/b00010 simulated in 105s at 961 kHz
+[17:51:25] 170/480 batches done (397s): mnist/lenet5/roba_dn1+zs/b00000 simulated in 113s at 887 kHz
+[17:51:30] 171/480 batches done (402s): mnist/lenet5/exact+zs/b00080 simulated in 249s at 966 kHz
+[17:51:32] 172/480 batches done (404s): mnist/lenet5/roba_dn1+zs/b00020 simulated in 111s at 905 kHz
+[17:51:33] 173/480 batches done (405s): mnist/lenet5/roba_dn1+zs/b00030 simulated in 108s at 922 kHz
+[17:51:42] 174/480 batches done (415s): mnist/lenet5/roba_dn1/b00090 simulated in 132s at 785 kHz
+[17:51:57] 175/480 batches done (429s): mnist/lenet5/roba_dn1+raw/b00000 simulated in 92s at 967 kHz
+[17:51:57] 176/480 batches done (429s): mnist/lenet5/roba_dn1+raw/b00010 simulated in 93s at 975 kHz
+[17:51:58] 177/480 batches done (430s): mnist/lenet5/roba_dn1+raw/b00030 simulated in 91s at 981 kHz
+[17:51:58] 178/480 batches done (430s): mnist/lenet5/roba_dn1+zs/b00050 simulated in 105s at 968 kHz
+[17:52:00] 179/480 batches done (433s): mnist/lenet5/roba_dn1+raw/b00040 simulated in 92s at 967 kHz
+[17:52:01] 180/480 batches done (434s): mnist/lenet5/roba_dn1+raw/b00050 simulated in 92s at 977 kHz
+[17:52:02] 181/480 batches done (434s): mnist/lenet5/roba_dn1+raw/b00020 simulated in 96s at 936 kHz
+[17:52:03] 182/480 batches done (435s): mnist/lenet5/roba_dn1+raw/b00060 simulated in 94s at 964 kHz
+[17:52:03] 183/480 batches done (435s): mnist/lenet5/roba_dn1+zs/b00060 simulated in 105s at 963 kHz
+[17:52:04] 184/480 batches done (436s): mnist/lenet5/roba_dn1+raw/b00070 simulated in 93s at 968 kHz
+[17:52:04] 185/480 batches done (436s): mnist/lenet5/roba_dn1+raw/b00080 simulated in 93s at 976 kHz
+[17:52:05] 186/480 batches done (438s): mnist/lenet5/roba_dn1+raw/b00090 simulated in 94s at 962 kHz
+[17:52:06] 187/480 batches done (439s): mnist/lenet5/roba_dn1+zs/b00080 simulated in 105s at 964 kHz
+[17:52:08] 188/480 batches done (440s): mnist/lenet5/roba_dn1+zs+raw/b00000 simulated in 91s at 965 kHz
+[17:52:08] 189/480 batches done (440s): mnist/lenet5/roba_dn1+zs/b00090 simulated in 105s at 961 kHz
+[17:52:09] 190/480 batches done (442s): mnist/lenet5/roba_dn1+zs+raw/b00010 simulated in 93s at 957 kHz
+[17:52:10] 191/480 batches done (442s): mnist/lenet5/roba_dn1+zs+raw/b00020 simulated in 93s at 955 kHz
+[17:52:12] 192/480 batches done (445s): mnist/lenet5/roba_dn1+zs+raw/b00030 simulated in 94s at 927 kHz
+[17:52:12] 193/480 batches done (445s): mnist/lenet5/roba_dn1+zs/b00040 simulated in 132s at 760 kHz
+[17:52:26] 194/480 batches done (459s): mnist/lenet5/sqtab/b00000 simulated in 81s at 942 kHz
+[17:52:28] 195/480 batches done (460s): mnist/lenet5/sqtab/b00010 simulated in 83s at 926 kHz
+[17:52:29] 196/480 batches done (461s): mnist/lenet5/sqtab/b00020 simulated in 83s at 921 kHz
+[17:52:29] 197/480 batches done (461s): mnist/lenet5/roba_dn1+zs/b00070 simulated in 129s at 782 kHz
+[17:52:30] 198/480 batches done (463s): mnist/lenet5/sqtab/b00040 simulated in 82s at 936 kHz
+[17:52:30] 199/480 batches done (463s): mnist/lenet5/sqtab/b00060 simulated in 81s at 952 kHz
+[17:52:32] 200/480 batches done (464s): mnist/lenet5/roba_dn1+zs+raw/b00050 simulated in 91s at 972 kHz
+[17:52:32] 201/480 batches done (464s): mnist/lenet5/sqtab/b00070 simulated in 81s at 942 kHz
+[17:52:32] 202/480 batches done (465s): mnist/lenet5/sqtab/b00080 simulated in 82s at 937 kHz
+[17:52:33] 203/480 batches done (465s): mnist/lenet5/roba_dn1+zs+raw/b00060 simulated in 92s at 969 kHz
+[17:52:33] 204/480 batches done (465s): mnist/lenet5/sqtab/b00050 simulated in 83s at 925 kHz
+[17:52:33] 205/480 batches done (466s): mnist/lenet5/roba_dn1+zs+raw/b00040 simulated in 94s at 931 kHz
+[17:52:34] 206/480 batches done (467s): mnist/lenet5/roba_dn1+zs+raw/b00070 simulated in 92s at 955 kHz
+[17:52:35] 207/480 batches done (467s): mnist/lenet5/sqtab/b00090 simulated in 83s at 923 kHz
+[17:52:36] 208/480 batches done (469s): mnist/lenet5/roba_dn1+zs+raw/b00090 simulated in 92s at 964 kHz
+[17:52:39] 209/480 batches done (471s): mnist/lenet5/sqtab+zs/b00000 simulated in 86s at 956 kHz
+[17:52:40] 210/480 batches done (472s): mnist/lenet5/sqtab+zs/b00010 simulated in 87s at 955 kHz
+[17:52:41] 211/480 batches done (473s): mnist/lenet5/sqtab+zs/b00030 simulated in 86s at 956 kHz
+[17:52:44] 212/480 batches done (476s): mnist/lenet5/sqtab+zs/b00040 simulated in 89s at 932 kHz
+[17:52:44] 213/480 batches done (476s): mnist/lenet5/sqtab+zs/b00020 simulated in 91s at 916 kHz
+[17:52:50] 214/480 batches done (482s): mnist/lenet5/sqtab+zs/b00050 simulated in 88s at 945 kHz
+[17:52:51] 215/480 batches done (484s): mnist/lenet5/sqtab+zs/b00060 simulated in 87s at 955 kHz
+[17:52:53] 216/480 batches done (485s): mnist/lenet5/sqtab+zs/b00070 simulated in 88s at 944 kHz
+[17:52:54] 217/480 batches done (486s): mnist/lenet5/sqtab+raw/b00000 simulated in 81s at 951 kHz
+[17:52:54] 218/480 batches done (487s): mnist/lenet5/sqtab/b00030 simulated in 109s at 706 kHz
+[17:52:57] 219/480 batches done (489s): mnist/lenet5/sqtab+zs/b00080 simulated in 87s at 954 kHz
+[17:53:00] 220/480 batches done (493s): mnist/lenet5/sqtab+zs/b00090 simulated in 88s at 938 kHz
+[17:53:04] 221/480 batches done (497s): mnist/lenet5/sqtab+raw/b00010 simulated in 82s at 936 kHz
+[17:53:18] 222/480 batches done (510s): mnist/lenet5/sqtab+raw/b00040 simulated in 80s at 956 kHz
+[17:53:20] 223/480 batches done (512s): mnist/lenet5/sqtab+raw/b00020 simulated in 83s at 923 kHz
+[17:53:20] 224/480 batches done (512s): mnist/lenet5/sqtab+zs+raw/b00000 simulated in 77s at 968 kHz
+[17:53:20] 225/480 batches done (513s): mnist/lenet5/sqtab+raw/b00050 simulated in 82s at 933 kHz
+[17:53:20] 226/480 batches done (513s): mnist/lenet5/sqtab+raw/b00030 simulated in 83s at 918 kHz
+[17:53:21] 227/480 batches done (513s): mnist/lenet5/sqtab+zs+raw/b00020 simulated in 77s at 974 kHz
+[17:53:21] 228/480 batches done (513s): mnist/lenet5/sqtab+zs+raw/b00010 simulated in 77s at 972 kHz
+[17:53:21] 229/480 batches done (514s): mnist/lenet5/sqtab+raw/b00060 simulated in 81s at 949 kHz
+[17:53:22] 230/480 batches done (515s): mnist/lenet5/sqtab+zs+raw/b00030 simulated in 77s at 960 kHz
+[17:53:25] 231/480 batches done (518s): mnist/lenet5/sqtab+raw/b00070 simulated in 84s at 912 kHz
+[17:53:25] 232/480 batches done (518s): mnist/lenet5/sqtab+zs+raw/b00050 simulated in 78s at 966 kHz
+[17:53:26] 233/480 batches done (518s): mnist/lenet5/sqtab+raw/b00090 simulated in 83s at 923 kHz
+[17:53:26] 234/480 batches done (519s): mnist/lenet5/sqtab+zs+raw/b00060 simulated in 78s at 960 kHz
+[17:53:29] 235/480 batches done (521s): mnist/lenet5/sqtab+raw/b00080 simulated in 87s at 883 kHz
+[17:53:30] 236/480 batches done (522s): mnist/lenet5/sqtab+zs+raw/b00090 simulated in 78s at 964 kHz
+[17:53:33] 237/480 batches done (526s): mnist/lenet5/sqtab+zs+raw/b00070 simulated in 84s at 891 kHz
+[17:53:36] 238/480 batches done (528s): mnist/lenet5/roba_dn1+zs+raw/b00080 simulated in 152s at 583 kHz
+[17:53:37] 239/480 batches done (529s): mnist/lenet5/sqtab+zs+raw/b00080 simulated in 87s at 862 kHz
+[17:54:02] 240/480 batches done (555s): fashion/mlp/exact+raw/b00000 simulated in 78s at 989 kHz
+[17:54:07] 241/480 batches done (559s): mnist/lenet5/sqtab+zs+raw/b00040 simulated in 121s at 613 kHz
+[17:54:11] 242/480 batches done (563s): fashion/mlp/exact+raw/b00030 simulated in 78s at 972 kHz
+[17:54:12] 243/480 batches done (565s): fashion/mlp/exact+raw/b00010 simulated in 82s at 999 kHz
+[17:54:13] 244/480 batches done (565s): fashion/mlp/exact+raw/b00060 simulated in 76s at 993 kHz
+[17:54:14] 245/480 batches done (566s): fashion/mlp/exact+raw/b00040 simulated in 80s at 1040 kHz
+[17:54:17] 246/480 batches done (569s): fashion/mlp/exact+raw/b00020 simulated in 85s at 949 kHz
+[17:54:22] 247/480 batches done (574s): fashion/mlp/exact+raw/b00050 simulated in 87s at 1029 kHz
+[17:54:23] 248/480 batches done (575s): fashion/mlp/exact+zs+raw/b00060 simulated in 61s at 1038 kHz
+[17:54:24] 249/480 batches done (576s): fashion/mlp/exact+zs+raw/b00030 simulated in 64s at 1005 kHz
+[17:54:26] 250/480 batches done (579s): fashion/mlp/exact+zs+raw/b00000 simulated in 67s at 993 kHz
+[17:54:27] 251/480 batches done (579s): fashion/mlp/exact/b00000 simulated in 134s at 1041 kHz
+[17:54:29] 252/480 batches done (582s): fashion/mlp/exact+raw/b00070 simulated in 89s at 997 kHz
+[17:54:29] 253/480 batches done (582s): fashion/mlp/exact+zs+raw/b00010 simulated in 69s at 1050 kHz
+[17:54:30] 254/480 batches done (582s): fashion/mlp/exact+raw/b00080 simulated in 85s at 975 kHz
+[17:54:31] 255/480 batches done (583s): fashion/mlp/exact+zs+raw/b00020 simulated in 71s at 1006 kHz
+[17:54:31] 256/480 batches done (584s): fashion/mlp/exact+zs+raw/b00040 simulated in 71s at 1056 kHz
+[17:54:32] 257/480 batches done (584s): fashion/mlp/exact+zs+raw/b00090 simulated in 67s at 1054 kHz
+[17:54:37] 258/480 batches done (590s): fashion/mlp/exact+raw/b00090 simulated in 79s at 1015 kHz
+[17:54:38] 259/480 batches done (591s): fashion/mlp/exact/b00020 simulated in 131s at 1063 kHz
+[17:54:40] 260/480 batches done (592s): fashion/mlp/exact/b00010 simulated in 134s at 1039 kHz
+[17:54:41] 261/480 batches done (594s): fashion/mlp/exact/b00070 simulated in 130s at 1069 kHz
+[17:54:41] 262/480 batches done (594s): fashion/mlp/roba_dn1/b00000 simulated in 76s at 991 kHz
+[17:54:42] 263/480 batches done (594s): fashion/mlp/exact/b00030 simulated in 133s at 1054 kHz
+[17:54:43] 264/480 batches done (595s): fashion/mlp/roba_dn1/b00010 simulated in 76s at 978 kHz
+[17:54:44] 265/480 batches done (596s): fashion/mlp/exact/b00080 simulated in 132s at 1053 kHz
+[17:54:45] 266/480 batches done (597s): fashion/mlp/exact+zs+raw/b00050 simulated in 84s at 1005 kHz
+[17:54:45] 267/480 batches done (597s): fashion/mlp/roba_dn1/b00020 simulated in 76s at 977 kHz
+[17:54:46] 268/480 batches done (599s): fashion/mlp/exact/b00060 simulated in 136s at 1027 kHz
+[17:54:46] 269/480 batches done (599s): fashion/mlp/exact/b00090 simulated in 134s at 1039 kHz
+[17:54:47] 270/480 batches done (599s): fashion/mlp/roba_dn1/b00030 simulated in 77s at 977 kHz
+[17:54:48] 271/480 batches done (601s): fashion/mlp/exact/b00040 simulated in 139s at 995 kHz
+[17:54:49] 272/480 batches done (601s): fashion/mlp/roba_dn1/b00040 simulated in 76s at 988 kHz
+[17:54:51] 273/480 batches done (603s): fashion/mlp/exact/b00050 simulated in 140s at 991 kHz
+[17:54:51] 274/480 batches done (604s): fashion/mlp/roba_dn1/b00050 simulated in 75s at 995 kHz
+[17:54:53] 275/480 batches done (606s): fashion/mlp/exact+zs+raw/b00080 simulated in 88s at 849 kHz
+[17:54:55] 276/480 batches done (608s): fashion/mlp/exact+zs/b00030 simulated in 141s at 1028 kHz
+[17:54:56] 277/480 batches done (608s): fashion/mlp/exact+zs/b00050 simulated in 140s at 1028 kHz
+[17:54:57] 278/480 batches done (609s): fashion/mlp/exact+zs/b00010 simulated in 144s at 996 kHz
+[17:54:57] 279/480 batches done (609s): fashion/mlp/exact+zs/b00060 simulated in 138s at 1045 kHz
+[17:54:57] 280/480 batches done (610s): fashion/mlp/exact+zs/b00020 simulated in 144s at 998 kHz
+[17:54:59] 281/480 batches done (611s): fashion/mlp/exact+zs+raw/b00070 simulated in 96s at 862 kHz
+[17:55:00] 282/480 batches done (612s): fashion/mlp/exact+zs/b00070 simulated in 140s at 1022 kHz
+[17:55:02] 283/480 batches done (614s): fashion/mlp/exact+zs/b00080 simulated in 141s at 1020 kHz
+[17:55:02] 284/480 batches done (615s): fashion/mlp/exact+zs/b00040 simulated in 147s at 971 kHz
+[17:55:05] 285/480 batches done (617s): fashion/mlp/exact+zs/b00090 simulated in 141s at 1018 kHz
+[17:55:06] 286/480 batches done (618s): fashion/mlp/exact+zs/b00000 simulated in 154s at 943 kHz
+[17:55:11] 287/480 batches done (624s): fashion/mlp/roba_dn1/b00060 simulated in 94s at 795 kHz
+[17:55:16] 288/480 batches done (628s): fashion/mlp/roba_dn1+raw/b00000 simulated in 46s at 991 kHz
+[17:55:18] 289/480 batches done (631s): fashion/mlp/roba_dn1+raw/b00030 simulated in 47s at 970 kHz
+[17:55:18] 290/480 batches done (631s): fashion/mlp/roba_dn1+raw/b00010 simulated in 49s at 974 kHz
+[17:55:20] 291/480 batches done (632s): fashion/mlp/roba_dn1+zs+raw/b00010 simulated in 37s at 993 kHz
+[17:55:20] 292/480 batches done (632s): fashion/mlp/roba_dn1+zs+raw/b00030 simulated in 35s at 918 kHz
+[17:55:20] 293/480 batches done (633s): fashion/mlp/roba_dn1+zs+raw/b00020 simulated in 37s at 982 kHz
+[17:55:21] 294/480 batches done (633s): fashion/mlp/roba_dn1+raw/b00040 simulated in 49s at 976 kHz
+[17:55:21] 295/480 batches done (633s): fashion/mlp/roba_dn1/b00070 simulated in 79s at 950 kHz
+[17:55:22] 296/480 batches done (635s): fashion/mlp/roba_dn1+zs+raw/b00000 simulated in 41s at 824 kHz
+[17:55:22] 297/480 batches done (635s): fashion/mlp/roba_dn1+zs+raw/b00060 simulated in 36s at 903 kHz
+[17:55:23] 298/480 batches done (635s): fashion/mlp/roba_dn1+raw/b00020 simulated in 52s at 913 kHz
+[17:55:24] 299/480 batches done (637s): fashion/mlp/roba_dn1+raw/b00060 simulated in 46s at 989 kHz
+[17:55:25] 300/480 batches done (638s): fashion/mlp/roba_dn1+zs+raw/b00040 simulated in 40s at 933 kHz
+[17:55:26] 301/480 batches done (638s): fashion/mlp/roba_dn1+zs+raw/b00090 simulated in 37s at 954 kHz
+[17:55:27] 302/480 batches done (639s): fashion/mlp/roba_dn1/b00080 simulated in 79s at 942 kHz
+[17:55:27] 303/480 batches done (639s): fashion/mlp/roba_dn1+zs+raw/b00080 simulated in 38s at 978 kHz
+[17:55:28] 304/480 batches done (640s): fashion/mlp/roba_dn1+raw/b00050 simulated in 51s at 983 kHz
+[17:55:29] 305/480 batches done (641s): fashion/mlp/roba_dn1+zs+raw/b00050 simulated in 43s at 981 kHz
+[17:55:30] 306/480 batches done (642s): fashion/mlp/roba_dn1+zs/b00020 simulated in 76s at 974 kHz
+[17:55:30] 307/480 batches done (643s): fashion/mlp/roba_dn1+raw/b00080 simulated in 49s at 972 kHz
+[17:55:30] 308/480 batches done (643s): fashion/mlp/roba_dn1/b00090 simulated in 80s at 938 kHz
+[17:55:31] 309/480 batches done (643s): fashion/mlp/roba_dn1+raw/b00070 simulated in 51s at 970 kHz
+[17:55:31] 310/480 batches done (643s): fashion/mlp/roba_dn1+zs+raw/b00070 simulated in 44s at 937 kHz
+[17:55:33] 311/480 batches done (646s): fashion/mlp/roba_dn1+zs/b00000 simulated in 81s at 921 kHz
+[17:55:33] 312/480 batches done (646s): fashion/mlp/sqtab/b00010 simulated in 42s at 985 kHz
+[17:55:34] 313/480 batches done (646s): fashion/mlp/roba_dn1+zs/b00030 simulated in 77s at 974 kHz
+[17:55:34] 314/480 batches done (646s): fashion/mlp/roba_dn1+zs/b00010 simulated in 81s at 919 kHz
+[17:55:34] 315/480 batches done (647s): fashion/mlp/sqtab/b00000 simulated in 44s at 955 kHz
+[17:55:36] 316/480 batches done (648s): fashion/mlp/roba_dn1+raw/b00090 simulated in 54s at 860 kHz
+[17:55:37] 317/480 batches done (649s): fashion/mlp/sqtab/b00020 simulated in 44s at 954 kHz
+[17:55:38] 318/480 batches done (650s): fashion/mlp/sqtab/b00030 simulated in 42s at 984 kHz
+[17:55:38] 319/480 batches done (651s): fashion/mlp/roba_dn1+zs/b00050 simulated in 76s at 981 kHz
+[17:55:39] 320/480 batches done (652s): fashion/mlp/sqtab/b00050 simulated in 43s at 973 kHz
+[17:55:40] 321/480 batches done (652s): fashion/mlp/sqtab/b00040 simulated in 44s at 950 kHz
+[17:55:40] 322/480 batches done (653s): fashion/mlp/sqtab/b00070 simulated in 43s at 967 kHz
+[17:55:41] 323/480 batches done (653s): fashion/mlp/sqtab/b00060 simulated in 44s at 954 kHz
+[17:55:42] 324/480 batches done (655s): fashion/mlp/roba_dn1+zs/b00070 simulated in 76s at 975 kHz
+[17:55:44] 325/480 batches done (656s): fashion/mlp/sqtab/b00080 simulated in 45s at 921 kHz
+[17:55:46] 326/480 batches done (659s): fashion/mlp/sqtab/b00090 simulated in 46s at 899 kHz
+[17:55:50] 327/480 batches done (663s): fashion/mlp/roba_dn1+zs/b00090 simulated in 81s at 919 kHz
+[17:55:52] 328/480 batches done (665s): fashion/mlp/roba_dn1+zs/b00060 simulated in 88s at 843 kHz
+[17:55:55] 329/480 batches done (668s): fashion/mlp/sqtab+zs+raw/b00000 simulated in 29s at 949 kHz
+[17:55:57] 330/480 batches done (669s): fashion/mlp/sqtab+zs+raw/b00030 simulated in 27s at 979 kHz
+[17:55:58] 331/480 batches done (670s): fashion/mlp/roba_dn1+zs/b00040 simulated in 96s at 768 kHz
+[17:56:01] 332/480 batches done (673s): fashion/mlp/sqtab+raw/b00020 simulated in 40s at 992 kHz
+[17:56:01] 333/480 batches done (673s): fashion/mlp/sqtab+zs/b00000 simulated in 59s at 905 kHz
+[17:56:01] 334/480 batches done (674s): fashion/mlp/sqtab+raw/b00000 simulated in 41s at 960 kHz
+[17:56:02] 335/480 batches done (674s): fashion/mlp/sqtab+zs+raw/b00060 simulated in 31s at 865 kHz
+[17:56:02] 336/480 batches done (674s): fashion/mlp/roba_dn1+zs/b00080 simulated in 95s at 782 kHz
+[17:56:02] 337/480 batches done (674s): fashion/mlp/sqtab+raw/b00040 simulated in 39s at 999 kHz
+[17:56:02] 338/480 batches done (674s): fashion/mlp/sqtab+zs+raw/b00020 simulated in 33s at 892 kHz
+[17:56:02] 339/480 batches done (675s): fashion/mlp/sqtab+raw/b00010 simulated in 41s at 954 kHz
+[17:56:02] 340/480 batches done (675s): fashion/mlp/sqtab+zs+raw/b00010 simulated in 35s at 871 kHz
+[17:56:03] 341/480 batches done (675s): fashion/mlp/sqtab+raw/b00050 simulated in 40s at 983 kHz
+[17:56:03] 342/480 batches done (675s): fashion/mlp/sqtab+raw/b00030 simulated in 40s at 978 kHz
+[17:56:03] 343/480 batches done (676s): fashion/mlp/sqtab+zs/b00030 simulated in 57s at 930 kHz
+[17:56:04] 344/480 batches done (676s): fashion/mlp/sqtab+zs+raw/b00040 simulated in 33s at 920 kHz
+[17:56:04] 345/480 batches done (676s): fashion/mlp/sqtab+raw/b00060 simulated in 40s at 994 kHz
+[17:56:04] 346/480 batches done (677s): fashion/mlp/sqtab+zs/b00040 simulated in 53s at 987 kHz
+[17:56:06] 347/480 batches done (678s): fashion/mlp/sqtab+raw/b00090 simulated in 40s at 996 kHz
+[17:56:07] 348/480 batches done (679s): fashion/mlp/sqtab+zs+raw/b00050 simulated in 36s at 945 kHz
+[17:56:07] 349/480 batches done (679s): fashion/mlp/sqtab+zs+raw/b00070 simulated in 36s at 944 kHz
+[17:56:08] 350/480 batches done (680s): fashion/mlp/sqtab+zs/b00020 simulated in 63s at 839 kHz
+[17:56:08] 351/480 batches done (680s): fashion/mlp/sqtab+zs+raw/b00080 simulated in 35s at 892 kHz
+[17:56:09] 352/480 batches done (681s): fashion/mlp/sqtab+raw/b00080 simulated in 43s at 923 kHz
+[17:56:10] 353/480 batches done (682s): fashion/mlp/sqtab+zs+raw/b00090 simulated in 37s at 793 kHz
+[17:56:11] 354/480 batches done (683s): fashion/mlp/sqtab+raw/b00070 simulated in 46s at 860 kHz
+[17:56:12] 355/480 batches done (684s): fashion/mlp/sqtab+zs/b00050 simulated in 56s at 935 kHz
+[17:56:13] 356/480 batches done (686s): fashion/mlp/sqtab+zs/b00070 simulated in 55s at 959 kHz
+[17:56:15] 357/480 batches done (688s): fashion/mlp/sqtab+zs/b00090 simulated in 55s at 957 kHz
+[17:56:17] 358/480 batches done (690s): fashion/mlp/sqtab+zs/b00080 simulated in 57s at 917 kHz
+[17:56:20] 359/480 batches done (693s): fashion/mlp/sqtab+zs/b00060 simulated in 62s at 854 kHz
+[17:56:27] 360/480 batches done (700s): fashion/mlp/sqtab+zs/b00010 simulated in 85s at 620 kHz
+[17:57:57] 361/480 batches done (789s): fashion/lenet5/roba_dn1/b00010 simulated in 106s at 976 kHz
+[17:58:01] 362/480 batches done (794s): fashion/lenet5/roba_dn1/b00030 simulated in 108s at 966 kHz
+[17:58:02] 363/480 batches done (794s): fashion/lenet5/roba_dn1/b00040 simulated in 107s at 962 kHz
+[17:58:06] 364/480 batches done (798s): fashion/lenet5/roba_dn1/b00050 simulated in 109s at 949 kHz
+[17:58:09] 365/480 batches done (801s): fashion/lenet5/roba_dn1/b00060 simulated in 108s at 959 kHz
+[17:58:12] 366/480 batches done (804s): fashion/lenet5/roba_dn1/b00000 simulated in 122s at 855 kHz
+[17:58:12] 367/480 batches done (804s): fashion/lenet5/roba_dn1/b00020 simulated in 120s at 861 kHz
+[17:58:32] 368/480 batches done (824s): fashion/lenet5/roba_dn1/b00070 simulated in 125s at 822 kHz
+[17:59:12] 369/480 batches done (864s): fashion/lenet5/exact+raw/b00040 simulated in 190s at 1039 kHz
+[17:59:13] 370/480 batches done (865s): fashion/lenet5/exact+raw/b00020 simulated in 191s at 1038 kHz
+[17:59:13] 371/480 batches done (865s): fashion/lenet5/exact+zs+raw/b00000 simulated in 189s at 1038 kHz
+[17:59:13] 372/480 batches done (866s): fashion/lenet5/exact+raw/b00000 simulated in 192s at 1026 kHz
+[17:59:14] 373/480 batches done (866s): fashion/lenet5/exact+raw/b00090 simulated in 191s at 1031 kHz
+[17:59:14] 374/480 batches done (867s): fashion/lenet5/exact+raw/b00080 simulated in 192s at 1039 kHz
+[17:59:15] 375/480 batches done (867s): fashion/lenet5/exact+zs+raw/b00030 simulated in 190s at 1032 kHz
+[17:59:17] 376/480 batches done (869s): fashion/lenet5/exact+raw/b00060 simulated in 195s at 1007 kHz
+[17:59:17] 377/480 batches done (870s): fashion/lenet5/exact+raw/b00010 simulated in 196s at 1012 kHz
+[17:59:18] 378/480 batches done (870s): fashion/lenet5/exact+zs+raw/b00060 simulated in 191s at 1021 kHz
+[17:59:19] 379/480 batches done (871s): fashion/lenet5/exact+raw/b00030 simulated in 197s at 1002 kHz
+[17:59:19] 380/480 batches done (871s): fashion/lenet5/exact/b00000 simulated in 225s at 1035 kHz
+[17:59:19] 381/480 batches done (872s): fashion/lenet5/exact/b00040 simulated in 222s at 1027 kHz
+[17:59:20] 382/480 batches done (872s): fashion/lenet5/exact/b00020 simulated in 226s at 1023 kHz
+[17:59:20] 383/480 batches done (872s): fashion/lenet5/exact+zs+raw/b00010 simulated in 196s at 1006 kHz
+[17:59:20] 384/480 batches done (873s): fashion/lenet5/exact+zs+raw/b00090 simulated in 192s at 1023 kHz
+[17:59:21] 385/480 batches done (873s): fashion/lenet5/exact/b00010 simulated in 227s at 1014 kHz
+[17:59:22] 386/480 batches done (875s): fashion/lenet5/exact+zs+raw/b00070 simulated in 195s at 1021 kHz
+[17:59:23] 387/480 batches done (875s): fashion/lenet5/exact/b00030 simulated in 227s at 1035 kHz
+[17:59:23] 388/480 batches done (876s): fashion/lenet5/exact+raw/b00050 simulated in 201s at 1010 kHz
+[17:59:24] 389/480 batches done (876s): fashion/lenet5/exact+zs/b00020 simulated in 220s at 1039 kHz
+[17:59:24] 390/480 batches done (877s): fashion/lenet5/exact/b00090 simulated in 224s at 1029 kHz
+[17:59:25] 391/480 batches done (877s): fashion/lenet5/exact+zs/b00010 simulated in 223s at 1026 kHz
+[17:59:26] 392/480 batches done (878s): fashion/lenet5/exact/b00080 simulated in 226s at 1018 kHz
+[17:59:28] 393/480 batches done (880s): fashion/lenet5/exact+zs+raw/b00020 simulated in 204s at 967 kHz
+[17:59:29] 394/480 batches done (881s): fashion/lenet5/exact/b00050 simulated in 231s at 995 kHz
+[17:59:30] 395/480 batches done (883s): fashion/lenet5/exact+zs/b00040 simulated in 220s at 1028 kHz
+[17:59:31] 396/480 batches done (884s): fashion/lenet5/exact+zs/b00000 simulated in 231s at 1002 kHz
+[17:59:32] 397/480 batches done (884s): fashion/lenet5/exact+zs+raw/b00080 simulated in 204s at 969 kHz
+[17:59:34] 398/480 batches done (886s): fashion/lenet5/exact+raw/b00070 simulated in 212s at 947 kHz
+[17:59:35] 399/480 batches done (887s): fashion/lenet5/exact/b00060 simulated in 237s at 982 kHz
+[17:59:35] 400/480 batches done (888s): fashion/lenet5/exact/b00070 simulated in 236s at 964 kHz
+[17:59:36] 401/480 batches done (889s): fashion/lenet5/exact+zs/b00030 simulated in 230s at 1012 kHz
+[17:59:37] 402/480 batches done (889s): fashion/lenet5/exact+zs/b00070 simulated in 220s at 1024 kHz
+[17:59:38] 403/480 batches done (891s): fashion/lenet5/exact+zs/b00080 simulated in 221s at 1035 kHz
+[17:59:41] 404/480 batches done (893s): fashion/lenet5/exact+zs/b00090 simulated in 220s at 1040 kHz
+[17:59:43] 405/480 batches done (895s): fashion/lenet5/exact+zs/b00050 simulated in 230s at 989 kHz
+[17:59:43] 406/480 batches done (896s): fashion/lenet5/roba_dn1/b00080 simulated in 107s at 964 kHz
+[17:59:48] 407/480 batches done (900s): fashion/lenet5/exact+zs+raw/b00040 simulated in 222s at 883 kHz
+[17:59:51] 408/480 batches done (903s): fashion/lenet5/roba_dn1+zs/b00000 simulated in 109s at 954 kHz
+[17:59:52] 409/480 batches done (905s): fashion/lenet5/exact+zs+raw/b00050 simulated in 225s at 898 kHz
+[17:59:54] 410/480 batches done (906s): fashion/lenet5/roba_dn1/b00090 simulated in 113s at 918 kHz
+[17:59:54] 411/480 batches done (906s): fashion/lenet5/roba_dn1+zs/b00010 simulated in 108s at 950 kHz
+[17:59:56] 412/480 batches done (908s): fashion/lenet5/exact+zs/b00060 simulated in 240s at 961 kHz
+[17:59:56] 413/480 batches done (909s): fashion/lenet5/roba_dn1+zs/b00020 simulated in 108s at 954 kHz
+[18:00:03] 414/480 batches done (915s): fashion/lenet5/roba_dn1+zs/b00030 simulated in 111s at 936 kHz
+[18:00:11] 415/480 batches done (924s): fashion/lenet5/roba_dn1+zs/b00040 simulated in 119s at 857 kHz
+[18:00:35] 416/480 batches done (948s): fashion/lenet5/roba_dn1+zs/b00050 simulated in 123s at 833 kHz
+[18:00:49] 417/480 batches done (962s): fashion/lenet5/sqtab/b00000 simulated in 81s at 941 kHz
+[18:00:50] 418/480 batches done (962s): fashion/lenet5/sqtab/b00010 simulated in 82s at 940 kHz
+[18:00:52] 419/480 batches done (964s): fashion/lenet5/sqtab/b00020 simulated in 82s at 939 kHz
+[18:00:53] 420/480 batches done (966s): fashion/lenet5/sqtab/b00040 simulated in 81s at 945 kHz
+[18:00:54] 421/480 batches done (967s): fashion/lenet5/roba_dn1+raw/b00010 simulated in 100s at 976 kHz
+[18:00:55] 422/480 batches done (967s): fashion/lenet5/sqtab/b00030 simulated in 83s at 920 kHz
+[18:00:55] 423/480 batches done (968s): fashion/lenet5/roba_dn1+raw/b00020 simulated in 101s at 972 kHz
+[18:00:56] 424/480 batches done (969s): fashion/lenet5/sqtab/b00060 simulated in 81s at 943 kHz
+[18:00:57] 425/480 batches done (970s): fashion/lenet5/sqtab/b00090 simulated in 81s at 950 kHz
+[18:00:58] 426/480 batches done (970s): fashion/lenet5/sqtab/b00080 simulated in 81s at 945 kHz
+[18:00:58] 427/480 batches done (970s): fashion/lenet5/roba_dn1+raw/b00030 simulated in 101s at 972 kHz
+[18:00:58] 428/480 batches done (970s): fashion/lenet5/roba_dn1+zs/b00060 simulated in 106s at 975 kHz
+[18:00:58] 429/480 batches done (970s): fashion/lenet5/sqtab/b00050 simulated in 84s at 910 kHz
+[18:00:59] 430/480 batches done (971s): fashion/lenet5/roba_dn1+raw/b00040 simulated in 101s at 962 kHz
+[18:00:59] 431/480 batches done (972s): fashion/lenet5/roba_dn1+zs/b00070 simulated in 107s at 955 kHz
+[18:00:59] 432/480 batches done (972s): fashion/lenet5/roba_dn1+raw/b00060 simulated in 100s at 975 kHz
+[18:01:00] 433/480 batches done (972s): fashion/lenet5/roba_dn1+zs/b00090 simulated in 107s at 963 kHz
+[18:01:00] 434/480 batches done (972s): fashion/lenet5/roba_dn1+zs+raw/b00010 simulated in 100s at 974 kHz
+[18:01:01] 435/480 batches done (973s): fashion/lenet5/roba_dn1+raw/b00080 simulated in 101s at 966 kHz
+[18:01:01] 436/480 batches done (973s): fashion/lenet5/roba_dn1+raw/b00090 simulated in 101s at 970 kHz
+[18:01:01] 437/480 batches done (973s): fashion/lenet5/roba_dn1+raw/b00050 simulated in 103s at 960 kHz
+[18:01:02] 438/480 batches done (974s): fashion/lenet5/sqtab/b00070 simulated in 86s at 887 kHz
+[18:01:03] 439/480 batches done (975s): fashion/lenet5/roba_dn1+zs+raw/b00040 simulated in 100s at 969 kHz
+[18:01:03] 440/480 batches done (975s): fashion/lenet5/roba_dn1+zs+raw/b00030 simulated in 101s at 974 kHz
+[18:01:04] 441/480 batches done (976s): fashion/lenet5/roba_dn1+raw/b00070 simulated in 105s at 936 kHz
+[18:01:05] 442/480 batches done (977s): fashion/lenet5/roba_dn1+zs+raw/b00050 simulated in 101s at 970 kHz
+[18:01:05] 443/480 batches done (977s): fashion/lenet5/roba_dn1+zs+raw/b00070 simulated in 101s at 969 kHz
+[18:01:05] 444/480 batches done (978s): fashion/lenet5/roba_dn1+zs/b00080 simulated in 113s at 910 kHz
+[18:01:07] 445/480 batches done (979s): fashion/lenet5/roba_dn1+zs+raw/b00000 simulated in 107s at 910 kHz
+[18:01:07] 446/480 batches done (979s): fashion/lenet5/sqtab+zs/b00010 simulated in 86s at 971 kHz
+[18:01:08] 447/480 batches done (980s): fashion/lenet5/roba_dn1+zs+raw/b00080 simulated in 103s at 943 kHz
+[18:01:08] 448/480 batches done (981s): fashion/lenet5/roba_dn1+zs+raw/b00020 simulated in 107s at 906 kHz
+[18:01:08] 449/480 batches done (981s): fashion/lenet5/roba_dn1+zs+raw/b00060 simulated in 104s at 936 kHz
+[18:01:11] 450/480 batches done (983s): fashion/lenet5/sqtab+zs/b00000 simulated in 92s at 919 kHz
+[18:01:12] 451/480 batches done (985s): fashion/lenet5/roba_dn1+zs+raw/b00090 simulated in 107s at 914 kHz
+[18:01:13] 452/480 batches done (986s): fashion/lenet5/sqtab+zs/b00020 simulated in 91s at 928 kHz
+[18:01:14] 453/480 batches done (987s): fashion/lenet5/sqtab+zs/b00030 simulated in 91s at 937 kHz
+[18:01:17] 454/480 batches done (989s): fashion/lenet5/sqtab+zs/b00040 simulated in 89s at 938 kHz
+[18:01:20] 455/480 batches done (992s): fashion/lenet5/sqtab+zs/b00080 simulated in 86s at 977 kHz
+[18:01:21] 456/480 batches done (993s): fashion/lenet5/sqtab+zs/b00070 simulated in 87s at 955 kHz
+[18:01:22] 457/480 batches done (994s): fashion/lenet5/sqtab+raw/b00000 simulated in 85s at 904 kHz
+[18:01:22] 458/480 batches done (994s): fashion/lenet5/roba_dn1+raw/b00000 simulated in 128s at 766 kHz
+[18:01:26] 459/480 batches done (999s): fashion/lenet5/sqtab+zs/b00060 simulated in 94s at 900 kHz
+[18:01:30] 460/480 batches done (1002s): fashion/lenet5/sqtab+zs/b00050 simulated in 99s at 846 kHz
+[18:01:31] 461/480 batches done (1003s): fashion/lenet5/sqtab+zs/b00090 simulated in 95s at 887 kHz
+[18:01:31] 462/480 batches done (1003s): fashion/lenet5/sqtab+raw/b00010 simulated in 88s at 877 kHz
+[18:01:39] 463/480 batches done (1012s): fashion/lenet5/sqtab+raw/b00020 simulated in 88s at 878 kHz
+[18:01:56] 464/480 batches done (1028s): fashion/lenet5/sqtab+raw/b00030 simulated in 81s at 956 kHz
+[18:02:10] 465/480 batches done (1042s): fashion/lenet5/sqtab+raw/b00040 simulated in 80s at 959 kHz
+[18:02:12] 466/480 batches done (1045s): fashion/lenet5/sqtab+raw/b00060 simulated in 81s at 957 kHz
+[18:02:15] 467/480 batches done (1047s): fashion/lenet5/sqtab+raw/b00070 simulated in 82s at 942 kHz
+[18:02:15] 468/480 batches done (1048s): fashion/lenet5/sqtab+raw/b00050 simulated in 85s at 905 kHz
+[18:02:16] 469/480 batches done (1048s): fashion/lenet5/sqtab+raw/b00080 simulated in 81s at 948 kHz
+[18:02:16] 470/480 batches done (1049s): fashion/lenet5/sqtab+raw/b00090 simulated in 82s at 944 kHz
+[18:02:19] 471/480 batches done (1051s): fashion/lenet5/sqtab+zs+raw/b00010 simulated in 83s at 971 kHz
+[18:02:20] 472/480 batches done (1052s): fashion/lenet5/sqtab+zs+raw/b00020 simulated in 82s at 973 kHz
+[18:02:20] 473/480 batches done (1052s): fashion/lenet5/sqtab+zs+raw/b00030 simulated in 83s at 971 kHz
+[18:02:20] 474/480 batches done (1053s): fashion/lenet5/sqtab+zs+raw/b00060 simulated in 82s at 971 kHz
+[18:02:20] 475/480 batches done (1053s): fashion/lenet5/sqtab+zs+raw/b00000 simulated in 85s at 944 kHz
+[18:02:21] 476/480 batches done (1053s): fashion/lenet5/sqtab+zs+raw/b00040 simulated in 83s at 960 kHz
+[18:02:21] 477/480 batches done (1053s): fashion/lenet5/sqtab+zs+raw/b00070 simulated in 82s at 977 kHz
+[18:02:21] 478/480 batches done (1054s): fashion/lenet5/sqtab+zs+raw/b00090 simulated in 82s at 974 kHz
+[18:02:21] 479/480 batches done (1054s): fashion/lenet5/sqtab+zs+raw/b00050 simulated in 83s at 974 kHz
+[18:02:23] 480/480 batches done (1055s): fashion/lenet5/sqtab+zs+raw/b00080 simulated in 84s at 961 kHz
+[18:02:23] wrote results/ibex/zeroskip_images.csv
+[18:02:23] mnist   mlp    exact              ibex acc 1.000 | logits match 1.000 |  13.91 M cycles/image
+[18:02:23] mnist   mlp    exact+zs           ibex acc 1.000 | logits match 1.000 |  13.49 M cycles/image
+[18:02:23] mnist   mlp    exact+raw          ibex acc 1.000 | logits match 1.000 |   5.45 M cycles/image
+[18:02:23] mnist   mlp    exact+zs+raw       ibex acc 1.000 | logits match 1.000 |   3.18 M cycles/image
+[18:02:23] mnist   mlp    roba_dn1           ibex acc 1.000 | logits match 1.000 |   7.12 M cycles/image
+[18:02:23] mnist   mlp    roba_dn1+zs        ibex acc 1.000 | logits match 1.000 |   6.92 M cycles/image
+[18:02:23] mnist   mlp    roba_dn1+raw       ibex acc 1.000 | logits match 1.000 |   3.57 M cycles/image
+[18:02:23] mnist   mlp    roba_dn1+zs+raw    ibex acc 1.000 | logits match 1.000 |   1.58 M cycles/image
+[18:02:23] mnist   mlp    sqtab              ibex acc 1.000 | logits match 1.000 |   3.87 M cycles/image
+[18:02:23] mnist   mlp    sqtab+zs           ibex acc 1.000 | logits match 1.000 |   5.10 M cycles/image
+[18:02:23] mnist   mlp    sqtab+raw          ibex acc 1.000 | logits match 1.000 |   3.87 M cycles/image
+[18:02:23] mnist   mlp    sqtab+zs+raw       ibex acc 1.000 | logits match 1.000 |   1.33 M cycles/image
+[18:02:23] mnist   lenet5 exact              ibex acc 1.000 | logits match 1.000 |  24.04 M cycles/image
+[18:02:23] mnist   lenet5 exact+zs           ibex acc 1.000 | logits match 1.000 |  23.85 M cycles/image
+[18:02:23] mnist   lenet5 exact+raw          ibex acc 1.000 | logits match 1.000 |  17.81 M cycles/image
+[18:02:23] mnist   lenet5 exact+zs+raw       ibex acc 1.000 | logits match 1.000 |  17.64 M cycles/image
+[18:02:23] mnist   lenet5 roba_dn1           ibex acc 1.000 | logits match 1.000 |  10.19 M cycles/image
+[18:02:23] mnist   lenet5 roba_dn1+zs        ibex acc 1.000 | logits match 1.000 |   9.94 M cycles/image
+[18:02:23] mnist   lenet5 roba_dn1+raw       ibex acc 1.000 | logits match 1.000 |   8.86 M cycles/image
+[18:02:23] mnist   lenet5 roba_dn1+zs+raw    ibex acc 1.000 | logits match 1.000 |   8.69 M cycles/image
+[18:02:23] mnist   lenet5 sqtab              ibex acc 1.000 | logits match 1.000 |   7.58 M cycles/image
+[18:02:23] mnist   lenet5 sqtab+zs           ibex acc 1.000 | logits match 1.000 |   8.20 M cycles/image
+[18:02:23] mnist   lenet5 sqtab+raw          ibex acc 1.000 | logits match 1.000 |   7.57 M cycles/image
+[18:02:23] mnist   lenet5 sqtab+zs+raw       ibex acc 1.000 | logits match 1.000 |   7.38 M cycles/image
+[18:02:23] fashion mlp    exact              ibex acc 0.910 | logits match 1.000 |  13.49 M cycles/image
+[18:02:23] fashion mlp    exact+zs           ibex acc 0.910 | logits match 1.000 |  13.96 M cycles/image
+[18:02:23] fashion mlp    exact+raw          ibex acc 0.910 | logits match 1.000 |   7.75 M cycles/image
+[18:02:23] fashion mlp    exact+zs+raw       ibex acc 0.910 | logits match 1.000 |   6.82 M cycles/image
+[18:02:23] fashion mlp    roba_dn1           ibex acc 0.910 | logits match 1.000 |   7.05 M cycles/image
+[18:02:23] fashion mlp    roba_dn1+zs        ibex acc 0.910 | logits match 1.000 |   7.00 M cycles/image
+[18:02:23] fashion mlp    roba_dn1+raw       ibex acc 0.900 | logits match 1.000 |   4.30 M cycles/image
+[18:02:23] fashion mlp    roba_dn1+zs+raw    ibex acc 0.900 | logits match 1.000 |   3.23 M cycles/image
+[18:02:23] fashion mlp    sqtab              ibex acc 0.910 | logits match 1.000 |   3.87 M cycles/image
+[18:02:23] fashion mlp    sqtab+zs           ibex acc 0.910 | logits match 1.000 |   4.99 M cycles/image
+[18:02:23] fashion mlp    sqtab+raw          ibex acc 0.910 | logits match 1.000 |   3.64 M cycles/image
+[18:02:23] fashion mlp    sqtab+zs+raw       ibex acc 0.910 | logits match 1.000 |   2.70 M cycles/image
+[18:02:23] fashion lenet5 exact              ibex acc 0.860 | logits match 1.000 |  22.95 M cycles/image
+[18:02:23] fashion lenet5 exact+zs           ibex acc 0.860 | logits match 1.000 |  22.76 M cycles/image
+[18:02:23] fashion lenet5 exact+raw          ibex acc 0.860 | logits match 1.000 |  19.73 M cycles/image
+[18:02:23] fashion lenet5 exact+zs+raw       ibex acc 0.860 | logits match 1.000 |  19.60 M cycles/image
+[18:02:23] fashion lenet5 roba_dn1           ibex acc 0.860 | logits match 1.000 |  10.21 M cycles/image
+[18:02:23] fashion lenet5 roba_dn1+zs        ibex acc 0.860 | logits match 1.000 |  10.16 M cycles/image
+[18:02:23] fashion lenet5 roba_dn1+raw       ibex acc 0.860 | logits match 1.000 |   9.68 M cycles/image
+[18:02:23] fashion lenet5 roba_dn1+zs+raw    ibex acc 0.860 | logits match 1.000 |   9.62 M cycles/image
+[18:02:23] fashion lenet5 sqtab              ibex acc 0.860 | logits match 1.000 |   7.57 M cycles/image
+[18:02:23] fashion lenet5 sqtab+zs           ibex acc 0.860 | logits match 1.000 |   8.31 M cycles/image
+[18:02:23] fashion lenet5 sqtab+raw          ibex acc 0.860 | logits match 1.000 |   7.62 M cycles/image
+[18:02:23] fashion lenet5 sqtab+zs+raw       ibex acc 0.860 | logits match 1.000 |   7.93 M cycles/image
+[18:02:23] wrote results/ibex/zeroskip_summary.csv

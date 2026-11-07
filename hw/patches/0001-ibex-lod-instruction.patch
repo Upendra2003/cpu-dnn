@@ -1,0 +1,104 @@
+diff --git a/lint/verilator_waiver.vlt b/lint/verilator_waiver.vlt
+index 939bb3fb..d382f87a 100644
+--- a/lint/verilator_waiver.vlt
++++ b/lint/verilator_waiver.vlt
+@@ -77,3 +77,9 @@ lint_off -file "*/lowrisc_prim_*/rtl/*.sv"
+ 
+ lint_off -rule UNUSED -file "*/rtl/ibex_top_tracing.sv" -match "*RndCnstLfsrSeed*"
+ lint_off -rule UNUSED -file "*/rtl/ibex_top_tracing.sv" -match "*RndCnstLfsrPerm*"
++
++// RoBA project: with RV32M=RV32MNone the multiply/divide ports of ibex_ex_block are
++// left unused/undriven (MUL/DIV decode as illegal), so the simulation build must not
++// fail on these lint warnings.
++lint_off -rule UNUSED -file "*/rtl/ibex_ex_block.sv"
++lint_off -rule UNDRIVEN -file "*/rtl/ibex_ex_block.sv"
+diff --git a/rtl/ibex_alu.sv b/rtl/ibex_alu.sv
+index 563f571c..0288d8ec 100644
+--- a/rtl/ibex_alu.sv
++++ b/rtl/ibex_alu.sv
+@@ -1312,6 +1312,21 @@ module ibex_alu #(
+     assign imd_val_we_o        = '{default: '0};
+   end
+ 
++  ///////////////////////////////////////////
++  // RoBA: LOD (leading-one detection)     //
++  ///////////////////////////////////////////
++  // Priority encoder: position of the most significant 1 in operand A (0 for operand A = 0).
++  logic [4:0] lod_result;
++
++  always_comb begin
++    lod_result = '0;
++    for (int unsigned i = 0; i < 32; i++) begin
++      if (operand_a_i[i]) begin
++        lod_result = 5'(i);
++      end
++    end
++  end
++
+   ////////////////
+   // Result mux //
+   ////////////////
+@@ -1320,6 +1335,9 @@ module ibex_alu #(
+     result_o   = '0;
+ 
+     unique case (operator_i)
++      // RoBA: leading-one detection
++      ALU_LOD: result_o = {27'h0, lod_result};
++
+       // Bitwise Logic Operations (negate: RV32B)
+       ALU_XOR,  ALU_XNOR,
+       ALU_OR,   ALU_ORN,
+diff --git a/rtl/ibex_decoder.sv b/rtl/ibex_decoder.sv
+index 843eb05f..9e6e922f 100644
+--- a/rtl/ibex_decoder.sv
++++ b/rtl/ibex_decoder.sv
+@@ -448,6 +448,12 @@ module ibex_decoder #(
+         endcase
+       end
+ 
++      OPCODE_CUSTOM0: begin  // RoBA: LOD rd, rs1 (R-type, funct7 = funct3 = 0, rs2 unused)
++        rf_ren_a_o      = 1'b1;
++        rf_we           = 1'b1;
++        illegal_insn    = ({instr[31:25], instr[14:12]} == {7'b000_0000, 3'b000}) ? 1'b0 : 1'b1;
++      end
++
+       OPCODE_OP: begin  // Register-Register ALU operation
+         rf_ren_a_o      = 1'b1;
+         rf_ren_b_o      = 1'b1;
+@@ -945,6 +951,12 @@ module ibex_decoder #(
+         endcase
+       end
+ 
++      OPCODE_CUSTOM0: begin  // RoBA: LOD rd, rs1
++        alu_op_a_mux_sel_o = OP_A_REG_A;
++        alu_op_b_mux_sel_o = OP_B_REG_B;
++        alu_operator_o     = ALU_LOD;
++      end
++
+       OPCODE_OP: begin  // Register-Register ALU operation
+         alu_op_a_mux_sel_o = OP_A_REG_A;
+         alu_op_b_mux_sel_o = OP_B_REG_B;
+diff --git a/rtl/ibex_pkg.sv b/rtl/ibex_pkg.sv
+index e3185e8b..7cba21b5 100644
+--- a/rtl/ibex_pkg.sv
++++ b/rtl/ibex_pkg.sv
+@@ -70,6 +70,7 @@ package ibex_pkg;
+ 
+   typedef enum logic [6:0] {
+     OPCODE_LOAD     = 7'h03,
++    OPCODE_CUSTOM0  = 7'h0b,  // RoBA: LOD rd, rs1
+     OPCODE_MISC_MEM = 7'h0f,
+     OPCODE_OP_IMM   = 7'h13,
+     OPCODE_AUIPC    = 7'h17,
+@@ -193,7 +194,10 @@ package ibex_pkg;
+     ALU_CRC32_H,
+     ALU_CRC32C_H,
+     ALU_CRC32_W,
+-    ALU_CRC32C_W
++    ALU_CRC32C_W,
++
++    // RoBA: leading-one detection (custom-0 opcode)
++    ALU_LOD
+   } alu_op_e;
+ 
+   typedef enum logic [1:0] {
