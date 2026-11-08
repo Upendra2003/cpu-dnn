@@ -29,6 +29,15 @@
 \file{hw/run\_ibex.py} & the whole Phase 2 pipeline (Figure~\ref{fig:flow})\\
 \file{hw/profile\_ibex.py} & where the cycles go (instruction trace of one picture)\\
 \midrule
+\textbf{Phase 3 (MLPerf Tiny)} & \\
+\file{tiny/data.py} & CIFAR-10, Speech Commands (MFCC) and ToyADMOS (log-mel slices), with augmentation\\
+\file{tiny/models.py} & ResNet-8, DS-CNN and the autoencoder, each with a layer list (\code{spec()})\\
+\file{tiny/qnet.py} & int4/8/16 quantization, QAT model, export of the integer program, bit-exact reference\\
+\file{tiny/run.py} & stages train, qat, eval for 3 seeds $\to$ \file{results/tiny/<dataset>/}\\
+\file{hw/sw/tiny.c}, \file{tiny\_kernels.h} & the generic integer network for Ibex: convolution, shortcuts, pooling\\
+\file{hw/run\_tiny.py} & writes \file{net.h} from the program, builds, simulates, checks every output\\
+\file{tests/test\_tiny.py} & 33 tests of the integer layers, the square identity and input quantization\\
+\midrule
 \textbf{Checks and presentation} & \\
 \file{tests/test\_multipliers.py} & 35 tests: PyTorch = Python = C for every multiplier\\
 \file{experiments/build\_site.py}, \file{site/template.html} & build the slide deck \file{index.html}\\

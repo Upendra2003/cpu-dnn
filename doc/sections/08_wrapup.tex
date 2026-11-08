@@ -42,19 +42,26 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
         MLP to 10.5$\times$.
   \item \textbf{Energy follows cycles.} LOD adds 4.5\% power, so Dn1 at about 2$\times$ the speed uses roughly
         half the energy, and the table about 0.3.
+  \item \textbf{It holds on real tasks, and precision picks the winner} (Phase 3). On CIFAR-10, keyword spotting
+        and machine-sound anomaly detection, with three seeds: at int8 the table wins (2.0--2.6$\times$, exact);
+        at int16 the table does not fit and RoBA wins (Dn1 2.9--3.3$\times$ at a third of the energy, Dn2
+        2.4--2.5$\times$ within 0.2 points of exact); at int4 nothing gains much.
 \end{enumerate}
 
 \subsection{Limits: what these results do not show}
 
 \begin{itemize}
-  \item \textbf{One training seed} per dataset: accuracy differences below about 0.1 points are noise.
+  \item \textbf{One training seed} per dataset in Phases 1--2 (Phase 3 uses three): there, accuracy differences
+        below about 0.1 points are noise.
   \item \textbf{100 test pictures} on Ibex per configuration (the full 10{,}000 are covered by the bit-exact
         Python model). The cycle counts vary very little from picture to picture, so 100 is enough for them.
   \item \textbf{Energy is estimated}, not measured: cycles times relative power from the paper.
   \item \textbf{One-cycle memory}: the Simple System's RAM is ideal. On a chip with flash wait states or a cache,
         the table and the weight loads would cost more.
-  \item \textbf{int8 only on Ibex}: for int16 the table of squares no longer fits, and the sums need 64-bit
-        accumulation, which was left out.
+  \item \textbf{Phase 3 cycles use seed 0 and 20 inputs} per configuration; accuracy uses all seeds and the
+        full test sets through the bit-exact Python model.
+  \item \textbf{Keyword spotting at int4 is unsolved} (about 61\% for every method); keeping the first layer at
+        8 bits is the likely fix and has not been tried.
   \item \textbf{We did not measure a core with a hardware multiplier}; it would need fewer cycles, at more area
         and power.
   \item Our \textbf{Mitchell} is the classic one with the carry; the paper's Mitchell gives the same products as
@@ -63,11 +70,11 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
 
 \subsection{What comes next}
 \begin{enumerate}
-  \item 3--5 training seeds per dataset, reported as mean $\pm$ standard deviation.
-  \item A harder dataset (CIFAR-10) with a small CNN.
+  \item The two remaining datasets in the Phase 3 pipeline: Visual Wake Words (MLPerf Tiny's person detection)
+        and MNIST / Fashion-MNIST with three seeds.
+  \item Fix int4 keyword spotting (first layer at 8 bits).
   \item Choosing the multiplier per layer: cheap where the network tolerates errors, accurate where it is
         sensitive.
-  \item int16 networks on Ibex, where the table no longer fits and RoBA keeps its fixed cost.
   \item The FPGA: the same Ibex + LOD design on a real board, measuring cycles and power on silicon.
 \end{enumerate}
 
@@ -79,17 +86,26 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
   \item[ALU] Arithmetic logic unit: the part of the CPU that adds, shifts, compares, and now also does LOD.
   \item[Amdahl's law] Speeding up one part of a job by $k$ only helps in proportion to that part's share of
         the time.
+  \item[Approximate square] $\tilde S(v) = (2v - 2^k)\,2^k$ with $k = \mathrm{LOD}(v)$; a cheap but inexact
+        square. Fails inside the polarization identity.
   \item[Approximate multiplier] A method that computes a product that is close to, but not always exactly,
         the true product, in exchange for speed or energy.
+  \item[AUC] Area under the ROC curve: the chance that a random broken example scores higher than a random
+        normal one. 50\% is coin tossing, 100\% is perfect.
+  \item[Autoencoder] A network that squeezes its input through a narrow middle and rebuilds it; a bad rebuild
+        means an unusual input.
   \item[Bare metal] A program that runs directly on the CPU, with no operating system.
   \item[Bias] The extra number a neuron adds after its sum of products.
   \item[Bit, binary] A 0/1 digit; numbers written with place values 1, 2, 4, 8, \dots
+  \item[Calibration] Choosing the scale that maps each layer's decimal values onto the integer range.
   \item[Checkpoint] A saved file with all the weights of a trained network.
   \item[Clock cycle] One tick of the CPU's clock; the unit we measure speed in.
   \item[Convolution] A layer that slides a small filter of weights over a picture.
   \item[Custom-0] An opcode RISC-V reserves for non-standard instructions; LOD lives there.
   \item[Cycle-accurate simulation] A simulation that reproduces the chip tick by tick, so its cycle counts
         are exact.
+  \item[Depthwise-separable convolution] A $3\times3$ convolution per channel followed by a $1\times1$
+        convolution across channels; about 8 times fewer multiplications. Used by DS-CNN.
   \item[Decoder] The part of the CPU that works out what an instruction means.
   \item[DRUM6] An approximate multiplier that keeps the top 6 bits of each number and multiplies those
         exactly.
@@ -99,7 +115,7 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
   \item[FPGA] A chip whose circuit can be reprogrammed; used to try out CPU designs for real.
   \item[Fused MAC] Writing the multiplier directly inside the multiply-accumulate loop instead of calling it.
   \item[Ibex] A small open-source RISC-V CPU from lowRISC.
-  \item[int8 / int16] Whole numbers stored in 8 or 16 bits ($\pm127$ or $\pm32767$ here).
+  \item[int4 / int8 / int16] Whole numbers stored in 4, 8 or 16 bits ($\pm7$, $\pm127$ or $\pm32767$ for weights).
   \item[LeNet-5] A small convolutional network: two convolution layers and three fully connected layers.
   \item[LOD] Leading-one detector: the instruction that returns the position of a number's highest 1 bit.
   \item[Logit / score] A raw output value of the last layer; the largest one is the answer.
@@ -107,6 +123,9 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
   \item[Loss] A number that measures how wrong the network is; training makes it small.
   \item[M extension] The optional RISC-V instructions for multiplication and division; our core does not have
         them.
+  \item[MFCC] Mel-frequency cepstral coefficients: a small ``picture of a sound'' (energy at different pitches
+        over time).
+  \item[MLPerf Tiny] The standard benchmark of tasks and reference networks for machine learning on tiny chips.
   \item[MAC] Multiply-accumulate: one product added to a running sum.
   \item[Mitchell] A classic approximate multiplier based on logarithms.
   \item[MLP] Multi-layer perceptron: a network of fully connected layers.
@@ -114,15 +133,20 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
   \item[Normalisation] Shifting and scaling the pixels to be centred around 0 ($(x-\text{mean})/\text{std}$).
   \item[Polarization identity] $xw = ((x+w)^2 - x^2 - w^2)/2$: a product from three squares.
   \item[Priority encoder] A circuit that outputs the position of the highest 1 among its inputs.
+  \item[QAT] Quantization-aware training: fine-tuning with the integer rounding (and here the approximate
+        multiplier) switched on in the forward pass.
   \item[Quantization] Turning decimal numbers into integers with a scale.
   \item[Raw pixels] Feeding the picture without normalisation (the normalisation is folded into the first
         layer), so black is 0.
   \item[ReLU] The rule ``negative $\to$ 0, positive stays''.
+  \item[ResNet] A network with shortcuts that add a block's input to its output.
   \item[Register] One of the CPU's 32 small storage slots for numbers.
   \item[RISC-V] An open instruction set; RV32I is its basic 32-bit integer version, C adds short
         instructions.
   \item[RoBA] Rounding-based approximate multiplication: round to powers of two, keep the cheap parts.
         Dn = round down, UpDn = round to the nearest, the ``2'' versions repeat it on the leftover.
+  \item[Seed] The starting number of the random-number generator; a different seed gives a different
+        training run.
   \item[Shift] Moving all bits left (multiply by 2) or right (divide by 2).
   \item[Shift-and-add] The exact way to multiply without a multiplier: add shifted copies.
   \item[Sign-magnitude] Storing a number as a sign bit plus its size.

@@ -344,6 +344,136 @@ def fig_layers():
     save(fig, "layers")
 
 
+
+# ---------------------------------------------------------------- Phase 3: MLPerf Tiny (results/tiny/)
+
+TINY = [("cifar10", "resnet8", "CIFAR-10, ResNet-8"), ("speech_commands", "dscnn", "Speech Commands, DS-CNN"),
+        ("toyadmos", "fcae", "ToyADMOS, autoencoder")]
+TM = {"exact": ("Exact", "#3b4351"), "sqtab": ("Square table", "#7b52d6"), "dn1": ("RoBA-Dn1", "#2a78d6"),
+      "dn2": ("RoBA-Dn2", "#e5683f"), "sqapx": ("Approx. square", "#9aa3ad")}
+
+
+def tiny_acc(ds, model):
+    """{(bits, method): [test metric per seed, in %]}"""
+    out = {}
+    for r in read(RES / f"tiny/{ds}/{model}_accuracy.csv"):
+        if not r["test_acc"]:
+            continue
+        out.setdefault((r["bits"], r["method"]), {})[r["seed"]] = 100 * float(r["test_acc"])
+    return out
+
+
+def tiny_ibex(ds, model):
+    return {(r["bits"], r["method"]): r for r in read(RES / f"tiny/{ds}/{model}_ibex_summary.csv")}
+
+
+def fig_tiny_acc():
+    """Accuracy change against exact at the same precision, per seed then mean +- std."""
+    fig, axes = plt.subplots(1, 3, figsize=(7.4, 2.6), sharey=True, constrained_layout=True)
+    for ax, (ds, model, title) in zip(axes, TINY):
+        a = tiny_acc(ds, model)
+        x = np.arange(3)
+        for k, m in enumerate(["dn1", "dn2"]):
+            mu, sd = [], []
+            for b in ["4", "8", "16"]:
+                d = [a[(b, m)][s] - a[(b, "exact")][s] for s in a[(b, m)]]
+                mu.append(np.mean(d)); sd.append(np.std(d, ddof=1))
+            ax.bar(x + (k - 0.5) * 0.36, mu, 0.34, yerr=sd, capsize=2, color=TM[m][1], label=TM[m][0],
+                   error_kw={"lw": 0.7})
+            for xx, v, e in zip(x + (k - 0.5) * 0.36, mu, sd):
+                ax.text(xx, v - e - 0.05 if v < 0 else v + e + 0.05, f"{v:+.2f}", ha="center",
+                        va="top" if v < 0 else "bottom", fontsize=5.5)
+        ax.axhline(0, color="k", lw=0.6)
+        ax.set_xticks(x, ["int4", "int8", "int16"])
+        ax.set_title(title, fontsize=8)
+        ax.set_ylim(-2.4, 1.1)
+    axes[0].set_ylabel("change vs. exact (points)")
+    axes[0].legend(fontsize=7, loc="lower left")
+    save(fig, "tiny_acc")
+
+
+def fig_tiny_speed():
+    fig, axes = plt.subplots(1, 3, figsize=(7.4, 2.8), sharey=True, constrained_layout=True)
+    ms = ["sqtab", "dn1", "dn2"]
+    for ax, (ds, model, title) in zip(axes, TINY):
+        r = tiny_ibex(ds, model)
+        x = np.arange(3)
+        for k, m in enumerate(ms):
+            for xi, b in enumerate(["4", "8", "16"]):
+                xx = xi + (k - 1) * 0.27
+                if (b, m) not in r:
+                    ax.text(xx, 0.1, "not\nfeasible", ha="center", va="bottom", fontsize=5.5, rotation=90,
+                            color=TM[m][1])
+                    continue
+                v = float(r[(b, m)]["speedup_vs_exact"])
+                ax.bar(xx, v, 0.26, color=TM[m][1], label=TM[m][0] if xi == 1 else None)
+                ax.text(xx, v + 0.05, f"{v:.2f}", ha="center", va="bottom", fontsize=5.5)
+        ax.axhline(1, color="k", lw=0.6, ls="--")
+        ax.set_xticks(x, ["int4", "int8", "int16"])
+        ax.set_title(title, fontsize=8)
+        ax.set_ylim(0, 3.8)
+    axes[0].set_ylabel("speed-up vs. exact (×)")
+    axes[0].legend(fontsize=7, loc="upper left")
+    save(fig, "tiny_speed")
+
+
+def fig_tiny_cycles():
+    """Million cycles per input against precision: exact doubles, RoBA barely moves."""
+    fig, axes = plt.subplots(1, 3, figsize=(7.4, 2.5), constrained_layout=True)
+    for ax, (ds, model, title) in zip(axes, TINY):
+        r = tiny_ibex(ds, model)
+        for m in ["exact", "sqtab", "dn1", "dn2"]:
+            bs = [b for b in ["4", "8", "16"] if (b, m) in r]
+            ax.plot([int(b) for b in bs], [float(r[(b, m)]["cycles_per_input"]) / 1e6 for b in bs], "o-",
+                    color=TM[m][1], label=TM[m][0], ms=3.5, lw=1.4)
+        ax.set_xticks([4, 8, 16], ["int4", "int8", "int16"])
+        ax.set_ylim(0, None)
+        ax.set_title(title, fontsize=8)
+    axes[0].set_ylabel("million cycles per input")
+    axes[0].legend(fontsize=6.5)
+    save(fig, "tiny_cycles")
+
+
+def fig_tiny_tradeoff():
+    """Every (dataset, precision, approximate method): speed-up against accuracy change."""
+    fig, ax = plt.subplots(figsize=(6.2, 3.3), constrained_layout=True)
+    marks = {"4": "s", "8": "o", "16": "^"}
+    for ds, model, title in TINY:
+        a, r = tiny_acc(ds, model), tiny_ibex(ds, model)
+        for (b, m), row in r.items():
+            if m in ("exact", "sqapx"):
+                continue
+            d = np.mean([a[(b, m)][s] - a[(b, "exact")][s] for s in a[(b, m)]])
+            ax.scatter(float(row["speedup_vs_exact"]), d, marker=marks[b], color=TM[m][1], s=28,
+                       edgecolor="white", lw=0.5)
+    for m in ["sqtab", "dn1", "dn2"]:
+        ax.scatter([], [], color=TM[m][1], marker="o", label=TM[m][0])
+    for b in ["4", "8", "16"]:
+        ax.scatter([], [], color="#777", marker=marks[b], label=f"int{b}")
+    ax.axhline(0, color="k", lw=0.6)
+    ax.axvline(1, color="k", lw=0.6, ls="--")
+    ax.set_xlabel("speed-up vs. exact at the same precision (×)")
+    ax.set_ylabel("accuracy change (points)")
+    ax.legend(fontsize=7, ncol=2, loc="lower left")
+    save(fig, "tiny_tradeoff")
+
+
+def fig_tiny_layers():
+    """CIFAR-10 int8: cycles per layer. Ops 0..10 are conv1 s1a s1b s2s s2a s2b s3s s3a s3b pool fc."""
+    r = tiny_ibex("cifar10", "resnet8")
+    names = ["conv1", "s1a", "s1b", "s2s", "s2a", "s2b", "s3s", "s3a", "s3b"]
+    fig, ax = plt.subplots(figsize=(7.2, 2.5), constrained_layout=True)
+    x = np.arange(len(names))
+    for k, m in enumerate(["exact", "sqtab", "dn1", "dn2"]):
+        v = [float(r[("8", m)][f"op{i}_cycles"]) / 1e6 for i in range(len(names))]
+        ax.bar(x + (k - 1.5) * 0.2, v, 0.19, color=TM[m][1], label=TM[m][0])
+    ax.set_xticks(x, names)
+    ax.set_ylabel("million cycles per image")
+    ax.set_title("CIFAR-10, ResNet-8, int8: cycles per layer", fontsize=8)
+    ax.legend(fontsize=7, ncol=4)
+    save(fig, "tiny_layers")
+
+
 if __name__ == "__main__":
     fig_error_map()
     fig_errors()
@@ -357,3 +487,8 @@ if __name__ == "__main__":
     fig_zeroskip()
     fig_energy()
     fig_layers()
+    fig_tiny_acc()
+    fig_tiny_speed()
+    fig_tiny_cycles()
+    fig_tiny_tradeoff()
+    fig_tiny_layers()

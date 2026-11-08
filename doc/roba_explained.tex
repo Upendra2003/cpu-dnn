@@ -65,7 +65,7 @@
 on a tiny CPU that cannot multiply\\[0.6em]
 \Large\mdseries Everything in this project, explained from zero}
 \author{Course project: AI Accelerator (based on S.~P.~Rajiv and R.~Kedia, DATE 2026)}
-\date{Results of 25 October and 3 November 2026}
+\date{Results of 25 October, 3 November and 7 November 2026}
 
 \begin{document}
 \maketitle
@@ -85,6 +85,14 @@ optimised exact multiply, at roughly \textbf{half the energy}. An exact \emph{ta
 is faster still (\textbf{3.0--3.6$\times$}), and feeding the network raw pixels while skipping the
 zeros gets the MNIST MLP to \textbf{10.5$\times$}. All 10{,}400 simulated inferences give exactly
 the same output, bit for bit, as a Python model of the same integer arithmetic.
+
+\noindent A third phase repeats the study on the three MLPerf Tiny tasks (CIFAR-10 pictures with ResNet-8,
+spoken keywords with DS-CNN, and broken-machine sounds with an autoencoder), with three training seeds and
+int4, int8 and int16 numbers. The winner depends on the number size: at int8 the table of squares is
+\textbf{2.0--2.6$\times$} faster with no accuracy loss; at int16 the table no longer fits in memory and
+RoBA-Dn1 is \textbf{2.9--3.3$\times$} faster at about \textbf{a third of the energy}, while RoBA-Dn2 keeps
+accuracy within 0.2 points of exact at \textbf{2.4--2.5$\times$}. All 36 Phase 3 builds on Ibex are again
+bit-exact.
 \end{abstract}
 
 \tableofcontents
@@ -97,6 +105,7 @@ the same output, bit for bit, as a Python model of the same integer arithmetic.
 \input{sections/05_gpu}
 \input{sections/06_ibex}
 \input{sections/07_ibex_results}
+\input{sections/07b_mlperf_tiny}
 \input{sections/08_wrapup}
 \appendix
 \input{sections/09_appendix}

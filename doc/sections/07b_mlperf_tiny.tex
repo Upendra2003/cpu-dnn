@@ -1,0 +1,531 @@
+\section{Phase 3: three real tasks, three precisions, three seeds}\label{sec:tiny}
+
+Phases 1 and 2 used small grey pictures (MNIST and Fashion-MNIST), one training run each, and int8 only. That
+is a good first test, but a reviewer would ask three fair questions:
+
+\begin{enumerate}
+  \item Does it still work on \emph{harder} tasks, and on things that are not pictures at all?
+  \item Was the result luck? (One training run can be lucky or unlucky.)
+  \item What happens with \emph{fewer} bits (int4) and \emph{more} bits (int16)?
+\end{enumerate}
+
+Phase 3 answers all three. It uses the tasks and the networks of \textbf{MLPerf Tiny}, the standard benchmark
+for machine learning on tiny chips, trains each network \textbf{three times with different random seeds}, and
+runs every network at \textbf{int4, int8 and int16} on the GPU \emph{and} on Ibex.
+
+\begin{kid}
+Imagine you invented a new way to do sums quickly in your head. Testing it on one page of easy homework is a
+start. To be sure, you would test it on maths, on science and on music homework, try it on three different
+days, and try it with small numbers and with huge numbers. That is exactly what this phase does.
+\end{kid}
+
+\subsection{The three tasks}
+
+MLPerf Tiny picks one task from each kind of sensor a tiny device might have: a camera, a microphone and a
+vibration or sound sensor on a machine. We use its reference network for each.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+\toprule
+ & \textbf{Image classification} & \textbf{Keyword spotting} & \textbf{Anomaly detection}\\
+\midrule
+Dataset & CIFAR-10 & Google Speech Commands v2 & ToyADMOS (ToyCar, DCASE 2020)\\
+What goes in & a $32\times32$ colour picture & one second of speech & a short slice of the sound of a toy car\\
+What comes out & one of 10 objects (plane, cat, truck, \dots) & one of 12 answers: 10 words (``yes'', ``no'', ``up'', ``down'', \dots), ``silence'' or ``unknown word'' & ``normal'' or ``broken'' (an anomaly score)\\
+Network & ResNet-8 & DS-CNN & fully connected autoencoder\\
+Weights & 78{,}000 & 23{,}000 & 268{,}000\\
+Multiplications per input & 12.5 million & 2.7 million & 264{,}000\\
+Training / validation / test & 45{,}000 / 5{,}000 / 10{,}000 pictures & 38{,}461 / 4{,}627 / 4{,}890 clips & normal sounds only / 10\% held out / 2{,}459 clips (1{,}059 broken)\\
+Score we report & top-1 accuracy & top-1 accuracy & AUC (explained below)\\
+\bottomrule
+\end{tabularx}
+\caption{The three MLPerf Tiny tasks used here (\file{tiny/data.py}, \file{tiny/models.py}).}
+\end{table}
+
+\subsubsection*{ResNet-8 for pictures}
+
+ResNet-8 is a small convolutional network with three ``stacks'' of 16, 32 and 64 filters. Its special trick is
+the \emph{shortcut}: each stack adds its input back to its output (Figure~\ref{fig:resnet8}). Shortcuts make
+deep networks much easier to train. When a stack makes the picture smaller (stride 2) or has more channels, the
+shortcut goes through a small $1\times1$ convolution so the shapes match.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.35cm,
+  blk/.style={draw,rounded corners,minimum height=0.75cm,minimum width=1.1cm,font=\scriptsize,align=center},
+  >={Stealth[length=1.6mm]}]
+  \node[blk,fill=gray!10] (in) {picture\\$32{\times}32{\times}3$};
+  \node[blk,fill=blue!8,right=of in] (c1) {conv\\16};
+  \node[blk,fill=blue!8,right=of c1] (a1) {conv\\16};
+  \node[blk,fill=blue!8,right=of a1] (b1) {conv\\16};
+  \node[circle,draw,inner sep=1pt,right=0.25cm of b1,font=\scriptsize] (p1) {$+$};
+  \node[blk,fill=blue!14,right=0.3cm of p1] (a2) {conv\\32, /2};
+  \node[blk,fill=blue!14,right=of a2] (b2) {conv\\32};
+  \node[circle,draw,inner sep=1pt,right=0.25cm of b2,font=\scriptsize] (p2) {$+$};
+  \node[blk,fill=blue!22,right=0.3cm of p2] (a3) {conv\\64, /2};
+  \node[blk,fill=blue!22,right=of a3] (b3) {conv\\64};
+  \node[circle,draw,inner sep=1pt,right=0.25cm of b3,font=\scriptsize] (p3) {$+$};
+  \node[blk,fill=gray!10,below=0.6cm of p3] (out) {average +\\fc $\to$ 10};
+  \draw[->] (in)--(c1); \draw[->] (c1)--(a1); \draw[->] (a1)--(b1); \draw[->] (b1)--(p1);
+  \draw[->] (p1)--(a2); \draw[->] (a2)--(b2); \draw[->] (b2)--(p2);
+  \draw[->] (p2)--(a3); \draw[->] (a3)--(b3); \draw[->] (b3)--(p3); \draw[->] (p3)--(out);
+  \draw[->,orange!80!black] ($(c1.east)+(0.12,0)$) -- ++(0,0.75) -| node[pos=0.25,above,font=\tiny]{shortcut (same shape)} (p1);
+  \draw[->,orange!80!black] ($(p1.east)+(0.12,0)$) -- ++(0,-0.75) -| node[pos=0.25,below,font=\tiny]{$1{\times}1$ conv, /2} (p2);
+  \draw[->,orange!80!black] ($(p2.east)+(0.12,0)$) -- ++(0,0.75) -| node[pos=0.25,above,font=\tiny]{$1{\times}1$ conv, /2} (p3);
+\end{tikzpicture}
+\caption{ResNet-8. Every blue box is a $3\times3$ convolution with batch norm and ReLU. Orange: the shortcuts.}
+\label{fig:resnet8}
+\end{figure}
+
+\subsubsection*{DS-CNN for spoken words}
+
+A computer does not look at sound as a wiggly line. First it cuts the second of audio into 49 short pieces
+(30 ms each, one every 20 ms) and, for each piece, measures how much energy there is at different pitches. That
+gives a small ``picture of the sound'', $49\times10$ numbers, called \textbf{MFCC} features (mel-frequency
+cepstral coefficients). From then on, keyword spotting is just classifying a small picture.
+
+DS-CNN means \emph{depthwise-separable} CNN. A normal convolution mixes every input channel with every output
+channel at every position, which is a lot of multiplications. DS-CNN splits that into two cheap steps:
+
+\begin{itemize}
+  \item a \textbf{depthwise} $3\times3$ convolution, which looks at neighbours but keeps each channel separate
+        (9 multiplications per value), then
+  \item a \textbf{pointwise} $1\times1$ convolution, which mixes channels but looks at only one position
+        (64 multiplications per value).
+\end{itemize}
+
+\begin{example}[: Why depthwise-separable is cheaper]
+For 64 channels in and 64 out, a normal $3\times3$ convolution needs $3\times3\times64 = 576$ multiplications
+for every output value. The depthwise + pointwise pair needs $9 + 64 = 73$. That is about 8 times fewer, which
+is why phones and watches use this design.
+\end{example}
+
+\subsubsection*{An autoencoder for broken machines}
+
+Here there is no ``right answer'' to learn, because nobody records thousands of broken toy cars. Instead the
+network learns what \emph{normal} sounds like. An \textbf{autoencoder} squeezes its input (640 numbers: 5 time
+slices $\times$ 128 pitch bands) through a narrow middle of only 8 numbers and then tries to rebuild the
+original 640. Trained on normal sounds only, it rebuilds normal sounds well. A broken car sounds different, the
+network has never learned to rebuild that, so the rebuilt version is worse. The \emph{reconstruction error}
+(how far the rebuilt sound is from the real one) is the anomaly score: big error means ``probably broken''.
+
+\begin{kid}
+Imagine you have heard your own front door close a thousand times. You could hum the sound perfectly. One day
+it squeaks. When you try to hum what you just heard, your hum does not match, and that mismatch tells you
+something is wrong. The autoencoder hums.
+\end{kid}
+
+\subsubsection*{What is AUC?}
+
+For the broken-machine task we cannot say ``87\% correct'', because the answer is a score, not a class. We would
+have to pick a threshold (``error above 12 means broken''), and every threshold gives a different accuracy.
+\textbf{AUC} avoids picking one. It answers a simple question:
+
+\begin{keyidea}
+\textbf{AUC} = if you take one broken clip and one normal clip at random, how often does the broken one get the
+higher anomaly score? 100\% is perfect, 50\% is no better than tossing a coin.
+\end{keyidea}
+
+\begin{example}[: AUC with 2 + 2 clips]
+Normal clips get scores 3 and 5, broken clips get 4 and 9. There are $2\times2 = 4$ (broken, normal) pairs:
+(4, 3) right, (4, 5) wrong, (9, 3) right, (9, 5) right. Three out of four are right, so AUC = 75\%.
+\end{example}
+
+We follow the DCASE 2020 rules: the score of a 10-second clip is the mean error over its slices, the AUC is
+computed separately for each of the four toy cars in the test set, and we report the average of the four. The
+official DCASE baseline for ToyCar reaches about 78.8\%, so our float network (77.7\%) is a faithful
+reproduction.
+
+\subsection{Three precisions: int4, int8 and int16}
+
+Phase 2 only used int8. Phase 3 adds a smaller and a larger number size. Weights are signed and activations
+are never negative (they come out of a ReLU), so they get slightly different ranges:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrl}
+\toprule
+ & weights & activations & how many different values\\
+\midrule
+int4 & $-7 \dots 7$ & $0 \dots 15$ & 15 and 16\\
+int8 & $-127 \dots 127$ & $0 \dots 255$ & 255 and 256\\
+int16 & $-32767 \dots 32767$ & $0 \dots 65535$ & 65{,}535 and 65{,}536\\
+\bottomrule
+\end{tabular}
+\caption{The integer ranges (\code{QW} and \code{QA} in \file{tiny/qnet.py}).}
+\end{table}
+
+\begin{kid}
+Think of a ruler. An int4 ruler has only 15 marks, so you have to round every length a lot. An int8 ruler has
+255 marks. An int16 ruler has 65{,}535 marks, so fine that you can hardly see the rounding. Fewer marks means
+smaller numbers (cheaper to store and multiply), but more rounding mistakes.
+\end{kid}
+
+The networks' inputs need a word too. CIFAR-10 pictures go in as raw pixels $0 \dots 255$ (at int4 they are
+scaled to $0 \dots 15$), so black is 0, as on a real camera. Sound features (MFCC and the log-mel slices) can be
+negative, so they are scaled into the signed weight range ($\pm7$, $\pm127$ or $\pm32767$).
+
+\subsection{The methods we compare}
+
+\begin{itemize}
+  \item \textbf{Exact}: the shift-and-add multiply, equally optimised (fused loop, skips zeros, loops over the
+        bits of the smaller number). This is the baseline everything is measured against.
+  \item \textbf{Square table}: exact products from the polarization identity
+        $xw = \big((x+w)^2 - x^2 - w^2\big)/2$ and a table of squares (Section~\ref{sec:ibexres}). Same answers
+        as exact, so same accuracy.
+  \item \textbf{RoBA-Dn1} and \textbf{RoBA-Dn2}: the approximate multipliers with the LOD instruction.
+  \item \textbf{Approximate square} (int8 only): an experiment that combines the two ideas, see below.
+\end{itemize}
+
+\subsubsection*{Why the square table is ``not feasible'' at int16}
+
+The table must hold $v^2$ for every value $x+w$ can take. That range is roughly from $-2\times$(largest weight)
+to (largest activation $+$ largest weight):
+
+\begin{center}
+\small
+\begin{tabular}{lrrl}
+\toprule
+ & entries & bytes & fits in a tiny chip?\\
+\midrule
+int4 & 37 & 148 B & easily\\
+int8 & 637 & 2.5 KB & yes\\
+int16 & 163{,}837 & 1.3 MB (squares need 64 bits) & no: more than the whole 1 MB memory\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+So in every int16 row the square table is marked \emph{not feasible}. This is the exact situation where RoBA is
+supposed to help: its cost does not grow with the table, because it has no table.
+
+\subsubsection*{The approximate-square experiment}
+
+If squares are the only multiplication left, could we make \emph{them} cheap with LOD instead of a table? A
+square of $v$ with $k = \mathrm{LOD}(v)$ can be estimated as $\tilde S(v) = (2v - 2^k)\cdot 2^k$ (the same idea
+as Mitchell's multiplier). This is only a few per cent too small for one square, but watch what happens when
+three of them are combined:
+
+\begin{example}[: Why approximate squares go wrong]
+Take $x = 100$, $w = 3$, so the true product is 300.
+
+\begin{tabular}{lrrr}
+ & $v$ & true $v^2$ & $\tilde S(v)$, $k=\mathrm{LOD}(v)$\\
+ & 103 & 10{,}609 & $(206 - 64)\cdot 64 = 9{,}088$\\
+ & 100 & 10{,}000 & $(200 - 64)\cdot 64 = 8{,}704$\\
+ & 3 & 9 & $(6 - 2)\cdot 2 = 8$\\
+\end{tabular}
+
+Exact: $(10609 - 10000 - 9)/2 = 300$. Approximate: $(9088 - 8704 - 8)/2 = \mathbf{188}$, which is 37\% too small.
+The two big squares are each about 1{,}500 too small, but not by the \emph{same} amount, and the product is the
+small difference between them. A small error on a big number becomes a huge error on the small answer.
+\end{example}
+
+\subsection{How the numbers were produced}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.45cm,
+  st/.style={draw,rounded corners,fill=blue!5,minimum height=0.9cm,text width=2.35cm,align=center,font=\scriptsize},
+  >={Stealth[length=1.6mm]}]
+  \node[st] (tr) {\textbf{1. Train in float}\\3 seeds on the GPU};
+  \node[st,right=of tr] (ca) {\textbf{2. Calibrate}\\pick the scales, try 4 percentiles};
+  \node[st,right=of ca] (qa) {\textbf{3. Fine-tune (QAT)}\\with the integer and approximate arithmetic};
+  \node[st,right=of qa] (ev) {\textbf{4. Evaluate}\\bit-exact integer model, full test set};
+  \node[st,fill=orange!8,below=0.7cm of ev] (ib) {\textbf{5. Ibex}\\same integer program as C, seed 0, 20 inputs};
+  \draw[->] (tr)--(ca); \draw[->] (ca)--(qa); \draw[->] (qa)--(ev); \draw[->] (ev)--(ib);
+  \node[font=\scriptsize,left=0.3cm of ib,text width=6.6cm,align=right] {every output value on Ibex is checked to be
+  \emph{identical} to the Python integer model};
+\end{tikzpicture}
+\caption{The Phase 3 pipeline (\file{tiny/run.py} for steps 1--4, \file{hw/run\_tiny.py} for step 5).}
+\end{figure}
+
+\paragraph{1. Training.} Each network is trained in normal floating point with the recipe of its reference:
+ResNet-8 for 200 epochs and DS-CNN for 100 epochs with SGD, the autoencoder for 60 epochs with Adam. Pictures are
+randomly shifted and flipped, sounds randomly shifted in time and mixed with background noise. This is done
+three times with seeds 0, 1 and 2.
+
+\begin{kid}
+A \textbf{seed} is the starting number of the computer's dice. The network starts from random weights and sees
+the training examples in a random order; a different seed means different dice rolls, so a slightly different
+network at the end. If a result holds for all three seeds, it is not luck.
+\end{kid}
+
+\paragraph{2. Calibration.} To turn decimal numbers into integers we need a scale for each layer: which decimal
+value becomes the largest integer (255 at int8)? Using the very largest value ever seen wastes most of the
+ruler on rare outliers; cutting too low clips too many values. So we try four cut-offs (the 99.9th, 99.99th and
+99.999th percentile, and the maximum) and keep the one with the best \emph{validation} accuracy. Batch norm is
+folded into the weights first, as in Phase 2, and the weights get one scale per output channel.
+
+\paragraph{3. Quantization-aware training (QAT).} Rounding to int4, or using a multiplier that is 9\% too small
+on average, changes every layer's output a little. QAT lets the network get used to that: training continues
+for a few epochs while the forward pass uses the integer rounding and the approximate multiplier, and the
+backward pass pretends everything was exact (the straight-through estimator from Phase 1). We try two learning
+rates and keep the best of ``no fine-tuning'', ``rate 1'' and ``rate 2'', again judged on the validation set
+only. The approximate-square method is \emph{not} fine-tuned; it reuses the exact network.
+
+\paragraph{4. Evaluation.} The test score comes from a Python model that does exactly the integer arithmetic the
+chip does (64-bit sums, the same rounding, the same rescaling), over the \emph{whole} test set.
+
+\paragraph{5. Ibex.} The same integer program is turned into C (\file{hw/run\_tiny.py} writes the weights and the
+layer calls into \file{net.h}), compiled for RV32IC + LOD and run on the Verilator model of Ibex for seed 0,
+with 20 inputs per configuration (for ToyADMOS: one slice from each of 20 clips). For all
+$3 \text{ tasks} \times 12 \text{ configurations} = 36$ builds, every one of the output values (10 scores,
+12 scores or 640 rebuilt numbers per input) is \emph{identical} to the Python model. So the test scores of step~4
+are exactly the scores the chip would get, and the Ibex cycle counts belong to that very program.
+
+\begin{careful}
+The mean $\pm$ standard deviation below is over the 3 seeds. Cycle counts barely change from seed to seed (the
+work is the same; only which activations happen to be zero changes), so we measured them for seed 0.
+\end{careful}
+
+\subsection{Accuracy}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llccc}
+\toprule
+ & & \textbf{CIFAR-10} & \textbf{Speech Commands} & \textbf{ToyADMOS}\\
+ & & accuracy (\%) & accuracy (\%) & AUC (\%)\\
+\midrule
+float32 & & $87.38 \pm 0.12$ & $95.41 \pm 0.15$ & $77.68 \pm 0.41$\\
+\midrule
+\multirow{4}{*}{int4} & Exact = Square table & $85.45 \pm 0.14$ & $60.69 \pm 0.36$ & $77.13 \pm 0.12$\\
+ & RoBA-Dn1 & $84.43 \pm 0.24$ & $61.04 \pm 0.44$ & $76.94 \pm 0.18$\\
+ & RoBA-Dn2 & $85.49 \pm 0.03$ & $61.26 \pm 0.32$ & $77.39 \pm 0.10$\\
+\midrule
+\multirow{4}{*}{int8} & Exact = Square table & $87.40 \pm 0.04$ & $95.36 \pm 0.05$ & $77.86 \pm 0.33$\\
+ & RoBA-Dn1 & $85.70 \pm 0.25$ & $94.70 \pm 0.34$ & $77.10 \pm 0.47$\\
+ & RoBA-Dn2 & $87.29 \pm 0.03$ & $95.24 \pm 0.29$ & $77.73 \pm 0.56$\\
+ & Approximate square & $23.39 \pm 4.27$ & $27.88 \pm 11.31$ & $54.13 \pm 6.99$\\
+\midrule
+\multirow{4}{*}{int16} & Exact & $87.38 \pm 0.06$ & $95.47 \pm 0.12$ & $77.68 \pm 0.41$\\
+ & Square table & \multicolumn{3}{c}{\emph{not feasible (table larger than the memory)}}\\
+ & RoBA-Dn1 & $85.46 \pm 0.12$ & $94.56 \pm 0.09$ & $77.22 \pm 0.32$\\
+ & RoBA-Dn2 & $87.26 \pm 0.11$ & $95.29 \pm 0.09$ & $78.04 \pm 0.17$\\
+\bottomrule
+\end{tabular}
+\caption{Test score, mean $\pm$ standard deviation over 3 seeds, full test sets
+(\file{results/tiny/<dataset>/<model>\_accuracy.csv}). The square table gives exactly the same products as
+exact, so its accuracy is the same.}
+\label{tab:tinyacc}
+\end{table}
+
+The differences that matter are against \emph{exact at the same precision}, because that separates the
+effect of the multiplier from the effect of rounding to fewer bits. Figure~\ref{fig:tinyacc} shows them. Each
+bar is computed seed by seed (Dn1 with seed 0 minus exact with seed 0, and so on), then averaged, which cancels
+most of the seed-to-seed noise.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{tiny_acc}
+\caption{Accuracy (AUC for ToyADMOS) of RoBA minus exact at the same precision, in percentage points.
+Bars: mean over 3 seeds; whiskers: standard deviation.}
+\label{fig:tinyacc}
+\end{figure}
+
+What the table and the figure say:
+
+\begin{enumerate}
+  \item \textbf{int8 and int16 are as good as float.} With the exact multiplier, int8 is within 0.2 points of
+        float on all three tasks, and int16 is the same as float. So any loss below comes from the multiplier,
+        not from the integers.
+  \item \textbf{RoBA-Dn2 is practically free.} At int8 and int16 it is never more than 0.2 points below exact
+        (and on ToyADMOS int16 it is 0.36 points \emph{above}, which is noise in the lucky direction).
+  \item \textbf{RoBA-Dn1 costs a little.} About 1.7--1.9 points on CIFAR-10, the hardest task, and 0.5--0.9 points
+        on the two sound tasks. Dn1 always rounds \emph{down}, so its products are 9\% too small on average, and
+        fine-tuning can only partly hide that.
+  \item \textbf{int4 costs about 2 points on CIFAR-10} already with the exact multiplier. On top of that, Dn2
+        costs nothing and Dn1 about one more point. On the two sound tasks the int4 differences between methods
+        are smaller than the seed-to-seed spread.
+  \item \textbf{The approximate square fails completely} (23\%, 28\% and 54\%, close to guessing), exactly as
+        the example above predicted. It is a useful negative result: the polarization identity needs
+        \emph{exact} squares.
+\end{enumerate}
+
+\begin{careful}
+\textbf{Keyword spotting at int4 does not work yet} (about 61\% instead of 95\%), and this is the same for every
+method, including exact. So it is a problem of our int4 recipe for this network, not of RoBA. Before
+fine-tuning the int4 network scored only about 27\% on the validation set. Our best guess is the input: the
+MFCC features are squeezed into just 15 levels ($-7 \dots 7$), and the first layer has only 40 weights per
+filter, also at 4 bits. Low-bit papers usually keep the first layer at 8 bits. We have not tested that yet, so
+the int4 keyword-spotting numbers are only useful for the \emph{relative} comparison of methods.
+\end{careful}
+
+\subsection{Speed on Ibex}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llrrr}
+\toprule
+ & & \textbf{CIFAR-10} & \textbf{Speech Commands} & \textbf{ToyADMOS}\\
+\midrule
+\multirow{4}{*}{int4} & Exact & 259.5 & 59.96 & 6.50\\
+ & Square table & 185.0 \;(1.40$\times$) & 52.99 \;(1.13$\times$) & 4.92 \;(1.32$\times$)\\
+ & RoBA-Dn1 & 224.9 \;(1.15$\times$) & 49.52 \;(1.21$\times$) & 5.95 \;(1.09$\times$)\\
+ & RoBA-Dn2 & 252.1 \;(1.03$\times$) & 55.14 \;(1.09$\times$) & 6.74 \;(0.96$\times$)\\
+\midrule
+\multirow{5}{*}{int8} & Exact & 469.2 & 123.49 & 13.28\\
+ & Square table & \textbf{197.9 \;(2.37$\times$)} & \textbf{62.83 \;(1.97$\times$)} & \textbf{5.12 \;(2.59$\times$)}\\
+ & RoBA-Dn1 & 264.9 \;(1.77$\times$) & 70.34 \;(1.76$\times$) & 6.91 \;(1.92$\times$)\\
+ & RoBA-Dn2 & 331.7 \;(1.41$\times$) & 85.52 \;(1.44$\times$) & 9.11 \;(1.46$\times$)\\
+ & Approximate square & 288.8 \;(1.62$\times$) & 82.20 \;(1.50$\times$) & 7.21 \;(1.84$\times$)\\
+\midrule
+\multirow{4}{*}{int16} & Exact & 938.4 & 257.18 & 26.71\\
+ & Square table & \multicolumn{3}{c}{\emph{not feasible}}\\
+ & RoBA-Dn1 & \textbf{308.7 \;(3.04$\times$)} & \textbf{87.55 \;(2.94$\times$)} & \textbf{8.02 \;(3.33$\times$)}\\
+ & RoBA-Dn2 & 393.3 \;(2.39$\times$) & 106.59 \;(2.41$\times$) & 10.58 \;(2.52$\times$)\\
+\bottomrule
+\end{tabular}
+\caption{Million clock cycles per input on Ibex (seed 0, mean of 20 inputs), and in brackets the speed-up over
+exact at the same precision (\file{results/tiny/<dataset>/<model>\_ibex\_summary.csv}). Bold: the fastest
+method at each precision.}
+\label{tab:tinyibex}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{tiny_speed}
+\caption{Speed-up over exact at the same precision. The dashed line is ``as fast as exact''.}
+\label{fig:tinyspeed}
+\end{figure}
+
+The same picture appears on all three tasks, even though they are a picture, a sound and a machine:
+
+\begin{keyidea}
+\textbf{The winner depends on the number size.}
+\begin{itemize}
+  \item \textbf{int4}: everything is about as fast as exact (1.0--1.4$\times$). Small numbers are already cheap
+        to multiply.
+  \item \textbf{int8}: the \textbf{square table} wins (2.0--2.6$\times$), with no accuracy loss at all.
+  \item \textbf{int16}: the table no longer fits and \textbf{RoBA-Dn1} wins (2.9--3.3$\times$); RoBA-Dn2 still gives
+        2.4--2.5$\times$ with essentially exact accuracy.
+\end{itemize}
+\end{keyidea}
+
+\subsubsection*{Why the winner changes: the cost of one product}
+
+Figure~\ref{fig:tinycycles} shows the same cycle counts as lines against the number size. The exact line
+roughly \emph{doubles} from int4 to int8 and again from int8 to int16. The RoBA lines barely rise.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{tiny_cycles}
+\caption{Million cycles per input against precision. Exact grows with the number of bits; RoBA hardly does;
+the square table stops at int8.}
+\label{fig:tinycycles}
+\end{figure}
+
+\begin{itemize}
+  \item \textbf{Exact} shift-and-add does one step for every bit of the smaller number. 4 bits: about 4 steps.
+        16 bits: about 16 steps. Its cost grows with the precision.
+  \item \textbf{RoBA} finds the leading one with a single LOD instruction and then does a fixed handful of shifts
+        and adds (Dn1: three terms; Dn2: twice that). Its cost is \emph{almost the same at any precision}.
+        The small rise comes from the parts that are not multiplications: loading bigger weights, 64-bit sums at
+        int16, and rescaling.
+  \item \textbf{The square table} costs one memory read per product, whatever the precision, which is the cheapest
+        of all, until the table does not fit.
+\end{itemize}
+
+\begin{example}[: Crossing lines, CIFAR-10]
+Exact needs 259.5 million cycles at int4 and 938.4 million at int16: 3.6 times more work for the same network.
+RoBA-Dn1 goes from 224.9 to 308.7 million: only 1.4 times more. At int4 the two are 1.15$\times$ apart; at int16
+they are 3.04$\times$ apart. The more bits, the more RoBA saves.
+\end{example}
+
+At int4, RoBA-Dn2 on ToyADMOS is even a little \emph{slower} than exact (0.96$\times$): when the numbers have only
+3 bits of size, the exact loop runs at most 3 times, and Dn2's two rounds of work cost more than that.
+
+\subsubsection*{Where the cycles go inside ResNet-8}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{tiny_layers}
+\caption{Cycles per layer for one CIFAR-10 picture at int8. conv1 is the first layer, s1x/s2x/s3x the three
+stacks, s2s and s3s the $1\times1$ shortcut convolutions.}
+\label{fig:tinylayers}
+\end{figure}
+
+The square table's lead is huge in the first layers (conv1: 3.4$\times$, s1a: 3.2$\times$) and small in the last
+ones (s3b: 1.3$\times$, the same as Dn1). The reason is \textbf{zeros}. After each ReLU, many activations are 0,
+and deeper layers have more of them. The exact and RoBA loops check for zero and skip those products for free;
+the table loop does one table read per product without checking. So the deeper the layer, the more the other
+methods catch up. This also means the table's speed-up would be smaller still on a network with more zeros.
+
+\subsection{Energy}
+
+Energy is estimated exactly as in Phase 2: cycles times the core's relative power. The core with the LOD
+instruction uses 4.5\% more power ($0.829$ instead of $0.793$, relative to a core with a hardware multiplier),
+so RoBA and the approximate square pay that extra; exact and the square table do not use LOD and do not pay it.
+
+\begin{example}[: Energy of Dn1 at int16, CIFAR-10]
+$\dfrac{308.7 \times 0.829}{938.4 \times 0.793} = \dfrac{255.9}{744.1} = 0.34$. RoBA-Dn1 uses about a third of the
+energy of exact for one picture.
+\end{example}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llccc}
+\toprule
+ & & CIFAR-10 & Speech Commands & ToyADMOS\\
+\midrule
+\multirow{3}{*}{int4} & Square table & 0.71 & 0.88 & 0.76\\
+ & RoBA-Dn1 & 0.91 & 0.86 & 0.96\\
+ & RoBA-Dn2 & 1.02 & 0.96 & 1.08\\
+\midrule
+\multirow{4}{*}{int8} & Square table & \textbf{0.42} & \textbf{0.51} & \textbf{0.39}\\
+ & RoBA-Dn1 & 0.59 & 0.60 & 0.54\\
+ & RoBA-Dn2 & 0.74 & 0.72 & 0.72\\
+ & Approximate square & 0.64 & 0.70 & 0.57\\
+\midrule
+\multirow{2}{*}{int16} & RoBA-Dn1 & \textbf{0.34} & \textbf{0.36} & \textbf{0.31}\\
+ & RoBA-Dn2 & 0.44 & 0.43 & 0.41\\
+\bottomrule
+\end{tabular}
+\caption{Energy per input relative to exact at the same precision (exact = 1). Below 1 saves energy.}
+\end{table}
+
+Energy follows the speed-ups almost one to one. The only cases above 1 are RoBA-Dn2 at int4 on CIFAR-10 and
+ToyADMOS, where the 4.5\% extra power is not paid back by the tiny speed-up.
+
+\subsection{The trade-off in one picture}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{tiny_tradeoff}
+\caption{Every task, precision and method in one plot: speed-up over exact (right is better) against accuracy
+change (up is better). Colour: method. Shape: precision. The approximate square is left out (it would sit far
+below the plot).}
+\label{fig:tinytradeoff}
+\end{figure}
+
+The best place to be is the top right. Three groups stand out:
+\begin{itemize}
+  \item the purple circles (square table, int8) sit right on the zero line at 2--2.6$\times$: free speed;
+  \item the orange triangles (RoBA-Dn2, int16) sit on the zero line at about 2.4--2.5$\times$: almost free speed
+        where the table cannot go;
+  \item the blue triangles (RoBA-Dn1, int16) go furthest right (about 3$\times$) but up to 2 points lower: the
+        choice when speed and energy matter more than the last point of accuracy.
+\end{itemize}
+
+\subsection{What Phase 3 adds to the story}
+
+\begin{enumerate}
+  \item \textbf{The results hold across domains.} A picture task, a speech task and a machine-sound task give
+        the same ranking of methods at every precision.
+  \item \textbf{The results are not luck.} With three seeds, the spread is small (usually 0.1--0.4 points), much
+        smaller than the effects we report.
+  \item \textbf{Precision decides the winner.} At int8 use the square table; at int16 use RoBA (Dn2 when accuracy
+        matters, Dn1 when energy matters); at int4 none of them is worth much.
+  \item \textbf{RoBA's real advantage is that its cost does not grow with the number of bits}, thanks to the
+        single-cycle LOD instruction. The bigger the numbers, the bigger the win: up to 3.3$\times$ faster and
+        about a third of the energy at int16.
+  \item \textbf{Approximate squares do not work}: the subtraction in the polarization identity magnifies their
+        error.
+  \item \textbf{Every Ibex result is bit-exact} with the Python integer model (36 builds, all outputs identical).
+\end{enumerate}
