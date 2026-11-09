@@ -61,11 +61,12 @@
 \newcommand{\Ar}{A_r}
 \newcommand{\Br}{B_r}
 
-\title{\Huge\bfseries Approximate multiplication inside a neural network,\\
-on a tiny CPU that cannot multiply\\[0.6em]
-\Large\mdseries Everything in this project, explained from zero}
+\title{\Huge\bfseries ``Inexact Products,\\ Accurate Networks''\\[0.5em]
+\LARGE Approximate Multiplication for TinyML,\\ from Simulation to FPGA\\[0.8em]
+\Large\mdseries A study on MLPerf Tiny with int4/int8/int16 networks on Ibex with an LOD instruction}
+\hypersetup{pdftitle={Inexact Products, Accurate Networks: Approximate Multiplication for TinyML, from Simulation to FPGA}}
 \author{Course project: AI Accelerator (based on S.~P.~Rajiv and R.~Kedia, DATE 2026)}
-\date{Results of 25 October, 3 November and 7 November 2026}
+\date{Results of 25 October, 3, 7 and 9 November 2026}
 
 \begin{document}
 \maketitle
@@ -93,6 +94,12 @@ int4, int8 and int16 numbers. The winner depends on the number size: at int8 the
 RoBA-Dn1 is \textbf{2.9--3.3$\times$} faster at about \textbf{a third of the energy}, while RoBA-Dn2 keeps
 accuracy within 0.2 points of exact at \textbf{2.4--2.5$\times$}. All 36 Phase 3 builds on Ibex are again
 bit-exact.
+
+\noindent Finally, the same Ibex with LOD was built on a real FPGA (Zybo, Zynq XC7Z010, 50~MHz). It gives the
+same outputs as the Python model for all 960 test inputs and, from on-chip memory, \emph{exactly} the simulated
+cycle counts; the LOD costs no measurable area. With the data in the board's slower DDR memory (about 15 cycles
+per access) all gains shrink and the table of squares loses its lead, while RoBA-Dn1 stays
+\textbf{1.3--1.4$\times$} faster at int8 and \textbf{2.0--2.2$\times$} at int16.
 \end{abstract}
 
 \tableofcontents
@@ -106,6 +113,7 @@ bit-exact.
 \input{sections/06_ibex}
 \input{sections/07_ibex_results}
 \input{sections/07b_mlperf_tiny}
+\input{sections/07c_fpga}
 \input{sections/08_wrapup}
 \appendix
 \input{sections/09_appendix}

@@ -38,6 +38,14 @@
 \file{hw/run\_tiny.py} & writes \file{net.h} from the program, builds, simulates, checks every output\\
 \file{tests/test\_tiny.py} & 33 tests of the integer layers, the square identity and input quantization\\
 \midrule
+\textbf{Phase 4 (FPGA, \file{fpga\_zybo/})} & \\
+\file{rtl/ibex\_zybo\_soc.sv}, \file{ibex\_zybo\_wrap.v} & Ibex + 192 KB block RAM + DDR port + ARM control registers\\
+\file{vivado/build.tcl}, \file{zybo.xdc} & Vivado project, block design, bitstream, area/timing/power reports\\
+\file{vitis/src/main.c} & ARM program: receives programs over USB, runs the Ibex, returns results\\
+\file{host/make\_programs.py} & builds the board programs and expected answers (on the server)\\
+\file{host/run\_board.py}, \file{collect\_reports.py} & runs everything on the board, checks it, summarises\\
+\file{sim/} & Verilator testbench and a fake board, to test all of it without hardware\\
+\midrule
 \textbf{Checks and presentation} & \\
 \file{tests/test\_multipliers.py} & 35 tests: PyTorch = Python = C for every multiplier\\
 \file{experiments/build\_site.py}, \file{site/template.html} & build the slide deck \file{index.html}\\

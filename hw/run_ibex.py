@@ -67,11 +67,11 @@ def write_csv(path, rows):
     log("wrote", path.relative_to(ROOT))
 
 
-def compile_elf(prog_c, out_elf, include_dirs=(), defines=(), extra_flags=()):
+def compile_elf(prog_c, out_elf, include_dirs=(), defines=(), extra_flags=(), linker=None):
     out_elf.parent.mkdir(parents=True, exist_ok=True)
     cmd = [str(TOOLS / "riscv32-unknown-elf-gcc"), *CFLAGS, *extra_flags, *[f"-D{d}" for d in defines],
            f"-I{IBEX_COMMON}", f"-I{ROOT / 'csrc'}", f"-I{SW}", *[f"-I{d}" for d in include_dirs],
-           "-T", str(SW / "link_1mb.ld"), str(prog_c), str(ROOT / "csrc/roba.c"),
+           "-T", str(linker or SW / "link_1mb.ld"), str(prog_c), str(ROOT / "csrc/roba.c"),
            str(IBEX_COMMON / "simple_system_common.c"), str(IBEX_COMMON / "crt0.S"),
            "-o", str(out_elf), "-lgcc"]
     subprocess.run(cmd, check=True)

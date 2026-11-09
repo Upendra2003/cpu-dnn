@@ -77,14 +77,39 @@ def write_net_h(path, prog):
            f"#define IN_SIZE {numel(ops[0]['shape_in'])}\n",
            '#include "tiny_kernels.h"\n',
            f"typedef {'sin_t' if signed else 'act_t'} in_t;\n\n"]
-    for op in ops:
-        n = numel(op["shape_out"])
+    # Activation buffers share one arena: each buffer lives from the op that writes it to the last op that reads
+    # it (as input or shortcut), and buffers whose lifetimes overlap get disjoint byte ranges (first fit, largest
+    # first). This keeps RAM small enough for the FPGA's block RAM; the arithmetic is unchanged.
+    life, size, ctype = {}, {}, {}
+    for i, op in enumerate(ops):
         if op.get("relu") == "logits":
-            out.append(f"static int64_t LOGITS[{n}];\n")
-        elif op.get("relu", True) is None:
-            out.append(f"static acc_t B_{op['dst']}[{n}];\n")
-        else:
-            out.append(f"static act_t B_{op['dst']}[{n}];\n")
+            out.append(f"static int64_t LOGITS[{numel(op['shape_out'])}];\n")
+            continue
+        acc = op.get("relu", True) is None
+        ctype[op["dst"]] = "acc_t" if acc else "act_t"
+        elem = (8 if bits == 16 else 4) if acc else (2 if bits == 16 else 1)   # acc_t / act_t in tiny_kernels.h
+        size[op["dst"]] = numel(op["shape_out"]) * elem
+        life[op["dst"]] = [i, i]
+    for i, op in enumerate(ops):
+        for src in [op["src"]] + ([op["skip"]["src"]] if op.get("skip") else []):
+            if src in life:
+                life[src][1] = max(life[src][1], i)
+    placed = []                                               # (offset, size, first, last)
+    offset = {}
+    for name in sorted(life, key=lambda b: -size[b]):
+        f, l = life[name]
+        busy = sorted((o, o + n) for o, n, f2, l2 in placed if not (l2 < f or l < f2))
+        o = 0
+        for a, b in busy:
+            if o + size[name] <= a:
+                break
+            o = max(o, (b + 7) // 8 * 8)
+        placed.append((o, size[name], f, l))
+        offset[name] = o
+    arena = max([o + n for o, n, _, _ in placed] or [8])
+    out.append(f"static uint64_t ARENA[{(arena + 7) // 8}];   /* {arena} bytes of activations */\n")
+    for name in life:
+        out.append(f"#define B_{name} (({ctype[name]} *)((uint8_t *)ARENA + {offset[name]}))\n")
     init, fwd = [], []
     buf = lambda name: "x" if name == "in" else f"B_{name}"
     for i, op in enumerate(ops):

@@ -1,0 +1,3 @@
+variant,alu_power_w,core_dsp_blocks,core_ffs,core_power_w,core_ramb18,core_ramb36,core_total_luts,fclk_mhz,ibex_ffs,ibex_luts,ibex_top_dsp_blocks,ibex_top_ffs,ibex_top_power_w,ibex_top_ramb18,ibex_top_ramb36,ibex_top_total_luts,soc_dsp_blocks,soc_ffs,soc_power_w,soc_ramb18,soc_ramb36,soc_total_luts,total_power_w,wns_ns
+lod,0.003,0,723,0.016,0,0,2471,50,724,3641,0,724,0.02,0,0,3110,0,1191,0.025,1,48,3559,NA,1.027
+nolod,0.003,0,724,0.016,0,0,2475,50,725,3616,0,725,0.019,0,0,3117,0,1192,0.025,1,48,3562,NA,1.083

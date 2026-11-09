@@ -1,0 +1,326 @@
+\section{Phase 4: on a real chip (the Zybo FPGA board)}\label{sec:fpga}
+
+Everything so far ran on computers \emph{pretending} to be the Ibex: Verilator simulates the chip's circuit
+tick by tick. A simulation is only as good as its model, so the last step is to build the real thing and
+check that it behaves the same.
+
+\begin{kid}
+A flight simulator is great for learning, but one day you have to fly a real plane. If the real plane does
+exactly what the simulator said, you can trust everything you learned in the simulator. That is what this
+phase checks, and it also finds out what the simulator could not tell us.
+\end{kid}
+
+\subsection{What an FPGA is}
+
+An \textbf{FPGA} (field-programmable gate array) is a chip full of small, unconnected building blocks: tiny
+look-up tables (\textbf{LUTs}) that can act as any small logic gate, flip-flops that remember one bit, blocks of
+memory (\textbf{block RAM}) and wires that can be switched on and off. A file called a \textbf{bitstream} tells
+the chip how to connect them. Load a different bitstream and the same chip becomes a different circuit. So we can
+load ``Ibex with our LOD instruction'' into it, and it then \emph{is} that processor, running at a real clock.
+
+We used the \textbf{Zybo} board from Digilent. Its chip, a Xilinx \textbf{Zynq XC7Z010}, has two parts:
+\begin{itemize}
+  \item a normal ARM processor (the \emph{processing system}), which runs a small control program, talks to the
+        PC and owns the 512~MB DDR3 memory of the board;
+  \item the programmable logic (the FPGA part), with 17{,}600 LUTs, 35{,}200 flip-flops and 60 block RAMs of
+        4~KB each (240~KB in total). This is where our Ibex lives.
+\end{itemize}
+
+The tools are Xilinx \textbf{Vivado} (turns the hardware description into a bitstream and reports area, timing
+and power) and \textbf{Vitis} (compiles the ARM program).
+
+\subsection{The system we built}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  bx/.style={draw,rounded corners,minimum height=1.1cm,text width=2.9cm,align=center,font=\scriptsize},
+  lb/.style={font=\tiny,fill=white,inner sep=1pt},
+  >={Stealth[length=1.6mm]}]
+  \node[bx,fill=gray!10] (pc) at (-0.7,0) {\textbf{PC}\\\file{host/run\_board.py}};
+  \node[bx,fill=blue!6] (arm) at (4.6,0) {\textbf{ARM Cortex-A9}\\loads programs,\\collects results};
+  \node[bx,fill=orange!10] (ibex) at (9.9,0) {\textbf{Ibex RV32IC + LOD}\\no multiplier, 50~MHz};
+  \node[bx,fill=blue!3] (ddr) at (4.6,-2.4) {\textbf{DDR3}, 512~MB\\about 15 cycles per access};
+  \node[bx,fill=orange!5] (bram) at (9.9,-2.4) {\textbf{block RAM}, 192~KB\\1 cycle, like the simulator};
+  \draw[<->] (pc) -- node[lb,above=2pt]{USB serial} (arm);
+  \draw[<->] (arm) -- node[lb,above=2pt]{control, loading} (ibex);
+  \draw[<->] (arm) -- node[lb,left=2pt]{its own memory} (ddr);
+  \draw[<->] (ibex) -- node[lb,right=2pt]{code (+ data)} (bram);
+  \draw[<->] (ibex.south west) -- node[lb,sloped,above=1pt]{data in DDR mode} (ddr.north east);
+  \draw[dashed,gray] (2.85,0.95) rectangle (11.7,-3.25);
+  \node[font=\tiny,gray,anchor=north east] at (11.7,-3.3) {the Zynq chip and its DDR};
+\end{tikzpicture}
+\caption{The board system (\file{fpga\_zybo/}). Orange: the programmable logic we designed
+(\file{rtl/ibex\_zybo\_soc.sv}); blue: the Zynq's ARM side.}
+\label{fig:board}
+\end{figure}
+
+The Ibex is configured exactly as in the simulator: RV32IC, \textbf{no multiplier}, the LOD instruction added,
+and the same memory map, so the very same compiled programs run unchanged. One test run goes like this:
+
+\begin{enumerate}
+  \item The PC sends a program (weights, code and 5 test inputs) to the ARM over the USB cable.
+  \item The ARM copies it into the Ibex's memory while holding the Ibex in reset, then lets it run.
+  \item The Ibex computes the 5 inputs and prints one line per input: prediction, a fingerprint (hash) of all
+        output values, and its cycle counter for every layer.
+  \item The ARM passes the lines back to the PC, which compares them with the expected answers.
+\end{enumerate}
+
+\subsection{The memory problem, and two ways to run}
+
+The simulator gave the Ibex 1~MB of perfect one-cycle memory. The Zybo's block RAM is only 240~KB, and our
+largest programs need more than twice that (CIFAR-10 int16 about 600~KB). Two things helped:
+
+\begin{itemize}
+  \item \textbf{Sharing memory between layers.} A layer's input is no longer needed once the next layers have
+        used it, so buffers whose lifetimes do not overlap can share the same bytes. This shrank the programs a
+        lot, and every Speech Commands program now fits in 192~KB.
+  \item \textbf{Two memory settings.}
+        \textbf{bram}: the whole program in block RAM. This is exactly the simulator's situation, so the cycle
+        counts \emph{must} be the same.
+        \textbf{ddr}: code in block RAM, all data (weights, activations, tables) in the board's DDR. Every
+        program runs this way. It is what a real microcontroller with external memory would see.
+\end{itemize}
+
+\begin{kid}
+Block RAM is a book on your desk: you read a word instantly. DDR is a book in the basement: every single word
+means a trip down the stairs. The work you do with the words is the same; you just spend a lot of time walking.
+\end{kid}
+
+\begin{careful}
+Sharing buffers changes where the compiler puts some code, and on this CPU that alone moves the cycle count of
+a layer by up to a few per cent (Section~\ref{sec:tiny} used the earlier build). So the board's block-RAM runs
+are compared with a Verilator run of \emph{exactly the same} program. The speed-ups barely move: Speech
+Commands int8 table 1.97$\times$ $\to$ 1.95$\times$, int16 Dn1 2.94$\times$ $\to$ 2.93$\times$.
+\end{careful}
+
+\subsection{Did the board agree with the simulation?}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\linewidth}{Xr}
+\toprule
+Check & Result\\
+\midrule
+LOD instruction against a software loop, on the board & 20{,}097 / 20{,}097 values correct\\
+Every output equal to the Python integer model (all 192 programs, 960 inputs) & \textbf{960 / 960}\\
+Block-RAM cycle counts equal to the Verilator simulation (Speech Commands) & \textbf{240 / 240}\\
+Runs finished without bus errors or timeouts & 192 / 192\\
+Clock measured by the ARM's timer & 49.997~MHz (50~MHz design)\\
+Timing margin at 50~MHz (worst negative slack, WNS) & +1.03~ns (positive: no timing errors)\\
+\bottomrule
+\end{tabularx}
+\caption{Acceptance checks of the board run (\file{fpga\_zybo/results/acceptance.txt}).}
+\end{table}
+
+\begin{keyidea}
+The real chip computes exactly the same numbers as the Python model and, from block RAM, takes \emph{exactly}
+the same number of clock cycles as the simulator, input by input (for example 70{,}271{,}790 cycles for one
+spoken word with RoBA-Dn1 int8, in both). So every simulated result in this document holds on real hardware.
+\end{keyidea}
+
+\subsection{What the LOD instruction costs in hardware}
+
+Vivado built two versions of the processor: our Ibex with LOD, and the unchanged Ibex without it.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\linewidth}{Xrr}
+\toprule
+ & with LOD & without LOD\\
+\midrule
+Ibex core: LUTs & 2{,}471 & 2{,}475\\
+Ibex core: flip-flops & 723 & 724\\
+Whole design (Ibex + bus + control): LUTs / flip-flops & 4{,}065 / 1{,}916 & --\\
+Block RAM & 48.5 of 60 tiles & 48.5 of 60 tiles\\
+Timing margin at 50~MHz & +1.03~ns & +1.08~ns\\
+Ibex core block (\code{u\_ibex\_core}) power, Vivado estimate & 0.016~W & 0.016~W\\
+Whole Ibex (core + register file + bus), Vivado estimate & 0.020~W & 0.019~W\\
+\bottomrule
+\end{tabularx}
+\caption{Area, timing and power from Vivado 2024.2 (\file{fpga\_zybo/reports/}).}
+\end{table}
+
+The whole design uses 23\% of the chip's LUTs and 5\% of its flip-flops. The LOD is a handful of gates (the ALU grows, but the synthesis tool reshuffles the rest of the core, so the
+total does not change measurably).
+
+\begin{careful}
+What these power numbers are, and are not:
+\begin{itemize}
+  \item 0.016~W is only the Ibex \emph{core} block. The whole Ibex is 0.020~W with LOD and 0.019~W without; the
+        192~KB block RAM and the DDR system are counted separately and are not included.
+  \item They are Vivado's \emph{estimate} with default activity levels, rounded to 1~mW. They do not depend on
+        which program runs, so they \emph{cannot} show whether exact and RoBA draw the same power. ``Same power
+        for all methods'' is an assumption, not a measurement.
+\end{itemize}
+\end{careful}
+
+\subsection{Speed with block RAM and with DDR}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{board_mem}
+\caption{Speed-up over exact on the board, Speech Commands. Left: everything in block RAM (same as the
+simulator). Right: data in DDR.}
+\label{fig:boardmem}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{board_ddr}
+\caption{Speed-up over exact on the board for all three tasks, data in DDR.}
+\label{fig:boardddr}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llrrrr}
+\toprule
+ & & \multicolumn{1}{c}{Speech, BRAM} & \multicolumn{1}{c}{Speech, DDR} & \multicolumn{1}{c}{CIFAR-10, DDR}
+ & \multicolumn{1}{c}{ToyADMOS, DDR}\\
+\midrule
+\multirow{3}{*}{int4} & Square table & 1.10$\times$ & 0.77$\times$ & 0.85$\times$ & 0.86$\times$\\
+ & RoBA-Dn1 & 1.20$\times$ & 1.07$\times$ & 1.06$\times$ & 1.04$\times$\\
+ & RoBA-Dn2 & 1.06$\times$ & 1.03$\times$ & 1.01$\times$ & 0.99$\times$\\
+\midrule
+\multirow{3}{*}{int8} & Square table & \textbf{1.95$\times$} & 1.04$\times$ & 1.10$\times$ & 1.25$\times$\\
+ & RoBA-Dn1 & 1.81$\times$ & \textbf{1.36$\times$} & \textbf{1.31$\times$} & \textbf{1.40$\times$}\\
+ & RoBA-Dn2 & 1.49$\times$ & 1.24$\times$ & 1.19$\times$ & 1.24$\times$\\
+\midrule
+\multirow{2}{*}{int16} & RoBA-Dn1 & \textbf{2.93$\times$} & \textbf{1.97$\times$} & \textbf{1.95$\times$} & \textbf{2.21$\times$}\\
+ & RoBA-Dn2 & 2.39$\times$ & 1.77$\times$ & 1.72$\times$ & 1.89$\times$\\
+\bottomrule
+\end{tabular}
+\caption{Speed-up over exact at the same precision, measured on the board
+(\file{fpga\_zybo/results/board\_summary.csv}). Bold: fastest at each precision and memory. The square table
+is not feasible at int16 (Section~\ref{sec:tiny}).}
+\label{tab:board}
+\end{table}
+
+With block RAM the board shows the familiar picture: table first at int8, RoBA far ahead at int16. With DDR,
+all speed-ups shrink, and \textbf{the square table falls from first to last}: at int8 RoBA-Dn1 now beats it on
+every task, and at int4 the table is even \emph{slower} than exact.
+
+\subsubsection*{Why DDR hurts the table most}
+
+The board counts every DDR access and every cycle the Ibex waits for one. Each access costs about
+\textbf{15 cycles} (15.2--15.7 in every run), and waiting took 25--76\% of the running time.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{board_wait}
+\caption{Where the time goes with data in DDR (Speech Commands, int8): solid = computing, hatched = waiting for
+DDR. In brackets: the same program from block RAM.}
+\label{fig:boardwait}
+\end{figure}
+
+\begin{example}[: counting the walks to the basement]
+For one spoken word at int8, exact, RoBA-Dn1 and RoBA-Dn2 all read the same 5.62~million values from DDR (the
+weights and activations), so they all wait the same $\approx$88~million cycles. Their \emph{computing} parts
+differ as before (127, 70 and 85 million cycles), so RoBA still saves those cycles, but the speed-up is diluted:
+$\dfrac{127 + 88}{70 + 88} = \dfrac{215}{158} = 1.36\times$ instead of $127/70 = 1.81\times$.
+
+The square table computes fastest (65 million) but needs \emph{3.2~million extra} reads, one table look-up per
+multiplication, at about 15 cycles each: it waits 141 million cycles instead of 88. Total $65 + 141 = 206$
+million, barely better than exact's 214: $1.04\times$.
+\end{example}
+
+\begin{keyidea}
+A table replaces arithmetic by \emph{memory reads}. That is a great trade when memory is instant, and a bad one
+when every read is a walk to the basement. RoBA replaces arithmetic by \emph{a few more instructions on numbers
+already in registers}, which costs the same wherever the data lives. On a real microcontroller with slow
+external memory, RoBA is the more robust choice.
+\end{keyidea}
+
+\subsection{Energy on the board}\label{sec:boardenergy}
+
+Energy is power times time, $E = P \cdot T$. The board measures $T$ exactly (cycles at 50~MHz); $P$ is not
+measured, so we give the energy saving under two assumptions and report the pair as a range:
+
+\begin{itemize}
+  \item \textbf{equal power}: every method draws the same average power (what Vivado's workload-independent
+        estimate suggests). Then the energy saving is simply $1 - 1/\text{speed-up}$;
+  \item \textbf{paper's LOD factor}: the core with LOD draws 4.5\% more ($0.829/0.793 = 1.045$), so RoBA's energy
+        is multiplied by 1.045. Exact and the square table do not use LOD and keep factor 1.
+\end{itemize}
+
+\begin{example}[: energy saving of Dn1 at int16, Speech Commands, block RAM]
+The board measured a speed-up of $2.93\times$. Equal power: $1 - 1/2.93 = 65.8\%$ less energy. With the LOD
+factor: $1 - 1.045/2.93 = 64.3\%$. So ``64--66\% less energy''.
+\end{example}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\linewidth}{lXrrr}
+\toprule
+ & & & \multicolumn{2}{c}{energy reduction}\\
+\cmidrule(lr){4-5}
+Precision & Method & board speed-up & equal power & LOD factor 1.045\\
+\midrule
+int16 & RoBA-Dn1 & 2.93$\times$ & 65.8\% & 64.3\%\\
+int16 & RoBA-Dn2 & 2.39$\times$ & 58.2\% & 56.3\%\\
+int8 & Square table & 1.95$\times$ & 48.7\% & 48.7\%\\
+int8 & RoBA-Dn1 & 1.81$\times$ & 44.9\% & 42.3\%\\
+int8 & RoBA-Dn2 & 1.49$\times$ & 32.8\% & 29.7\%\\
+int4 & RoBA-Dn1 & 1.20$\times$ & 16.3\% & 12.5\%\\
+\bottomrule
+\end{tabularx}
+\caption{Energy reduction against exact at the same precision, Speech Commands, everything in block RAM, measured
+on the board (\file{fpga\_zybo/results/board\_summary.csv}, columns \code{energy\_vs\_exact\_fpga} and
+\code{energy\_vs\_exact}).}
+\label{tab:boardenergy}
+\end{table}
+
+With the data in DDR the reductions are smaller, because the waiting for memory is the same for every method:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+int16 RoBA-Dn1, data in DDR & board speed-up & equal power & LOD factor 1.045\\
+\midrule
+CIFAR-10 & 1.95$\times$ & 48.8\% & 46.4\%\\
+Speech Commands & 1.97$\times$ & 49.2\% & 46.8\%\\
+ToyADMOS & 2.21$\times$ & 54.7\% & 52.6\%\\
+\bottomrule
+\end{tabular}
+\caption{Energy reduction of RoBA-Dn1 at int16 with the data in DDR, measured on the board.}
+\end{table}
+
+\begin{careful}
+Do not mix these board numbers with the simulation numbers of Section~\ref{sec:tiny} in one table. For example,
+the $3.04\times$ / $1.77\times$ / $1.41\times$ of Section~\ref{sec:tiny} are CIFAR-10 in the Verilator study
+(int16 Dn1, int8 Dn1, int8 Dn2); the board's block-RAM numbers above are Speech Commands. Both are correct, but
+for different tasks and builds, so label each as simulation or board.
+\end{careful}
+
+\begin{keyidea}
+In one sentence, as it could go in a paper: \emph{Estimated energy reduction, $E = P\cdot T$, assuming the same
+average power for all methods (Vivado's estimate: 16~mW for the Ibex core with or without LOD,
+workload-independent). With the paper's LOD power factor of 1.045 instead, the reductions are 1.5--3 points lower
+at int8 and int16; for example 64--66\% for RoBA-Dn1 at int16.} The conclusion does not depend on which power
+assumption is used.
+\end{keyidea}
+
+Replacing the equal-power assumption by a power figure per method would need Vivado's power analysis with the
+real switching activity of each program (from a simulation of the design running it); that is listed under
+future work.
+
+\subsection{What Phase 4 adds to the story}
+
+\begin{enumerate}
+  \item \textbf{The simulation is trustworthy.} The real chip gives identical outputs (960/960) and, from block
+        RAM, identical cycle counts (240/240).
+  \item \textbf{The LOD instruction is practically free in hardware}: no measurable area, the core's estimated
+        power unchanged at 1~mW resolution, and the design meets timing at 50~MHz with margin.
+  \item \textbf{Energy}: on the board RoBA-Dn1 at int16 needs 64--66\% less energy than exact from block RAM
+        and 46--55\% less with data in DDR (range = the two power assumptions).
+  \item \textbf{Memory speed changes the ranking.} With fast on-chip memory the table wins at int8; with
+        external DDR, RoBA-Dn1 wins at int8 (1.31--1.40$\times$) and at int16 (1.95--2.21$\times$), and the
+        table drops to about exact speed or worse.
+\end{enumerate}

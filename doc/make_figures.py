@@ -474,6 +474,91 @@ def fig_tiny_layers():
     save(fig, "tiny_layers")
 
 
+
+# ---------------------------------------------------------------- Phase 4: the Zybo FPGA board (fpga_zybo/results/)
+
+BOARD = ROOT / "fpga_zybo" / "results"
+
+
+def board_rows():
+    return {(r["dataset"], r["bits"], r["method"], r["mem"]): r for r in read(BOARD / "board_summary.csv")}
+
+
+def fig_board_mem():
+    """Speech Commands: speed-up over exact with everything in block RAM vs data in DDR."""
+    b = board_rows()
+    fig, axes = plt.subplots(1, 2, figsize=(7.4, 2.7), sharey=True, constrained_layout=True)
+    for ax, mem, title in zip(axes, ["bram", "ddr"], ["block RAM, 1-cycle", "data in DDR, ~15 cycles"]):
+        x = np.arange(3)
+        for k, m in enumerate(["sqtab", "dn1", "dn2"]):
+            for xi, bits in enumerate(["4", "8", "16"]):
+                xx = xi + (k - 1) * 0.27
+                r = b.get(("speech_commands", bits, m, mem))
+                if r is None:
+                    ax.text(xx, 0.1, "not\nfeasible", ha="center", va="bottom", fontsize=5.5, rotation=90,
+                            color=TM[m][1])
+                    continue
+                v = float(r["speedup_vs_exact"])
+                ax.bar(xx, v, 0.26, color=TM[m][1], label=TM[m][0] if xi == 1 else None)
+                ax.text(xx, v + 0.04, f"{v:.2f}", ha="center", va="bottom", fontsize=5.5)
+        ax.axhline(1, color="k", lw=0.6, ls="--")
+        ax.set_xticks(x, ["int4", "int8", "int16"])
+        ax.set_title(f"Speech Commands, board, {title}", fontsize=8)
+        ax.set_ylim(0, 3.4)
+    axes[0].set_ylabel("speed-up vs. exact (×)")
+    axes[0].legend(fontsize=7, loc="upper left")
+    save(fig, "board_mem")
+
+
+def fig_board_ddr():
+    """Every task with its data in DDR: speed-up over exact."""
+    b = board_rows()
+    fig, axes = plt.subplots(1, 3, figsize=(7.4, 2.7), sharey=True, constrained_layout=True)
+    for ax, (ds, model, title) in zip(axes, TINY):
+        x = np.arange(3)
+        for k, m in enumerate(["sqtab", "dn1", "dn2"]):
+            for xi, bits in enumerate(["4", "8", "16"]):
+                xx = xi + (k - 1) * 0.27
+                r = b.get((ds, bits, m, "ddr"))
+                if r is None:
+                    ax.text(xx, 0.1, "not\nfeasible", ha="center", va="bottom", fontsize=5.5, rotation=90,
+                            color=TM[m][1])
+                    continue
+                v = float(r["speedup_vs_exact"])
+                ax.bar(xx, v, 0.26, color=TM[m][1], label=TM[m][0] if xi == 1 else None)
+                ax.text(xx, v + 0.04, f"{v:.2f}", ha="center", va="bottom", fontsize=5.5)
+        ax.axhline(1, color="k", lw=0.6, ls="--")
+        ax.set_xticks(x, ["int4", "int8", "int16"])
+        ax.set_title(title + " (DDR)", fontsize=8)
+        ax.set_ylim(0, 2.6)
+    axes[0].set_ylabel("speed-up vs. exact (×)")
+    axes[0].legend(fontsize=7, loc="upper left")
+    save(fig, "board_ddr")
+
+
+def fig_board_wait():
+    """Speech Commands int8 with data in DDR: cycles per input split into work and waiting for DDR."""
+    runs = read(BOARD / "speech_commands" / "dscnn_board_runs.csv")
+    b = board_rows()
+    ms = ["exact", "sqtab", "dn1", "dn2"]
+    fig, ax = plt.subplots(figsize=(6.4, 2.3), constrained_layout=True)
+    y = np.arange(len(ms))[::-1]
+    for yi, m in zip(y, ms):
+        rs = [r for r in runs if r["bits"] == "8" and r["method"] == m and r["mem"] == "ddr"]
+        n = 5 * len(rs)
+        wait = sum(int(r["ddr_wait"]) for r in rs) / n / 1e6
+        total = float(b[("speech_commands", "8", m, "ddr")]["cycles_per_input"]) / 1e6
+        onchip = float(b[("speech_commands", "8", m, "bram")]["cycles_per_input"]) / 1e6
+        ax.barh(yi, total - wait, color=TM[m][1], label=None)
+        ax.barh(yi, wait, left=total - wait, color=TM[m][1], alpha=0.35, hatch="///", edgecolor="white")
+        ax.text(total + 2, yi, f"{total:.0f} M  (on-chip: {onchip:.0f} M)", va="center", fontsize=6.5)
+    ax.set_yticks(y, [TM[m][0] for m in ms], fontsize=7)
+    ax.set_xlabel("million cycles per input (solid: computing, hatched: waiting for DDR)")
+    ax.set_xlim(0, 290)
+    ax.set_title("Speech Commands, int8, data in DDR", fontsize=8)
+    save(fig, "board_wait")
+
+
 if __name__ == "__main__":
     fig_error_map()
     fig_errors()
@@ -492,3 +577,6 @@ if __name__ == "__main__":
     fig_tiny_cycles()
     fig_tiny_tradeoff()
     fig_tiny_layers()
+    fig_board_mem()
+    fig_board_ddr()
+    fig_board_wait()

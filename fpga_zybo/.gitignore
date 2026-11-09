@@ -1,0 +1,5 @@
+build/
+sim/obj_dir*/
+sim/trace.vcd
+sim/build_tb.log
+__pycache__/

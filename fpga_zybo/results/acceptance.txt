@@ -1,0 +1,5 @@
+PASS  1 selftest                             SELFTEST PASS (run before the full run, see results/logs/run_board.log notes)
+PASS  2 logits_match = 1 (all rows)          960/960
+PASS  3 cycles_equal_sim = 1 (bram rows)     240/240
+PASS    runs ok = 1                          192/192
+PASS  4 WNS > 0 at 50 MHz (lod)              1.027 ns

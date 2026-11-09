@@ -46,6 +46,10 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
         and machine-sound anomaly detection, with three seeds: at int8 the table wins (2.0--2.6$\times$, exact);
         at int16 the table does not fit and RoBA wins (Dn1 2.9--3.3$\times$ at a third of the energy, Dn2
         2.4--2.5$\times$ within 0.2 points of exact); at int4 nothing gains much.
+  \item \textbf{It holds on a real chip, and memory speed matters} (Phase 4). On the Zybo FPGA the Ibex gives the
+        same outputs as the Python model (960/960) and, from on-chip RAM, exactly the simulated cycles (240/240).
+        The LOD costs no measurable area. With data in DDR (about 15 cycles per access) the table drops to about
+        exact speed, while RoBA-Dn1 keeps 1.3--1.4$\times$ at int8 and 2.0--2.2$\times$ at int16.
 \end{enumerate}
 
 \subsection{Limits: what these results do not show}
@@ -55,9 +59,11 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
         below about 0.1 points are noise.
   \item \textbf{100 test pictures} on Ibex per configuration (the full 10{,}000 are covered by the bit-exact
         Python model). The cycle counts vary very little from picture to picture, so 100 is enough for them.
-  \item \textbf{Energy is estimated}, not measured: cycles times relative power from the paper.
-  \item \textbf{One-cycle memory}: the Simple System's RAM is ideal. On a chip with flash wait states or a cache,
-        the table and the weight loads would cost more.
+  \item \textbf{Energy is estimated}, not measured: cycles times relative power from the paper. The FPGA's
+        Vivado power report is itself an estimate (default switching rates, 1~mW resolution); no current was
+        measured on the board.
+  \item \textbf{One-cycle memory} in the simulator. The FPGA (Phase 4) measured the other extreme, DDR at about
+        15 cycles per access; caches or flash wait states would lie in between.
   \item \textbf{Phase 3 cycles use seed 0 and 20 inputs} per configuration; accuracy uses all seeds and the
         full test sets through the bit-exact Python model.
   \item \textbf{Keyword spotting at int4 is unsolved} (about 61\% for every method); keeping the first layer at
@@ -75,7 +81,9 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
   \item Fix int4 keyword spotting (first layer at 8 bits).
   \item Choosing the multiplier per layer: cheap where the network tolerates errors, accurate where it is
         sensitive.
-  \item The FPGA: the same Ibex + LOD design on a real board, measuring cycles and power on silicon.
+  \item Replace the equal-power assumption by power per method: Vivado power analysis with each program's
+        simulated switching activity, or a current measurement on the board.
+  \item A small data cache or tighter memory layout, so that more programs run from on-chip RAM.
 \end{enumerate}
 
 \subsection{Glossary}
@@ -95,7 +103,9 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
   \item[Autoencoder] A network that squeezes its input through a narrow middle and rebuilds it; a bad rebuild
         means an unusual input.
   \item[Bare metal] A program that runs directly on the CPU, with no operating system.
+  \item[Bitstream] The file that configures an FPGA into a particular circuit.
   \item[Bias] The extra number a neuron adds after its sum of products.
+  \item[Block RAM] Memory blocks inside the FPGA (4~KB each, 60 on the XC7Z010); one-cycle access.
   \item[Bit, binary] A 0/1 digit; numbers written with place values 1, 2, 4, 8, \dots
   \item[Calibration] Choosing the scale that maps each layer's decimal values onto the integer range.
   \item[Checkpoint] A saved file with all the weights of a trained network.
@@ -106,6 +116,7 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
         are exact.
   \item[Depthwise-separable convolution] A $3\times3$ convolution per channel followed by a $1\times1$
         convolution across channels; about 8 times fewer multiplications. Used by DS-CNN.
+  \item[DDR] The board's main memory chip: large (512~MB) but slow for the Ibex (about 15 cycles per access).
   \item[Decoder] The part of the CPU that works out what an instruction means.
   \item[DRUM6] An approximate multiplier that keeps the top 6 bits of each number and multiplies those
         exactly.
@@ -113,6 +124,7 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
   \item[Fine-tuning] A few more training epochs, here with the approximate multiplier switched on.
   \item[Fixed point] Representing a decimal as an integer with an agreed scale (here $2^{24}$).
   \item[FPGA] A chip whose circuit can be reprogrammed; used to try out CPU designs for real.
+  \item[FPGA board, Zybo] Digilent's board with a Zynq XC7Z010 (ARM processor + FPGA) used in Phase 4.
   \item[Fused MAC] Writing the multiplier directly inside the multiply-accumulate loop instead of calling it.
   \item[Ibex] A small open-source RISC-V CPU from lowRISC.
   \item[int4 / int8 / int16] Whole numbers stored in 4, 8 or 16 bits ($\pm7$, $\pm127$ or $\pm32767$ for weights).
@@ -126,6 +138,7 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
   \item[MFCC] Mel-frequency cepstral coefficients: a small ``picture of a sound'' (energy at different pitches
         over time).
   \item[MLPerf Tiny] The standard benchmark of tasks and reference networks for machine learning on tiny chips.
+  \item[LUT] Look-up table: the FPGA's basic logic block; area is counted in LUTs and flip-flops.
   \item[MAC] Multiply-accumulate: one product added to a running sum.
   \item[Mitchell] A classic approximate multiplier based on logarithms.
   \item[MLP] Multi-layer perceptron: a network of fully connected layers.
@@ -155,6 +168,8 @@ And the accuracy of all of them on the full test set stays between 89.5\% and 89
         was exact going backward.
   \item[Test accuracy] Share of unseen test pictures the network gets right.
   \item[Verilator] A tool that turns a hardware description into a fast C++ cycle-accurate simulator.
+  \item[Vivado, Vitis] Xilinx tools: hardware to bitstream (with area/timing/power reports); ARM software.
+  \item[WNS] Worst negative slack: the timing margin of the slowest path; positive means the clock is safe.
   \item[Zero skipping] Not doing the work for inputs that are 0.
 \end{description}
 \newpage

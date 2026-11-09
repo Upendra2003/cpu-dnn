@@ -1,0 +1,66 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2024.2 (lin64) Build 5239630 Fri Nov 08 22:34:34 MST 2024
+| Date         : Mon Nov  9 11:35:31 2026
+| Host         : Enigma running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_utilization -hierarchical -hierarchical_depth 6 -file /home/ujjawal_jo/Downloads/fpga_zybo_bundle/fpga_zybo/reports/nolod/utilization_hier.rpt
+| Design       : system_wrapper
+| Device       : xc7z010clg400-1
+| Speed File   : -1
+| Design State : Routed
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++--------------------------------------------------+---------------------------------------------------------------------------------------------+------------+------------+---------+------+------+--------+--------+------------+
+|                     Instance                     |                                            Module                                           | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs | RAMB36 | RAMB18 | DSP Blocks |
++--------------------------------------------------+---------------------------------------------------------------------------------------------+------------+------------+---------+------+------+--------+--------+------------+
+| system_wrapper                                   |                                                                                       (top) |       4070 |       3956 |      54 |   60 | 1917 |     48 |      1 |          0 |
+|   (system_wrapper)                               |                                                                                       (top) |          0 |          0 |       0 |    0 |    0 |      0 |      0 |          0 |
+|   system_i                                       |                                                                                      system |       4070 |       3956 |      54 |   60 | 1917 |     48 |      1 |          0 |
+|     (system_i)                                   |                                                                                      system |          0 |          0 |       0 |    0 |    0 |      0 |      0 |          0 |
+|     axi_mem_intercon                             |                                                                   system_axi_mem_intercon_0 |        131 |        121 |      10 |    0 |  233 |      0 |      0 |          0 |
+|       s00_couplers                               |                                                                    s00_couplers_imp_1P403ZT |        131 |        121 |      10 |    0 |  233 |      0 |      0 |          0 |
+|         auto_pc                                  |                                                       system_axi_mem_intercon_imp_auto_pc_0 |        131 |        121 |      10 |    0 |  233 |      0 |      0 |          0 |
+|           (auto_pc)                              |                                                       system_axi_mem_intercon_imp_auto_pc_0 |          0 |          0 |       0 |    0 |    0 |      0 |      0 |          0 |
+|           inst                                   | system_axi_mem_intercon_imp_auto_pc_0_axi_protocol_converter_v2_1_33_axi_protocol_converter |        131 |        121 |      10 |    0 |  233 |      0 |      0 |          0 |
+|             gen_axi4_axi3.axi3_conv_inst         |              system_axi_mem_intercon_imp_auto_pc_0_axi_protocol_converter_v2_1_33_axi3_conv |        131 |        121 |      10 |    0 |  233 |      0 |      0 |          0 |
+|     ibex                                         |                                                                               system_ibex_0 |       3562 |       3518 |      44 |    0 | 1225 |     48 |      1 |          0 |
+|       (ibex)                                     |                                                                               system_ibex_0 |          0 |          0 |       0 |    0 |   33 |      0 |      0 |          0 |
+|       inst                                       |                                                                system_ibex_0_ibex_zybo_wrap |       3562 |       3518 |      44 |    0 | 1192 |     48 |      1 |          0 |
+|         (inst)                                   |                                                                system_ibex_0_ibex_zybo_wrap |          1 |          1 |       0 |    0 |    0 |      0 |      0 |          0 |
+|         u_soc                                    |                                                                 system_ibex_0_ibex_zybo_soc |       3562 |       3518 |      44 |    0 | 1192 |     48 |      1 |          0 |
+|           (u_soc)                                |                                                                 system_ibex_0_ibex_zybo_soc |        448 |        448 |       0 |    0 |  467 |     48 |      1 |          0 |
+|           u_ibex                                 |                                                                      system_ibex_0_ibex_top |       3117 |       3073 |      44 |    0 |  725 |      0 |      0 |          0 |
+|             (u_ibex)                             |                                                                      system_ibex_0_ibex_top |          0 |          0 |       0 |    0 |    1 |      0 |      0 |          0 |
+|             core_clock_gate_i                    |                                                             system_ibex_0_prim_clock_gating |          0 |          0 |       0 |    0 |    0 |      0 |      0 |          0 |
+|             gen_regfile_fpga.register_file_i     |                                                       system_ibex_0_ibex_register_file_fpga |        647 |        603 |      44 |    0 |    0 |      0 |      0 |          0 |
+|             u_ibex_core                          |                                                                     system_ibex_0_ibex_core |       2475 |       2475 |       0 |    0 |  724 |      0 |      0 |          0 |
+|     ps7                                          |                                                                                system_ps7_0 |          0 |          0 |       0 |    0 |    0 |      0 |      0 |          0 |
+|       inst                                       |                                     system_ps7_0_processing_system7_v5_5_processing_system7 |          0 |          0 |       0 |    0 |    0 |      0 |      0 |          0 |
+|     ps7_axi_periph                               |                                                                     system_ps7_axi_periph_0 |        360 |        301 |       0 |   59 |  426 |      0 |      0 |          0 |
+|       s00_couplers                               |                                                                    s00_couplers_imp_1C0N0JZ |        360 |        301 |       0 |   59 |  426 |      0 |      0 |          0 |
+|         auto_pc                                  |                                                         system_ps7_axi_periph_imp_auto_pc_0 |        360 |        301 |       0 |   59 |  426 |      0 |      0 |          0 |
+|           inst                                   |   system_ps7_axi_periph_imp_auto_pc_0_axi_protocol_converter_v2_1_33_axi_protocol_converter |        360 |        301 |       0 |   59 |  426 |      0 |      0 |          0 |
+|             gen_axilite.gen_b2s_conv.axilite_b2s |                      system_ps7_axi_periph_imp_auto_pc_0_axi_protocol_converter_v2_1_33_b2s |        360 |        301 |       0 |   59 |  426 |      0 |      0 |          0 |
+|     rst_fclk0                                    |                                                                          system_rst_fclk0_0 |         17 |         16 |       0 |    1 |   33 |      0 |      0 |          0 |
+|       U0                                         |                                                           system_rst_fclk0_0_proc_sys_reset |         17 |         16 |       0 |    1 |   33 |      0 |      0 |          0 |
+|         (U0)                                     |                                                           system_rst_fclk0_0_proc_sys_reset |          0 |          0 |       0 |    0 |    1 |      0 |      0 |          0 |
+|         EXT_LPF                                  |                                                                      system_rst_fclk0_0_lpf |          5 |          4 |       0 |    1 |   17 |      0 |      0 |          0 |
+|           (EXT_LPF)                              |                                                                      system_rst_fclk0_0_lpf |          2 |          1 |       0 |    1 |    9 |      0 |      0 |          0 |
+|           ACTIVE_LOW_AUX.ACT_LO_AUX              |                                                                 system_rst_fclk0_0_cdc_sync |          1 |          1 |       0 |    0 |    4 |      0 |      0 |          0 |
+|           ACTIVE_LOW_EXT.ACT_LO_EXT              |                                                               system_rst_fclk0_0_cdc_sync_0 |          2 |          2 |       0 |    0 |    4 |      0 |      0 |          0 |
+|         SEQ                                      |                                                             system_rst_fclk0_0_sequence_psr |         12 |         12 |       0 |    0 |   15 |      0 |      0 |          0 |
+|           (SEQ)                                  |                                                             system_rst_fclk0_0_sequence_psr |          7 |          7 |       0 |    0 |    9 |      0 |      0 |          0 |
+|           SEQ_COUNTER                            |                                                                  system_rst_fclk0_0_upcnt_n |          5 |          5 |       0 |    0 |    6 |      0 |      0 |          0 |
++--------------------------------------------------+---------------------------------------------------------------------------------------------+------------+------------+---------+------+------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

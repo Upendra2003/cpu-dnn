@@ -1,0 +1,241 @@
+[11:40:07] board: #PONG id=1BE70103 bram=196608 fclk_hz=50000000 baud=460800 cpu_hz=650000000
+[11:40:07] 190 batches to run (2 already done)
+[11:40:14] 1/190 speech_commands int4 exact bram b0: OK | 297.1 M PL cycles, 5.94 s on board, 45 KB sent, 7 s total
+[11:40:20] 2/190 speech_commands int4 exact bram b5: OK | 297.7 M PL cycles, 5.96 s on board, 5 KB sent, 6 s total
+[11:40:26] 3/190 speech_commands int4 exact bram b10: OK | 298.3 M PL cycles, 5.97 s on board, 5 KB sent, 6 s total
+[11:40:33] 4/190 speech_commands int4 exact bram b15: OK | 298.3 M PL cycles, 5.97 s on board, 5 KB sent, 6 s total
+[11:40:40] 5/190 speech_commands int4 sqtab bram b0: OK | 270.7 M PL cycles, 5.42 s on board, 47 KB sent, 7 s total
+[11:40:45] 6/190 speech_commands int4 sqtab bram b5: OK | 271.2 M PL cycles, 5.43 s on board, 4 KB sent, 6 s total
+[11:40:51] 7/190 speech_commands int4 sqtab bram b10: OK | 271.6 M PL cycles, 5.43 s on board, 4 KB sent, 6 s total
+[11:40:56] 8/190 speech_commands int4 sqtab bram b15: OK | 271.9 M PL cycles, 5.44 s on board, 4 KB sent, 6 s total
+[11:41:03] 9/190 speech_commands int4 dn1 bram b0: OK | 248.3 M PL cycles, 4.97 s on board, 47 KB sent, 6 s total
+[11:41:08] 10/190 speech_commands int4 dn1 bram b5: OK | 249.2 M PL cycles, 4.98 s on board, 4 KB sent, 5 s total
+[11:41:13] 11/190 speech_commands int4 dn1 bram b10: OK | 250.0 M PL cycles, 5.00 s on board, 4 KB sent, 5 s total
+[11:41:18] 12/190 speech_commands int4 dn1 bram b15: OK | 250.1 M PL cycles, 5.00 s on board, 4 KB sent, 5 s total
+[11:41:25] 13/190 speech_commands int4 dn2 bram b0: OK | 279.2 M PL cycles, 5.59 s on board, 47 KB sent, 7 s total
+[11:41:31] 14/190 speech_commands int4 dn2 bram b5: OK | 279.3 M PL cycles, 5.59 s on board, 5 KB sent, 6 s total
+[11:41:37] 15/190 speech_commands int4 dn2 bram b10: OK | 280.3 M PL cycles, 5.61 s on board, 5 KB sent, 6 s total
+[11:41:43] 16/190 speech_commands int4 dn2 bram b15: OK | 280.4 M PL cycles, 5.61 s on board, 5 KB sent, 6 s total
+[11:41:57] 17/190 speech_commands int8 exact bram b0: OK | 636.4 M PL cycles, 12.73 s on board, 45 KB sent, 14 s total
+[11:42:10] 18/190 speech_commands int8 exact bram b5: OK | 635.5 M PL cycles, 12.71 s on board, 5 KB sent, 13 s total
+[11:42:23] 19/190 speech_commands int8 exact bram b10: OK | 633.0 M PL cycles, 12.66 s on board, 5 KB sent, 13 s total
+[11:42:35] 20/190 speech_commands int8 exact bram b15: OK | 631.9 M PL cycles, 12.64 s on board, 5 KB sent, 13 s total
+[11:42:44] 21/190 speech_commands int8 sqtab bram b0: OK | 324.8 M PL cycles, 6.50 s on board, 47 KB sent, 8 s total
+[11:42:50] 22/190 speech_commands int8 sqtab bram b5: OK | 325.4 M PL cycles, 6.51 s on board, 4 KB sent, 7 s total
+[11:42:57] 23/190 speech_commands int8 sqtab bram b10: OK | 325.9 M PL cycles, 6.52 s on board, 4 KB sent, 7 s total
+[11:43:04] 24/190 speech_commands int8 sqtab bram b15: OK | 326.3 M PL cycles, 6.53 s on board, 4 KB sent, 7 s total
+[11:43:12] 25/190 speech_commands int8 dn1 bram b10: OK | 350.0 M PL cycles, 7.00 s on board, 47 KB sent, 9 s total
+[11:43:19] 26/190 speech_commands int8 dn1 bram b15: OK | 349.8 M PL cycles, 7.00 s on board, 4 KB sent, 7 s total
+[11:43:29] 27/190 speech_commands int8 dn2 bram b0: OK | 426.9 M PL cycles, 8.54 s on board, 47 KB sent, 10 s total
+[11:43:38] 28/190 speech_commands int8 dn2 bram b5: OK | 427.0 M PL cycles, 8.54 s on board, 5 KB sent, 9 s total
+[11:43:47] 29/190 speech_commands int8 dn2 bram b10: OK | 426.1 M PL cycles, 8.52 s on board, 5 KB sent, 9 s total
+[11:43:56] 30/190 speech_commands int8 dn2 bram b15: OK | 425.8 M PL cycles, 8.52 s on board, 5 KB sent, 9 s total
+[11:44:05] 31/190 speech_commands int8 sqapx bram b0: OK | 416.9 M PL cycles, 8.34 s on board, 48 KB sent, 10 s total
+[11:44:14] 32/190 speech_commands int8 sqapx bram b5: OK | 417.1 M PL cycles, 8.34 s on board, 4 KB sent, 8 s total
+[11:44:22] 33/190 speech_commands int8 sqapx bram b10: OK | 417.5 M PL cycles, 8.35 s on board, 4 KB sent, 8 s total
+[11:44:31] 34/190 speech_commands int8 sqapx bram b15: OK | 417.5 M PL cycles, 8.35 s on board, 4 KB sent, 8 s total
+[11:44:59] 35/190 speech_commands int16 exact bram b0: OK | 1293.3 M PL cycles, 25.87 s on board, 69 KB sent, 28 s total
+[11:45:25] 36/190 speech_commands int16 exact bram b5: OK | 1292.2 M PL cycles, 25.84 s on board, 6 KB sent, 26 s total
+[11:45:51] 37/190 speech_commands int16 exact bram b10: OK | 1285.4 M PL cycles, 25.71 s on board, 6 KB sent, 26 s total
+[11:46:17] 38/190 speech_commands int16 exact bram b15: OK | 1284.2 M PL cycles, 25.68 s on board, 6 KB sent, 26 s total
+[11:46:28] 39/190 speech_commands int16 dn1 bram b0: OK | 441.2 M PL cycles, 8.83 s on board, 72 KB sent, 11 s total
+[11:46:37] 40/190 speech_commands int16 dn1 bram b5: OK | 441.0 M PL cycles, 8.82 s on board, 7 KB sent, 9 s total
+[11:46:46] 41/190 speech_commands int16 dn1 bram b10: OK | 440.2 M PL cycles, 8.81 s on board, 7 KB sent, 9 s total
+[11:46:54] 42/190 speech_commands int16 dn1 bram b15: OK | 440.2 M PL cycles, 8.80 s on board, 7 KB sent, 8 s total
+[11:47:07] 43/190 speech_commands int16 dn2 bram b0: OK | 540.4 M PL cycles, 10.81 s on board, 71 KB sent, 13 s total
+[11:47:18] 44/190 speech_commands int16 dn2 bram b5: OK | 539.6 M PL cycles, 10.79 s on board, 7 KB sent, 11 s total
+[11:47:29] 45/190 speech_commands int16 dn2 bram b10: OK | 537.8 M PL cycles, 10.76 s on board, 7 KB sent, 11 s total
+[11:47:40] 46/190 speech_commands int16 dn2 bram b15: OK | 537.7 M PL cycles, 10.76 s on board, 7 KB sent, 11 s total
+[11:47:56] 47/190 speech_commands int4 exact ddr b0: OK | 734.9 M PL cycles, 14.70 s on board, 45 KB sent, 16 s total
+[11:48:11] 48/190 speech_commands int4 exact ddr b5: OK | 735.5 M PL cycles, 14.71 s on board, 4 KB sent, 15 s total
+[11:48:26] 49/190 speech_commands int4 exact ddr b10: OK | 736.0 M PL cycles, 14.72 s on board, 4 KB sent, 15 s total
+[11:48:41] 50/190 speech_commands int4 exact ddr b15: OK | 736.1 M PL cycles, 14.72 s on board, 4 KB sent, 15 s total
+[11:49:01] 51/190 speech_commands int4 sqtab ddr b0: OK | 960.2 M PL cycles, 19.21 s on board, 28 KB sent, 20 s total
+[11:49:21] 52/190 speech_commands int4 sqtab ddr b5: OK | 960.7 M PL cycles, 19.21 s on board, 4 KB sent, 19 s total
+[11:49:40] 53/190 speech_commands int4 sqtab ddr b10: OK | 961.1 M PL cycles, 19.22 s on board, 4 KB sent, 19 s total
+[11:49:59] 54/190 speech_commands int4 sqtab ddr b15: OK | 961.4 M PL cycles, 19.23 s on board, 4 KB sent, 19 s total
+[11:50:15] 55/190 speech_commands int4 dn1 ddr b0: OK | 686.2 M PL cycles, 13.73 s on board, 45 KB sent, 15 s total
+[11:50:28] 56/190 speech_commands int4 dn1 ddr b5: OK | 687.1 M PL cycles, 13.74 s on board, 4 KB sent, 14 s total
+[11:50:42] 57/190 speech_commands int4 dn1 ddr b10: OK | 687.9 M PL cycles, 13.76 s on board, 4 KB sent, 14 s total
+[11:50:56] 58/190 speech_commands int4 dn1 ddr b15: OK | 688.0 M PL cycles, 13.76 s on board, 4 KB sent, 14 s total
+[11:51:12] 59/190 speech_commands int4 dn2 ddr b0: OK | 717.1 M PL cycles, 14.34 s on board, 44 KB sent, 16 s total
+[11:51:27] 60/190 speech_commands int4 dn2 ddr b5: OK | 717.2 M PL cycles, 14.34 s on board, 4 KB sent, 15 s total
+[11:51:41] 61/190 speech_commands int4 dn2 ddr b10: OK | 718.1 M PL cycles, 14.36 s on board, 4 KB sent, 15 s total
+[11:51:56] 62/190 speech_commands int4 dn2 ddr b15: OK | 718.2 M PL cycles, 14.37 s on board, 4 KB sent, 14 s total
+[11:52:18] 63/190 speech_commands int8 exact ddr b0: OK | 1075.5 M PL cycles, 21.51 s on board, 41 KB sent, 23 s total
+[11:52:40] 64/190 speech_commands int8 exact ddr b5: OK | 1074.5 M PL cycles, 21.49 s on board, 4 KB sent, 22 s total
+[11:53:02] 65/190 speech_commands int8 exact ddr b10: OK | 1072.0 M PL cycles, 21.44 s on board, 4 KB sent, 22 s total
+[11:53:23] 66/190 speech_commands int8 exact ddr b15: OK | 1071.0 M PL cycles, 21.42 s on board, 4 KB sent, 22 s total
+[11:53:45] 67/190 speech_commands int8 sqtab ddr b0: OK | 1028.3 M PL cycles, 20.57 s on board, 28 KB sent, 21 s total
+[11:54:06] 68/190 speech_commands int8 sqtab ddr b5: OK | 1028.9 M PL cycles, 20.58 s on board, 4 KB sent, 21 s total
+[11:54:26] 69/190 speech_commands int8 sqtab ddr b10: OK | 1029.4 M PL cycles, 20.59 s on board, 4 KB sent, 21 s total
+[11:54:47] 70/190 speech_commands int8 sqtab ddr b15: OK | 1029.8 M PL cycles, 20.60 s on board, 4 KB sent, 21 s total
+[11:55:04] 71/190 speech_commands int8 dn1 ddr b0: OK | 788.0 M PL cycles, 15.76 s on board, 45 KB sent, 17 s total
+[11:55:20] 72/190 speech_commands int8 dn1 ddr b5: OK | 788.1 M PL cycles, 15.76 s on board, 4 KB sent, 16 s total
+[11:55:36] 73/190 speech_commands int8 dn1 ddr b10: OK | 787.9 M PL cycles, 15.76 s on board, 4 KB sent, 16 s total
+[11:55:52] 74/190 speech_commands int8 dn1 ddr b15: OK | 787.7 M PL cycles, 15.75 s on board, 4 KB sent, 16 s total
+[11:56:11] 75/190 speech_commands int8 dn2 ddr b0: OK | 865.2 M PL cycles, 17.30 s on board, 44 KB sent, 19 s total
+[11:56:28] 76/190 speech_commands int8 dn2 ddr b5: OK | 865.2 M PL cycles, 17.31 s on board, 4 KB sent, 17 s total
+[11:56:46] 77/190 speech_commands int8 dn2 ddr b10: OK | 864.3 M PL cycles, 17.29 s on board, 4 KB sent, 17 s total
+[11:57:03] 78/190 speech_commands int8 dn2 ddr b15: OK | 864.1 M PL cycles, 17.28 s on board, 4 KB sent, 17 s total
+[11:57:22] 79/190 speech_commands int8 sqapx ddr b0: OK | 899.3 M PL cycles, 17.99 s on board, 30 KB sent, 19 s total
+[11:57:40] 80/190 speech_commands int8 sqapx ddr b5: OK | 899.5 M PL cycles, 17.99 s on board, 4 KB sent, 18 s total
+[11:57:58] 81/190 speech_commands int8 sqapx ddr b10: OK | 899.9 M PL cycles, 18.00 s on board, 4 KB sent, 18 s total
+[11:58:17] 82/190 speech_commands int8 sqapx ddr b15: OK | 899.9 M PL cycles, 18.00 s on board, 4 KB sent, 18 s total
+[11:58:54] 83/190 speech_commands int16 exact ddr b0: OK | 1738.2 M PL cycles, 34.77 s on board, 69 KB sent, 37 s total
+[11:59:29] 84/190 speech_commands int16 exact ddr b5: OK | 1737.2 M PL cycles, 34.74 s on board, 7 KB sent, 35 s total
+[12:00:03] 85/190 speech_commands int16 exact ddr b10: OK | 1730.3 M PL cycles, 34.61 s on board, 7 KB sent, 35 s total
+[12:00:38] 86/190 speech_commands int16 exact ddr b15: OK | 1729.1 M PL cycles, 34.58 s on board, 7 KB sent, 35 s total
+[12:00:58] 87/190 speech_commands int16 dn1 ddr b0: OK | 882.8 M PL cycles, 17.66 s on board, 69 KB sent, 20 s total
+[12:01:16] 88/190 speech_commands int16 dn1 ddr b5: OK | 882.6 M PL cycles, 17.65 s on board, 7 KB sent, 18 s total
+[12:01:34] 89/190 speech_commands int16 dn1 ddr b10: OK | 881.8 M PL cycles, 17.64 s on board, 7 KB sent, 18 s total
+[12:01:52] 90/190 speech_commands int16 dn1 ddr b15: OK | 881.8 M PL cycles, 17.64 s on board, 7 KB sent, 18 s total
+[12:02:14] 91/190 speech_commands int16 dn2 ddr b0: OK | 982.2 M PL cycles, 19.64 s on board, 68 KB sent, 22 s total
+[12:02:34] 92/190 speech_commands int16 dn2 ddr b5: OK | 981.4 M PL cycles, 19.63 s on board, 7 KB sent, 20 s total
+[12:02:53] 93/190 speech_commands int16 dn2 ddr b10: OK | 979.6 M PL cycles, 19.59 s on board, 7 KB sent, 20 s total
+[12:03:13] 94/190 speech_commands int16 dn2 ddr b15: OK | 979.5 M PL cycles, 19.59 s on board, 7 KB sent, 20 s total
+[12:03:25] 95/190 toyadmos int4 exact ddr b0: OK | 87.6 M PL cycles, 1.75 s on board, 293 KB sent, 11 s total
+[12:03:26] 96/190 toyadmos int4 exact ddr b5: OK | 86.5 M PL cycles, 1.73 s on board, 6 KB sent, 2 s total
+[12:03:28] 97/190 toyadmos int4 exact ddr b10: OK | 87.1 M PL cycles, 1.74 s on board, 6 KB sent, 2 s total
+[12:03:30] 98/190 toyadmos int4 exact ddr b15: OK | 86.2 M PL cycles, 1.73 s on board, 6 KB sent, 2 s total
+[12:03:33] 99/190 toyadmos int4 sqtab ddr b0: OK | 97.8 M PL cycles, 1.96 s on board, 17 KB sent, 3 s total
+[12:03:35] 100/190 toyadmos int4 sqtab ddr b5: OK | 97.8 M PL cycles, 1.96 s on board, 5 KB sent, 2 s total
+[12:03:37] 101/190 toyadmos int4 sqtab ddr b10: OK | 97.7 M PL cycles, 1.95 s on board, 5 KB sent, 2 s total
+[12:03:39] 102/190 toyadmos int4 sqtab ddr b15: OK | 97.8 M PL cycles, 1.96 s on board, 5 KB sent, 2 s total
+[12:03:50] 103/190 toyadmos int4 dn1 ddr b0: OK | 84.5 M PL cycles, 1.69 s on board, 291 KB sent, 11 s total
+[12:03:52] 104/190 toyadmos int4 dn1 ddr b5: OK | 83.8 M PL cycles, 1.68 s on board, 6 KB sent, 2 s total
+[12:03:54] 105/190 toyadmos int4 dn1 ddr b10: OK | 84.1 M PL cycles, 1.68 s on board, 6 KB sent, 2 s total
+[12:03:56] 106/190 toyadmos int4 dn1 ddr b15: OK | 83.7 M PL cycles, 1.67 s on board, 6 KB sent, 2 s total
+[12:04:07] 107/190 toyadmos int4 dn2 ddr b0: OK | 88.1 M PL cycles, 1.76 s on board, 291 KB sent, 11 s total
+[12:04:09] 108/190 toyadmos int4 dn2 ddr b5: OK | 86.8 M PL cycles, 1.74 s on board, 6 KB sent, 2 s total
+[12:04:11] 109/190 toyadmos int4 dn2 ddr b10: OK | 87.3 M PL cycles, 1.75 s on board, 6 KB sent, 2 s total
+[12:04:13] 110/190 toyadmos int4 dn2 ddr b15: OK | 86.7 M PL cycles, 1.73 s on board, 6 KB sent, 2 s total
+[12:04:25] 111/190 toyadmos int8 exact ddr b0: OK | 122.0 M PL cycles, 2.44 s on board, 289 KB sent, 12 s total
+[12:04:28] 112/190 toyadmos int8 exact ddr b5: OK | 119.0 M PL cycles, 2.38 s on board, 12 KB sent, 3 s total
+[12:04:30] 113/190 toyadmos int8 exact ddr b10: OK | 121.6 M PL cycles, 2.43 s on board, 6 KB sent, 3 s total
+[12:04:33] 114/190 toyadmos int8 exact ddr b15: OK | 117.4 M PL cycles, 2.35 s on board, 6 KB sent, 3 s total
+[12:04:35] 115/190 toyadmos int8 sqtab ddr b0: OK | 97.3 M PL cycles, 1.95 s on board, 17 KB sent, 2 s total
+[12:04:38] 116/190 toyadmos int8 sqtab ddr b5: OK | 97.4 M PL cycles, 1.95 s on board, 5 KB sent, 2 s total
+[12:04:40] 117/190 toyadmos int8 sqtab ddr b10: OK | 97.3 M PL cycles, 1.95 s on board, 5 KB sent, 2 s total
+[12:04:42] 118/190 toyadmos int8 sqtab ddr b15: OK | 97.4 M PL cycles, 1.95 s on board, 5 KB sent, 2 s total
+[12:04:53] 119/190 toyadmos int8 dn1 ddr b0: OK | 88.8 M PL cycles, 1.78 s on board, 291 KB sent, 11 s total
+[12:04:55] 120/190 toyadmos int8 dn1 ddr b5: OK | 89.4 M PL cycles, 1.79 s on board, 12 KB sent, 2 s total
+[12:04:57] 121/190 toyadmos int8 dn1 ddr b10: OK | 89.9 M PL cycles, 1.80 s on board, 6 KB sent, 2 s total
+[12:04:59] 122/190 toyadmos int8 dn1 ddr b15: OK | 88.9 M PL cycles, 1.78 s on board, 6 KB sent, 2 s total
+[12:05:11] 123/190 toyadmos int8 dn2 ddr b0: OK | 99.3 M PL cycles, 1.99 s on board, 291 KB sent, 11 s total
+[12:05:13] 124/190 toyadmos int8 dn2 ddr b5: OK | 98.7 M PL cycles, 1.97 s on board, 12 KB sent, 2 s total
+[12:05:15] 125/190 toyadmos int8 dn2 ddr b10: OK | 100.0 M PL cycles, 2.00 s on board, 6 KB sent, 2 s total
+[12:05:17] 126/190 toyadmos int8 dn2 ddr b15: OK | 98.0 M PL cycles, 1.96 s on board, 6 KB sent, 2 s total
+[12:05:29] 127/190 toyadmos int8 sqapx ddr b0: OK | 89.3 M PL cycles, 1.79 s on board, 294 KB sent, 11 s total
+[12:05:31] 128/190 toyadmos int8 sqapx ddr b5: OK | 90.0 M PL cycles, 1.80 s on board, 13 KB sent, 2 s total
+[12:05:33] 129/190 toyadmos int8 sqapx ddr b10: OK | 90.0 M PL cycles, 1.80 s on board, 6 KB sent, 2 s total
+[12:05:35] 130/190 toyadmos int8 sqapx ddr b15: OK | 90.0 M PL cycles, 1.80 s on board, 6 KB sent, 2 s total
+[12:05:57] 131/190 toyadmos int16 exact ddr b0: OK | 196.7 M PL cycles, 3.93 s on board, 555 KB sent, 22 s total
+[12:06:01] 132/190 toyadmos int16 exact ddr b5: OK | 188.3 M PL cycles, 3.77 s on board, 10 KB sent, 4 s total
+[12:06:05] 133/190 toyadmos int16 exact ddr b10: OK | 195.6 M PL cycles, 3.91 s on board, 10 KB sent, 4 s total
+[12:06:09] 134/190 toyadmos int16 exact ddr b15: OK | 184.0 M PL cycles, 3.68 s on board, 10 KB sent, 4 s total
+[12:06:29] 135/190 toyadmos int16 dn1 ddr b0: OK | 94.5 M PL cycles, 1.89 s on board, 552 KB sent, 20 s total
+[12:06:31] 136/190 toyadmos int16 dn1 ddr b5: OK | 93.3 M PL cycles, 1.87 s on board, 10 KB sent, 2 s total
+[12:06:33] 137/190 toyadmos int16 dn1 ddr b10: OK | 94.2 M PL cycles, 1.88 s on board, 10 KB sent, 2 s total
+[12:06:35] 138/190 toyadmos int16 dn1 ddr b15: OK | 92.5 M PL cycles, 1.85 s on board, 10 KB sent, 2 s total
+[12:06:55] 139/190 toyadmos int16 dn2 ddr b0: OK | 108.7 M PL cycles, 2.17 s on board, 552 KB sent, 20 s total
+[12:06:58] 140/190 toyadmos int16 dn2 ddr b5: OK | 106.5 M PL cycles, 2.13 s on board, 10 KB sent, 2 s total
+[12:07:00] 141/190 toyadmos int16 dn2 ddr b10: OK | 108.2 M PL cycles, 2.16 s on board, 10 KB sent, 3 s total
+[12:07:03] 142/190 toyadmos int16 dn2 ddr b15: OK | 105.4 M PL cycles, 2.11 s on board, 10 KB sent, 2 s total
+[12:08:11] 143/190 cifar10 int4 exact ddr b0: OK | 3254.1 M PL cycles, 65.08 s on board, 108 KB sent, 69 s total
+[12:09:17] 144/190 cifar10 int4 exact ddr b5: OK | 3260.2 M PL cycles, 65.21 s on board, 17 KB sent, 66 s total
+[12:10:23] 145/190 cifar10 int4 exact ddr b10: OK | 3258.4 M PL cycles, 65.17 s on board, 17 KB sent, 66 s total
+[12:11:29] 146/190 cifar10 int4 exact ddr b15: OK | 3257.0 M PL cycles, 65.14 s on board, 17 KB sent, 66 s total
+[12:12:46] 147/190 cifar10 int4 sqtab ddr b0: OK | 3842.6 M PL cycles, 76.85 s on board, 33 KB sent, 78 s total
+[12:14:04] 148/190 cifar10 int4 sqtab ddr b5: OK | 3842.1 M PL cycles, 76.84 s on board, 17 KB sent, 77 s total
+[12:15:21] 149/190 cifar10 int4 sqtab ddr b10: OK | 3842.4 M PL cycles, 76.85 s on board, 17 KB sent, 77 s total
+[12:16:39] 150/190 cifar10 int4 sqtab ddr b15: OK | 3843.0 M PL cycles, 76.86 s on board, 17 KB sent, 77 s total
+[12:17:44] 151/190 cifar10 int4 dn1 ddr b0: OK | 3081.7 M PL cycles, 61.63 s on board, 102 KB sent, 65 s total
+[12:18:46] 152/190 cifar10 int4 dn1 ddr b5: OK | 3084.3 M PL cycles, 61.69 s on board, 17 KB sent, 62 s total
+[12:19:48] 153/190 cifar10 int4 dn1 ddr b10: OK | 3082.9 M PL cycles, 61.66 s on board, 17 KB sent, 62 s total
+[12:20:51] 154/190 cifar10 int4 dn1 ddr b15: OK | 3083.1 M PL cycles, 61.66 s on board, 17 KB sent, 62 s total
+[12:21:58] 155/190 cifar10 int4 dn2 ddr b0: OK | 3224.5 M PL cycles, 64.49 s on board, 99 KB sent, 68 s total
+[12:23:03] 156/190 cifar10 int4 dn2 ddr b5: OK | 3229.8 M PL cycles, 64.60 s on board, 17 KB sent, 65 s total
+[12:24:09] 157/190 cifar10 int4 dn2 ddr b10: OK | 3228.6 M PL cycles, 64.57 s on board, 17 KB sent, 65 s total
+[12:25:14] 158/190 cifar10 int4 dn2 ddr b15: OK | 3227.9 M PL cycles, 64.56 s on board, 17 KB sent, 65 s total
+[12:26:43] 159/190 cifar10 int8 exact ddr b0: OK | 4276.2 M PL cycles, 85.53 s on board, 104 KB sent, 89 s total
+[12:28:09] 160/190 cifar10 int8 exact ddr b5: OK | 4311.2 M PL cycles, 86.22 s on board, 17 KB sent, 87 s total
+[12:29:36] 161/190 cifar10 int8 exact ddr b10: OK | 4298.2 M PL cycles, 85.97 s on board, 17 KB sent, 87 s total
+[12:31:02] 162/190 cifar10 int8 exact ddr b15: OK | 4276.6 M PL cycles, 85.53 s on board, 17 KB sent, 86 s total
+[12:32:21] 163/190 cifar10 int8 sqtab ddr b0: OK | 3914.4 M PL cycles, 78.29 s on board, 33 KB sent, 79 s total
+[12:33:40] 164/190 cifar10 int8 sqtab ddr b5: OK | 3913.9 M PL cycles, 78.28 s on board, 17 KB sent, 79 s total
+[12:34:59] 165/190 cifar10 int8 sqtab ddr b10: OK | 3914.3 M PL cycles, 78.29 s on board, 17 KB sent, 79 s total
+[12:36:18] 166/190 cifar10 int8 sqtab ddr b15: OK | 3914.9 M PL cycles, 78.30 s on board, 17 KB sent, 79 s total
+[12:37:27] 167/190 cifar10 int8 dn1 ddr b0: OK | 3276.0 M PL cycles, 65.52 s on board, 106 KB sent, 69 s total
+[12:38:33] 168/190 cifar10 int8 dn1 ddr b5: OK | 3282.3 M PL cycles, 65.65 s on board, 17 KB sent, 66 s total
+[12:39:39] 169/190 cifar10 int8 dn1 ddr b10: OK | 3280.6 M PL cycles, 65.61 s on board, 17 KB sent, 66 s total
+[12:40:46] 170/190 cifar10 int8 dn1 ddr b15: OK | 3276.8 M PL cycles, 65.54 s on board, 17 KB sent, 66 s total
+[12:42:01] 171/190 cifar10 int8 dn2 ddr b0: OK | 3601.4 M PL cycles, 72.03 s on board, 105 KB sent, 75 s total
+[12:43:14] 172/190 cifar10 int8 dn2 ddr b5: OK | 3616.0 M PL cycles, 72.32 s on board, 17 KB sent, 73 s total
+[12:44:27] 173/190 cifar10 int8 dn2 ddr b10: OK | 3614.0 M PL cycles, 72.28 s on board, 17 KB sent, 73 s total
+[12:45:39] 174/190 cifar10 int8 dn2 ddr b15: OK | 3602.7 M PL cycles, 72.05 s on board, 17 KB sent, 73 s total
+[12:46:51] 175/190 cifar10 int8 sqapx ddr b0: OK | 3386.8 M PL cycles, 67.74 s on board, 114 KB sent, 71 s total
+[12:47:59] 176/190 cifar10 int8 sqapx ddr b5: OK | 3384.2 M PL cycles, 67.69 s on board, 17 KB sent, 68 s total
+[12:49:07] 177/190 cifar10 int8 sqapx ddr b10: OK | 3383.8 M PL cycles, 67.68 s on board, 17 KB sent, 68 s total
+[12:50:16] 178/190 cifar10 int8 sqapx ddr b15: OK | 3387.9 M PL cycles, 67.76 s on board, 17 KB sent, 68 s total
+[12:52:37] 179/190 cifar10 int16 exact ddr b0: OK | 6762.8 M PL cycles, 135.26 s on board, 199 KB sent, 142 s total
+[12:54:56] 180/190 cifar10 int16 exact ddr b5: OK | 6853.4 M PL cycles, 137.07 s on board, 32 KB sent, 138 s total
+[12:57:13] 181/190 cifar10 int16 exact ddr b10: OK | 6831.8 M PL cycles, 136.64 s on board, 32 KB sent, 138 s total
+[12:59:29] 182/190 cifar10 int16 exact ddr b15: OK | 6756.1 M PL cycles, 135.12 s on board, 32 KB sent, 136 s total
+[13:00:45] 183/190 cifar10 int16 dn1 ddr b0: OK | 3484.0 M PL cycles, 69.68 s on board, 195 KB sent, 76 s total
+[13:01:56] 184/190 cifar10 int16 dn1 ddr b5: OK | 3490.8 M PL cycles, 69.82 s on board, 32 KB sent, 71 s total
+[13:03:07] 185/190 cifar10 int16 dn1 ddr b10: OK | 3488.2 M PL cycles, 69.76 s on board, 32 KB sent, 71 s total
+[13:04:18] 186/190 cifar10 int16 dn1 ddr b15: OK | 3484.2 M PL cycles, 69.68 s on board, 32 KB sent, 71 s total
+[13:05:43] 187/190 cifar10 int16 dn2 ddr b0: OK | 3956.1 M PL cycles, 79.12 s on board, 195 KB sent, 85 s total
+[13:07:04] 188/190 cifar10 int16 dn2 ddr b5: OK | 3979.4 M PL cycles, 79.59 s on board, 32 KB sent, 81 s total
+[13:08:25] 189/190 cifar10 int16 dn2 ddr b10: OK | 3975.4 M PL cycles, 79.51 s on board, 32 KB sent, 81 s total
+[13:09:45] 190/190 cifar10 int16 dn2 ddr b15: OK | 3955.3 M PL cycles, 79.11 s on board, 32 KB sent, 80 s total
+[13:09:45] wrote /home/ujjawal_jo/Downloads/fpga_zybo_bundle/fpga_zybo/results/board_summary.csv (48 rows)
+[13:09:45] cifar10          int4  dn1   ddr  match 1.00 |   615.78 M cycles | 1.06x
+[13:09:45] cifar10          int4  dn2   ddr  match 1.00 |   644.72 M cycles | 1.01x
+[13:09:45] cifar10          int4  exact ddr  match 1.00 |   650.67 M cycles | 1.00x
+[13:09:45] cifar10          int4  sqtab ddr  match 1.00 |   767.70 M cycles | 0.85x
+[13:09:45] cifar10          int8  dn1   ddr  match 1.00 |   654.97 M cycles | 1.31x
+[13:09:45] cifar10          int8  dn2   ddr  match 1.00 |   720.88 M cycles | 1.19x
+[13:09:45] cifar10          int8  exact ddr  match 1.00 |   857.29 M cycles | 1.00x
+[13:09:45] cifar10          int8  sqapx ddr  match 1.00 |   676.25 M cycles | 1.27x
+[13:09:45] cifar10          int8  sqtab ddr  match 1.00 |   782.10 M cycles | 1.10x
+[13:09:45] cifar10          int16 dn1   ddr  match 1.00 |   696.43 M cycles | 1.95x
+[13:09:45] cifar10          int16 dn2   ddr  match 1.00 |   792.39 M cycles | 1.72x
+[13:09:45] cifar10          int16 exact ddr  match 1.00 |  1359.28 M cycles | 1.00x
+[13:09:45] speech_commands  int4  dn1   bram match 1.00 |    49.77 M cycles | 1.19x | sim equal 1.00
+[13:09:45] speech_commands  int4  dn1   ddr  match 1.00 |   137.20 M cycles | 1.07x | sim equal 0.00
+[13:09:45] speech_commands  int4  dn2   bram match 1.00 |    55.85 M cycles | 1.06x | sim equal 1.00
+[13:09:45] speech_commands  int4  dn2   ddr  match 1.00 |   143.27 M cycles | 1.03x | sim equal 0.00
+[13:09:45] speech_commands  int4  exact bram match 1.00 |    59.46 M cycles | 1.00x | sim equal 1.00
+[13:09:45] speech_commands  int4  exact ddr  match 1.00 |   146.86 M cycles | 1.00x | sim equal 0.00
+[13:09:45] speech_commands  int4  sqtab bram match 1.00 |    54.17 M cycles | 1.10x | sim equal 1.00
+[13:09:45] speech_commands  int4  sqtab ddr  match 1.00 |   191.87 M cycles | 0.77x | sim equal 0.00
+[13:09:45] speech_commands  int8  dn1   bram match 1.00 |    69.89 M cycles | 1.81x | sim equal 1.00
+[13:09:45] speech_commands  int8  dn1   ddr  match 1.00 |   157.32 M cycles | 1.36x | sim equal 0.00
+[13:09:45] speech_commands  int8  dn2   bram match 1.00 |    85.18 M cycles | 1.49x | sim equal 1.00
+[13:09:45] speech_commands  int8  dn2   ddr  match 1.00 |   172.67 M cycles | 1.24x | sim equal 0.00
+[13:09:45] speech_commands  int8  exact bram match 1.00 |   126.73 M cycles | 1.00x | sim equal 1.00
+[13:09:45] speech_commands  int8  exact ddr  match 1.00 |   214.38 M cycles | 1.00x | sim equal 0.00
+[13:09:45] speech_commands  int8  sqapx bram match 1.00 |    83.31 M cycles | 1.52x | sim equal 1.00
+[13:09:45] speech_commands  int8  sqapx ddr  match 1.00 |   179.59 M cycles | 1.19x | sim equal 0.00
+[13:09:45] speech_commands  int8  sqtab bram match 1.00 |    65.01 M cycles | 1.95x | sim equal 1.00
+[13:09:45] speech_commands  int8  sqtab ddr  match 1.00 |   205.51 M cycles | 1.04x | sim equal 0.00
+[13:09:45] speech_commands  int16 dn1   bram match 1.00 |    88.01 M cycles | 2.93x | sim equal 1.00
+[13:09:45] speech_commands  int16 dn1   ddr  match 1.00 |   176.16 M cycles | 1.97x | sim equal 0.00
+[13:09:45] speech_commands  int16 dn2   bram match 1.00 |   107.65 M cycles | 2.39x | sim equal 1.00
+[13:09:45] speech_commands  int16 dn2   ddr  match 1.00 |   195.84 M cycles | 1.77x | sim equal 0.00
+[13:09:45] speech_commands  int16 exact bram match 1.00 |   257.62 M cycles | 1.00x | sim equal 1.00
+[13:09:45] speech_commands  int16 exact ddr  match 1.00 |   346.44 M cycles | 1.00x | sim equal 0.00
+[13:09:45] toyadmos         int4  dn1   ddr  match 1.00 |    14.30 M cycles | 1.04x
+[13:09:45] toyadmos         int4  dn2   ddr  match 1.00 |    14.95 M cycles | 0.99x
+[13:09:45] toyadmos         int4  exact ddr  match 1.00 |    14.87 M cycles | 1.00x
+[13:09:45] toyadmos         int4  sqtab ddr  match 1.00 |    17.23 M cycles | 0.86x
+[13:09:45] toyadmos         int8  dn1   ddr  match 1.00 |    15.35 M cycles | 1.40x
+[13:09:45] toyadmos         int8  dn2   ddr  match 1.00 |    17.30 M cycles | 1.24x
+[13:09:45] toyadmos         int8  exact ddr  match 1.00 |    21.50 M cycles | 1.00x
+[13:09:45] toyadmos         int8  sqapx ddr  match 1.00 |    15.27 M cycles | 1.41x
+[13:09:45] toyadmos         int8  sqtab ddr  match 1.00 |    17.14 M cycles | 1.25x
+[13:09:45] toyadmos         int16 dn1   ddr  match 1.00 |    16.16 M cycles | 2.21x
+[13:09:45] toyadmos         int16 dn2   ddr  match 1.00 |    18.87 M cycles | 1.89x
+[13:09:45] toyadmos         int16 exact ddr  match 1.00 |    35.66 M cycles | 1.00x

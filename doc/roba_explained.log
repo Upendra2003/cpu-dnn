@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.10.29)  7 NOV 2026 19:13
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.10.29)  9 NOV 2026 15:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -906,7 +906,7 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip59
 )
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 70
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 71
 .
 
 (/usr/share/texmf/tex/latex/lm/t1lmr.fd
@@ -920,37 +920,37 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 (./roba_explained.aux)
 \openout1 = `roba_explained.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Info: Redefining \microtypecontext on input line 70.
-Package microtype Info: Applying patch `item' on input line 70.
-Package microtype Info: Applying patch `toc' on input line 70.
-Package microtype Info: Applying patch `eqnum' on input line 70.
-Package microtype Info: Applying patch `footnote' on input line 70.
-Package microtype Info: Applying patch `verbatim' on input line 70.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Info: Redefining \microtypecontext on input line 71.
+Package microtype Info: Applying patch `item' on input line 71.
+Package microtype Info: Applying patch `toc' on input line 71.
+Package microtype Info: Applying patch `eqnum' on input line 71.
+Package microtype Info: Applying patch `footnote' on input line 71.
+Package microtype Info: Applying patch `verbatim' on input line 71.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 70.
+LaTeX Info: Redefining \showhyphens on input line 71.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -1021,43 +1021,43 @@ Package caption Info: hyperref package is loaded.
 Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
 \c@lstlisting=\count348
-Package hyperref Info: Link coloring ON on input line 70.
+Package hyperref Info: Link coloring ON on input line 71.
 
 (./roba_explained.out) (./roba_explained.out)
 \@outlinefile=\write4
 \openout4 = `roba_explained.out'.
 
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 7
-2.
+3.
 
 (/usr/share/texmf/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 7
-2.
+3.
 
 (/usr/share/texmf/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-72.
+73.
 
 (/usr/share/texmf/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-72.
+73.
 
 (/usr/share/texmf/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 72.
+(Font)              <12> on input line 73.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 72.
+(Font)              <8> on input line 73.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 72.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 72.
+(Font)              <6> on input line 73.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 73.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -1066,7 +1066,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 72.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 73.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -1076,11 +1076,11 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 83.
+(Font)              <10> on input line 84.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 83.
+(Font)              <7> on input line 84.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 83.
+(Font)              <5> on input line 84.
 
 (./roba_explained.toc
 LaTeX Font Info:    External font `lmex10' loaded for size
@@ -1090,8 +1090,8 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 {/home/ms_upendra/.texlive2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/u
 sr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/l
 m/lm-mathsy.enc}] [2]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 9
-2.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
+01.
 
 (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
@@ -1100,19 +1100,19 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-)
+ [3])
 \tf@toc=\write5
 \openout5 = `roba_explained.toc'.
 
- [3] (./sections/01_story.tex
+ [4] (./sections/01_story.tex
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 5
 4.
 
 (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [4{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/
-dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}] [5]) (
-./sections/02_basics.tex [6]
+) [5{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/
+dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}] [6]) (
+./sections/02_basics.tex [7]
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2023/02/27 1.9 listings language file
 )
@@ -1121,9 +1121,9 @@ File: lstmisc.sty 2023/02/27 1.9 (Carsten Heinz)
 )
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <9> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 92.
- [7] [8] [9])
-(./sections/03_multipliers.tex [10{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathe
-x.enc}] [11]
+ [8] [9] [10])
+(./sections/03_multipliers.tex [11{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathe
+x.enc}] [12]
 Overfull \hbox (6.27553pt too wide) in paragraph at lines 179--182
 \T1/lmr/m/n/10.95 (-20) tive to the true prod-uct (\T1/lmtt/m/n/10.95 experimen
 ts/run.py\T1/lmr/m/n/10.95 (-20) , stage \T1/lmtt/m/n/10.95 errors\T1/lmr/m/n/1
@@ -1131,19 +1131,19 @@ ts/run.py\T1/lmr/m/n/10.95 (-20) , stage \T1/lmtt/m/n/10.95 errors\T1/lmr/m/n/1
 5 (-20) ). 
  []
 
-<figures/errors.pdf, id=499, 514.30658pt x 196.33302pt>
+<figures/errors.pdf, id=548, 514.30658pt x 196.33302pt>
 File: figures/errors.pdf Graphic file (type pdf)
 <use figures/errors.pdf>
 Package pdftex.def Info: figures/errors.pdf  used on input line 185.
 (pdftex.def)             Requested size: 466.62503pt x 178.13905pt.
-[12]
-<figures/error_map.pdf, id=507, 527.48221pt x 179.53856pt>
+[13]
+<figures/error_map.pdf, id=557, 527.48221pt x 179.53856pt>
 File: figures/error_map.pdf Graphic file (type pdf)
 <use figures/error_map.pdf>
 Package pdftex.def Info: figures/error_map.pdf  used on input line 225.
 (pdftex.def)             Requested size: 466.62503pt x 158.82722pt.
- [13 <./figures/errors.pdf>] [14 <./figures/error_map.pdf>])
-(./sections/04_networks.tex [15] [16] [17]
+ [14 <./figures/errors.pdf>] [15 <./figures/error_map.pdf>])
+(./sections/04_networks.tex [16] [17] [18]
 LaTeX Font Info:    Trying to load font information for OT1+lmss on input line 
 231.
 
@@ -1154,19 +1154,19 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmss' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [18] [19]) (./sections/05_gpu.tex
-<figures/domains.pdf, id=669, 442.05101pt x 175.39577pt>
+ [19] [20]) (./sections/05_gpu.tex
+<figures/domains.pdf, id=719, 442.05101pt x 175.39577pt>
 File: figures/domains.pdf Graphic file (type pdf)
 <use figures/domains.pdf>
 Package pdftex.def Info: figures/domains.pdf  used on input line 21.
 (pdftex.def)             Requested size: 396.63411pt x 157.38101pt.
-<figures/gpu_acc.pdf, id=670, 528.775pt x 340.87302pt>
+<figures/gpu_acc.pdf, id=720, 528.775pt x 340.87302pt>
 File: figures/gpu_acc.pdf Graphic file (type pdf)
 <use figures/gpu_acc.pdf>
 Package pdftex.def Info: figures/gpu_acc.pdf  used on input line 32.
 (pdftex.def)             Requested size: 466.62503pt x 300.81699pt.
 
-[20 <./figures/domains.pdf>] [21 <./figures/gpu_acc.pdf>]
+[21 <./figures/domains.pdf>] [22 <./figures/gpu_acc.pdf>]
 Underfull \hbox (badness 2426) in paragraph at lines 91--96
 []\T1/lmr/m/n/10.95 (+20) Four prod-ucts whose true value is 100 each come out 
 as $\OT1/lmr/m/n/10.95 (+20) 106\OML/lmm/m/it/10.95 ; \OT1/lmr/m/n/10.95 (+20) 
@@ -1174,130 +1174,171 @@ as $\OT1/lmr/m/n/10.95 (+20) 106\OML/lmm/m/it/10.95 ; \OT1/lmr/m/n/10.95 (+20)
 lmr/m/n/10.95 (+20) 95$ \T1/lmr/m/n/10.95 (+20) (er-rors
  []
 
-[22]) (./sections/06_ibex.tex [23] [24] [25]
+[23]) (./sections/06_ibex.tex [24] [25] [26]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 219.
- [26])
+ [27])
 (./sections/07_ibex_results.tex
-<figures/mult_bench.pdf, id=865, 529.46054pt x 210.78702pt>
+<figures/mult_bench.pdf, id=914, 529.46054pt x 210.78702pt>
 File: figures/mult_bench.pdf Graphic file (type pdf)
 <use figures/mult_bench.pdf>
 Package pdftex.def Info: figures/mult_bench.pdf  used on input line 11.
 (pdftex.def)             Requested size: 466.62503pt x 185.77618pt.
-<figures/ibex_call.pdf, id=866, 528.77457pt x 355.32701pt>
+<figures/ibex_call.pdf, id=915, 528.77457pt x 355.32701pt>
 File: figures/ibex_call.pdf Graphic file (type pdf)
 <use figures/ibex_call.pdf>
 Package pdftex.def Info: figures/ibex_call.pdf  used on input line 54.
 (pdftex.def)             Requested size: 466.62503pt x 313.57248pt.
- [27 <./figures/mult_bench.pdf>] [28 <./figures/ibex_call.pdf>]
-<figures/profile.pdf, id=997, 543.22902pt x 225.24101pt>
+ [28 <./figures/mult_bench.pdf>] [29 <./figures/ibex_call.pdf>]
+<figures/profile.pdf, id=1046, 543.22902pt x 225.24101pt>
 File: figures/profile.pdf Graphic file (type pdf)
 <use figures/profile.pdf>
 Package pdftex.def Info: figures/profile.pdf  used on input line 99.
 (pdftex.def)             Requested size: 466.62503pt x 193.48009pt.
- [29 <./figures/profile.pdf>]
-<figures/fused.pdf, id=1063, 528.775pt x 237.18588pt>
+ [30 <./figures/profile.pdf>]
+<figures/fused.pdf, id=1112, 528.775pt x 237.18588pt>
 File: figures/fused.pdf Graphic file (type pdf)
 <use figures/fused.pdf>
 Package pdftex.def Info: figures/fused.pdf  used on input line 169.
 (pdftex.def)             Requested size: 466.62503pt x 209.31413pt.
- [30 <./figures/fused.pdf>]
-[31]
-<figures/sqtab.pdf, id=1170, 514.32103pt x 210.78702pt>
+ [31 <./figures/fused.pdf>]
+[32]
+<figures/sqtab.pdf, id=1220, 514.32103pt x 210.78702pt>
 File: figures/sqtab.pdf Graphic file (type pdf)
 <use figures/sqtab.pdf>
 Package pdftex.def Info: figures/sqtab.pdf  used on input line 289.
 (pdftex.def)             Requested size: 466.62503pt x 191.24075pt.
- [32]
-<figures/layers.pdf, id=1189, 528.775pt x 174.65202pt>
+ [33]
+<figures/layers.pdf, id=1238, 528.775pt x 174.65202pt>
 File: figures/layers.pdf Graphic file (type pdf)
 <use figures/layers.pdf>
 Package pdftex.def Info: figures/layers.pdf  used on input line 296.
 (pdftex.def)             Requested size: 466.62503pt x 154.12865pt.
- [33 <./figures/sqtab.pdf> <./figures/layers.pdf>] [34]
-<figures/zeroskip.pdf, id=1321, 528.775pt x 340.87302pt>
+ [34 <./figures/sqtab.pdf> <./figures/layers.pdf>] [35]
+<figures/zeroskip.pdf, id=1370, 528.775pt x 340.87302pt>
 File: figures/zeroskip.pdf Graphic file (type pdf)
 <use figures/zeroskip.pdf>
 Package pdftex.def Info: figures/zeroskip.pdf  used on input line 385.
 (pdftex.def)             Requested size: 466.62503pt x 300.81699pt.
- [35 <./figures/zeroskip.pdf>] [36]
-<figures/energy.pdf, id=1392, 528.775pt x 218.01402pt>
+ [36 <./figures/zeroskip.pdf>] [37]
+<figures/energy.pdf, id=1442, 528.775pt x 218.01402pt>
 File: figures/energy.pdf Graphic file (type pdf)
 <use figures/energy.pdf>
 Package pdftex.def Info: figures/energy.pdf  used on input line 470.
 (pdftex.def)             Requested size: 466.62503pt x 192.39516pt.
- [37 <./figures/energy.pdf>] [38])
-(./sections/07b_mlperf_tiny.tex [39] [40] [41] [42]
+ [38 <./figures/energy.pdf>] [39])
+(./sections/07b_mlperf_tiny.tex [40] [41] [42] [43]
 Underfull \hbox (badness 10000) in paragraph at lines 313--313
 []\T1/lmr/bx/n/10 (+20) Table 14: |\T1/lmr/m/n/10 (+20) Test score, mean $\OMS/
 lmsy/m/n/10 ^^F$ \T1/lmr/m/n/10 (+20) stan-dard de-vi-a-tion over 3 seeds, full
  test sets
  []
 
-[43]
-<figures/tiny_acc.pdf, id=1509, 543.22902pt x 196.33302pt>
+[44]
+<figures/tiny_acc.pdf, id=1558, 543.22902pt x 196.33302pt>
 File: figures/tiny_acc.pdf Graphic file (type pdf)
 <use figures/tiny_acc.pdf>
 Package pdftex.def Info: figures/tiny_acc.pdf  used on input line 324.
 (pdftex.def)             Requested size: 466.62503pt x 168.64838pt.
- [44 <./figures/tiny_acc.pdf>]
-<figures/tiny_speed.pdf, id=1578, 543.22902pt x 210.78702pt>
+ [45 <./figures/tiny_acc.pdf>]
+<figures/tiny_speed.pdf, id=1627, 543.22902pt x 210.78702pt>
 File: figures/tiny_speed.pdf Graphic file (type pdf)
 <use figures/tiny_speed.pdf>
 Package pdftex.def Info: figures/tiny_speed.pdf  used on input line 392.
 (pdftex.def)             Requested size: 466.62503pt x 181.06422pt.
- [45]
-<figures/tiny_cycles.pdf, id=1587, 543.1933pt x 189.10602pt>
+ [46]
+<figures/tiny_cycles.pdf, id=1636, 543.1933pt x 189.10602pt>
 File: figures/tiny_cycles.pdf Graphic file (type pdf)
 <use figures/tiny_cycles.pdf>
 Package pdftex.def Info: figures/tiny_cycles.pdf  used on input line 417.
 (pdftex.def)             Requested size: 466.62503pt x 162.44908pt.
- [46 <./figures/tiny_speed.pdf> <./figures/tiny_cycles.pdf>]
-<figures/tiny_layers.pdf, id=1711, 528.775pt x 189.10602pt>
+ [47 <./figures/tiny_speed.pdf> <./figures/tiny_cycles.pdf>]
+<figures/tiny_layers.pdf, id=1760, 528.775pt x 189.10602pt>
 File: figures/tiny_layers.pdf Graphic file (type pdf)
 <use figures/tiny_layers.pdf>
 Package pdftex.def Info: figures/tiny_layers.pdf  used on input line 447.
 (pdftex.def)             Requested size: 466.62503pt x 166.88414pt.
- [47 <./figures/tiny_layers.pdf>]
-<figures/tiny_tradeoff.pdf, id=1764, 456.50504pt x 246.92203pt>
+ [48 <./figures/tiny_layers.pdf>]
+<figures/tiny_tradeoff.pdf, id=1813, 456.50504pt x 246.92203pt>
 File: figures/tiny_tradeoff.pdf Graphic file (type pdf)
 <use figures/tiny_tradeoff.pdf>
 Package pdftex.def Info: figures/tiny_tradeoff.pdf  used on input line 500.
 (pdftex.def)             Requested size: 396.63411pt x 214.53784pt.
- [48 <./figures/tiny_tradeoff.pdf>]) (./sections/08_wrapup.tex [49] [50] [51] [
-52] [53])
+ [49 <./figures/tiny_tradeoff.pdf>]) (./sections/07c_fpga.tex
+Underfull \hbox (badness 1067) in paragraph at lines 54--54
+[]\T1/lmr/bx/n/10 (+20) Figure 27: |\T1/lmr/m/n/10 (+20) The board sys-tem (\T1
+/lmtt/m/n/10 fpga_zybo/\T1/lmr/m/n/10 (+20) ). Or-ange: the pro-grammable logic
+ we de-signed
+ []
+
+[50] [51] [52]
+<figures/board_mem.pdf, id=1901, 543.22902pt x 203.56001pt>
+File: figures/board_mem.pdf Graphic file (type pdf)
+<use figures/board_mem.pdf>
+Package pdftex.def Info: figures/board_mem.pdf  used on input line 164.
+(pdftex.def)             Requested size: 466.62503pt x 174.85628pt.
+<figures/board_ddr.pdf, id=1902, 543.22902pt x 203.56001pt>
+File: figures/board_ddr.pdf Graphic file (type pdf)
+<use figures/board_ddr.pdf>
+Package pdftex.def Info: figures/board_ddr.pdf  used on input line 172.
+(pdftex.def)             Requested size: 466.62503pt x 174.85628pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 199--199
+[]\T1/lmr/bx/n/10 (+20) Table 19: |\T1/lmr/m/n/10 (+20) Speed-up over ex-act at
+ the same pre-ci-sion, mea-sured on the board
+ []
+
+
+Underfull \hbox (badness 1308) in paragraph at lines 199--199
+\T1/lmr/m/n/10 (+20) (\T1/lmtt/m/n/10 fpga_zybo/results/board_summary.csv\T1/lm
+r/m/n/10 (+20) ). Bold: fastest at each pre-ci-sion and mem-ory. The
+ []
+
+[53 <./figures/board_mem.pdf> <./figures/board_ddr.pdf>]
+<figures/board_wait.pdf, id=2020, 470.95901pt x 174.65202pt>
+File: figures/board_wait.pdf Graphic file (type pdf)
+<use figures/board_wait.pdf>
+Package pdftex.def Info: figures/board_wait.pdf  used on input line 214.
+(pdftex.def)             Requested size: 419.95967pt x 155.7436pt.
+ [54 <./figures/board_wait.pdf>] [55]) (./sections/08_wrapup.tex [56] [57] [58]
+ [59] [60] [61])
 (./sections/09_appendix.tex
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
+Underfull \hbox (badness 10000) in paragraph at lines 54--54
 []|\T1/lmr/m/n/9 (+20) stages train, qat, eval for 3 seeds $\OMS/lmsy/m/n/9 !$
  []
 
+[62]
+Overfull \vbox (4.63757pt too high) has occurred while \output is active []
+
+
+[63]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 50.
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 58.
+ (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2023/02/27 1.9 listings language file
-) [54]
+)
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2023/02/27 1.9 listings language file
 )
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2023/02/27 1.9 listings language file
-) [55] [56])
-[57] (./roba_explained.aux)
+) [64] [65])
+[66] (./roba_explained.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `roba_explained.out' has not changed.
-(rerunfilecheck)             Checksum: 6B5CC33E1AAB3D8A2B7739F56CC355A0;15686.
+(rerunfilecheck)             Checksum: D9A8161B6A67E1F45752A05F76FE3D35;17768.
  ) 
 Here is how much of TeX's memory you used:
- 35957 strings out of 476106
- 707379 string characters out of 5793932
- 2356975 words of memory out of 5000000
- 56408 multiletter control sequences out of 15000+600000
- 730694 words of font info for 391 fonts, out of 8000000 for 9000
+ 36141 strings out of 476106
+ 710381 string characters out of 5793932
+ 2355975 words of memory out of 5000000
+ 56529 multiletter control sequences out of 15000+600000
+ 734751 words of font info for 403 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 93i,12n,99p,1007b,2043s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 93i,12n,99p,1007b,1980s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/ty
 pe1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx8.pfb></us
 r/share/texmf/fonts/type1/public/lm/lmbx9.pfb></usr/share/texmf/fonts/type1/pub
@@ -1313,12 +1354,13 @@ mf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lms
 y6.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf/font
 s/type1/public/lm/lmsy9.pfb></usr/share/texmf/fonts/type1/public/lm/lmtk10.pfb>
 </usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type
-1/public/lm/lmtt12.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt9.pfb></usr/
-share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on roba_explained.pdf (57 pages, 1093128 bytes).
+1/public/lm/lmtt12.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt8.pfb></usr/
+share/texmf/fonts/type1/public/lm/lmtt9.pfb></usr/share/texmf/fonts/type1/publi
+c/lm/lmtti10.pfb>
+Output written on roba_explained.pdf (66 pages, 1211698 bytes).
 PDF statistics:
- 2145 PDF objects out of 2487 (max. 8388607)
- 1144 compressed objects within 12 object streams
- 404 named destinations out of 1000 (max. 500000)
- 99098 words of extra memory for PDF output out of 106986 (max. 10000000)
+ 2433 PDF objects out of 2487 (max. 8388607)
+ 1267 compressed objects within 13 object streams
+ 442 named destinations out of 1000 (max. 500000)
+ 101233 words of extra memory for PDF output out of 106986 (max. 10000000)
 
